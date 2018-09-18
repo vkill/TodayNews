@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp"
+    android:paddingTop="15dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/title"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:text="重庆检察机关依法对“万达广场案”5名犯罪嫌疑人批准逮捕"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/media_name"
+        android:textColor="@color/gray_black"
+        android:textSize="14sp"
+        android:text="重庆市人民检察院"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        app:layout_constraintTop_toBottomOf="@id/title"
+        />
+    <TextView
+        android:id="@+id/comment_count"
+        android:textColor="@color/gray_black"
+        android:textSize="14sp"
+        android:text="58评论"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="5dp"
+        app:layout_constraintTop_toBottomOf="@id/title"
+        app:layout_constraintLeft_toRightOf="@id/media_name"
+        />
+    <TextView
+        android:textColor="@color/gray_black"
+        android:textSize="14sp"
+        android:text="1小时前"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="5dp"
+        app:layout_constraintTop_toBottomOf="@id/title"
+        app:layout_constraintLeft_toRightOf="@id/comment_count"
+        />
+
+    <View
+        android:layout_marginTop="15dp"
+        app:layout_constraintTop_toBottomOf="@id/media_name"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/gray_line"
+        />
+</android.support.constraint.ConstraintLayout>
