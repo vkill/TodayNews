@@ -5,6 +5,7 @@ import android.animation.ValueAnimator;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
@@ -13,9 +14,15 @@ import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.kx.todaynews.adapter.HotDataAdapter;
 import com.kx.todaynews.bean.HotBean;
+import com.kx.todaynews.bean.HotContent;
 import com.kx.todaynews.net.YZNetClient;
 import com.kx.todaynews.utils.LogUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,18 +40,22 @@ public class MainActivity extends AppCompatActivity {
     SwipeRefreshLayout refreshLayout;
     @BindView(R.id.tips)
     TextView tips;
-    @BindView(R.id.content)
-    TextView content;
     private long lastTime = Long.valueOf((System.currentTimeMillis() + "").substring(0, 9));
     private long locTime = System.currentTimeMillis();
+    private Gson mGson = new Gson();
+    private HotDataAdapter mHotDataAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        System.out.println(System.currentTimeMillis());
-        // getHotData();
+        mHotDataAdapter = new HotDataAdapter(this);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        recycleView.setLayoutManager(linearLayoutManager);
+        recycleView.setAdapter(mHotDataAdapter);
+         getHotData();
         //  tips.startAnimation(AnimationUtils.loadAnimation(MainActivity.this,R.anim.scale_aniation));
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -74,8 +85,20 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void accept(HotBean hotBean) throws Exception {
                         refreshLayout.setRefreshing(false);
+
                         HotBean.TipsBean tipsBean = hotBean.getTips();
                         tips.setText(TextUtils.isEmpty(tipsBean.getDisplay_info()) ? "暂无更新休息一会" : tipsBean.getDisplay_info());
+                        List<HotBean.DataBean> data = hotBean.getData();
+                        if (data!=null && data.size()>0){
+                            List<HotContent> hotContents = new ArrayList<>();
+                            HotContent hotContent ;
+                            for (HotBean.DataBean dataBean: data) {
+                                String content = dataBean.getContent();
+                                hotContent = mGson.fromJson(content,HotContent.class);
+                                hotContents.add(hotContent);
+                            }
+                            mHotDataAdapter.setHotDatas(hotContents);
+                        }
                         showTipsAnimation();
                     }
                 }, new Consumer<Throwable>() {
@@ -90,10 +113,10 @@ public class MainActivity extends AppCompatActivity {
     private void showTipsAnimation() {
         tips.setVisibility(View.VISIBLE);
         int height = tips.getHeight();
-        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) content.getLayoutParams();
+        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) recycleView.getLayoutParams();
         layoutParams.topMargin = height ;
-        content.setLayoutParams(layoutParams);
-        content.postDelayed(new Runnable() {
+        recycleView.setLayoutParams(layoutParams);
+        recycleView.postDelayed(new Runnable() {
             @Override
             public void run() {
                 ValueAnimator valueAnimator = ValueAnimator.ofInt(height,0);
@@ -102,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onAnimationUpdate(ValueAnimator animation) {
                         int animatedValue = (int) animation.getAnimatedValue();
                         layoutParams.topMargin = animatedValue ;
-                        content.setLayoutParams(layoutParams);
+                        recycleView.setLayoutParams(layoutParams);
                     }
                 });
                 valueAnimator.setDuration(500);

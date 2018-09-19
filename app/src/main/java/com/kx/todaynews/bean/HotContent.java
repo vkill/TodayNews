@@ -2,9 +2,10 @@ package com.kx.todaynews.bean;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class Content {
+public class HotContent {
 
     /**
      * abstract : 9月7日杨斯德将军逝世，13日在北京八宝山举行告别仪式，其骨灰于14日运回家乡山东省滕州市安葬。澎湃新闻注意到，近年来，已逝世的开国将帅中，类似张震、杨斯德将骨灰安放回家乡的案例并不少见。
@@ -92,6 +93,7 @@ public class Content {
     private String display_url;
     private ForwardInfoBean forward_info;
     private long group_id;
+    private int gallary_image_count;
     private boolean has_m3u8_video;
     private int has_mp4_video;
     private boolean has_video;
@@ -134,6 +136,65 @@ public class Content {
     private int video_style;
     private List<ActionListBean> action_list;
     private List<FilterWordsBean> filter_words;
+    private int video_duration;
+    private String video_id;
+    private int video_proportion_article;
+    private ArrayList<LargeImageList> large_image_list ;
+    private ArrayList<ImageList> image_list ;
+    private VideoDetailInfo video_detail_info ;
+    private MiddleImage middle_image ;
+
+    public MiddleImage getMiddle_image() {
+        return middle_image;
+    }
+
+    public ArrayList<LargeImageList> getLarge_image_list() {
+        return large_image_list;
+    }
+
+    public void setLarge_image_list(ArrayList<LargeImageList> large_image_list) {
+        this.large_image_list = large_image_list;
+    }
+
+    public ArrayList<ImageList> getImage_list() {
+        return image_list;
+    }
+
+    public void setImage_list(ArrayList<ImageList> image_list) {
+        this.image_list = image_list;
+    }
+
+    public VideoDetailInfo getVideo_detail_info() {
+        return video_detail_info;
+    }
+
+    public void setVideo_detail_info(VideoDetailInfo video_detail_info) {
+        this.video_detail_info = video_detail_info;
+    }
+
+    public int getVideo_duration() {
+        return video_duration;
+    }
+
+    public void setVideo_duration(int video_duration) {
+        this.video_duration = video_duration;
+    }
+
+    public String getVideo_id() {
+        return video_id;
+    }
+
+    public void setVideo_id(String video_id) {
+        this.video_id = video_id;
+    }
+
+    public int getVideo_proportion_article() {
+        return video_proportion_article;
+    }
+
+    public void setVideo_proportion_article(int video_proportion_article) {
+        this.video_proportion_article = video_proportion_article;
+    }
 
     public String getAbstractX() {
         return abstractX;
@@ -293,6 +354,14 @@ public class Content {
 
     public void setGroup_id(long group_id) {
         this.group_id = group_id;
+    }
+
+    public int getGallary_image_count() {
+        return gallary_image_count;
+    }
+
+    public void setGallary_image_count(int gallary_image_count) {
+        this.gallary_image_count = gallary_image_count;
     }
 
     public boolean isHas_m3u8_video() {
