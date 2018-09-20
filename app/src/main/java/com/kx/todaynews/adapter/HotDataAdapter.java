@@ -52,15 +52,16 @@ public class HotDataAdapter  extends RecyclerView.Adapter<HotDataAdapter.Abstrac
         HotContent hotContent = mContents.get(position);
         int gallary_image_count = hotContent.getGallary_image_count();
         boolean has_video = hotContent.isHas_video();
+        ArrayList<ImageList> image_list = hotContent.getImage_list();
         if (has_video){
             return TYPE_VIDEO;
         }else if (gallary_image_count==0){
             return TYPE_TEXT;
-        }else if (gallary_image_count==1){
-            return TYPE_ONE_IMAGE;
-        }else if (gallary_image_count < 9 && gallary_image_count >=1 ){
+        }else if (image_list!=null && image_list.size()>=3 ){
             return TYPE_THREE_IMAGE ;
-        }else if (gallary_image_count > 9){
+        }else if (gallary_image_count < 6  && gallary_image_count >=1 ){
+            return TYPE_ONE_IMAGE;
+        }else if (gallary_image_count >= 6){
            return TYPE_MANY_IMAGE ;
         }else {
             return TYPE_UNKNOW;
@@ -90,25 +91,34 @@ public class HotDataAdapter  extends RecyclerView.Adapter<HotDataAdapter.Abstrac
         holder.media_name.setText(hotContent.getMedia_name());
         holder.comment_count.setText(String.format("%s评论",hotContent.getComment_count()));
         if (holder instanceof  ThreeImageHolder){
-            MiddleImage middle_image = hotContent.getMiddle_image();
-
             ArrayList<ImageList> image_list = hotContent.getImage_list();
-            if (image_list!=null && image_list.size()>=3){
                 Glide.with(mContext).load(image_list.get(0).getUrl()).into(((ThreeImageHolder)holder).iv_1);
                 Glide.with(mContext).load(image_list.get(1).getUrl()).into(((ThreeImageHolder)holder).iv_2);
                 Glide.with(mContext).load(image_list.get(2).getUrl()).into(((ThreeImageHolder)holder).iv_3);
-            }else if (middle_image!=null){
-                Glide.with(mContext).load(middle_image.getUrl()).into(((ThreeImageHolder)holder).iv_1);
-            }
-
         }else if (holder instanceof  VideoHolder){
             //  视频时长  单位 秒   需要自行转换成  HH：mm : ss  格式
             int video_duration = hotContent.getVideo_duration();
             VideoDetailInfo video_detail_info = hotContent.getVideo_detail_info();
-            Glide.with(mContext).load(video_detail_info.getDetail_video_large_image().getUrl()).into(((VideoHolder)holder).iv_1);
+            if (video_detail_info!=null){
+                Glide.with(mContext).load(video_detail_info.getDetail_video_large_image().getUrl()).into(((VideoHolder)holder).iv_1);
+            }
         }else if (holder instanceof  OneImageHolder){
             MiddleImage middle_image = hotContent.getMiddle_image();
-            Glide.with(mContext).load(middle_image.getUrl()).into(((OneImageHolder)holder).iv_1);
+            if (middle_image!=null){
+                Glide.with(mContext).load(middle_image.getUrl()).into(((OneImageHolder)holder).iv_1);
+            }
+            int gallary_image_count = hotContent.getGallary_image_count();
+            if (gallary_image_count >1){
+                ((OneImageHolder)holder).tv_image_count.setVisibility(View.VISIBLE);
+                ((OneImageHolder)holder).tv_image_count.setText(String.format("%s图",gallary_image_count));
+            }
+        }else if (holder instanceof  ManyImageHolder){
+            MiddleImage middle_image = hotContent.getMiddle_image();
+            ((ManyImageHolder)holder).tv_image_count.setText(String.format("%s图",middle_image));
+            ArrayList<ImageList> image_list = hotContent.getImage_list();
+            if (image_list !=null && image_list .size()>0 ){
+               // ((ManyImageHolder)holder).iv.setText(String.format("%s图",image_list.get(0).getUrl()));
+            }
         }
     }
 
@@ -130,9 +140,11 @@ public class HotDataAdapter  extends RecyclerView.Adapter<HotDataAdapter.Abstrac
      */
     static class  OneImageHolder extends AbstractHolder{
         ImageView iv_1;
+        TextView tv_image_count;
         public OneImageHolder(View itemView) {
             super(itemView);
             iv_1 = itemView.findViewById(R.id.iv_1);
+            tv_image_count = itemView.findViewById(R.id.tv_image_count);
         }
     }
     /**
@@ -151,10 +163,13 @@ public class HotDataAdapter  extends RecyclerView.Adapter<HotDataAdapter.Abstrac
     /**
      *  显示多张图片的 Holder
      */
-    static class  ManyImageHolder extends AbstractHolder{
-
+    private static class  ManyImageHolder extends AbstractHolder{
+        TextView tv_image_count;
+        ImageView iv_1;
         private ManyImageHolder(View itemView) {
             super(itemView);
+            tv_image_count = itemView.findViewById(R.id.tv_image_count);
+            iv_1 = itemView.findViewById(R.id.iv_1);
         }
     }
     static class  VideoHolder extends AbstractHolder{
