@@ -29,6 +29,8 @@ public class HotDataAdapter  extends RecyclerView.Adapter<HotDataAdapter.Abstrac
     public static final int TYPE_MANY_IMAGE =  3 ;
     //  视频 Item
     public static final int TYPE_VIDEO=  4 ;
+    // 为编写布局的Item类型
+    public static final int TYPE_UNKNOW=  5 ;
 
     private LayoutInflater mLayoutInflater ;
     private List<HotContent> mContents  = new ArrayList<>();
@@ -52,21 +54,35 @@ public class HotDataAdapter  extends RecyclerView.Adapter<HotDataAdapter.Abstrac
         boolean has_video = hotContent.isHas_video();
         if (has_video){
             return TYPE_VIDEO;
+        }else if (gallary_image_count==0){
+            return TYPE_TEXT;
+        }else if (gallary_image_count==1){
+            return TYPE_ONE_IMAGE;
+        }else if (gallary_image_count < 9 && gallary_image_count >=1 ){
+            return TYPE_THREE_IMAGE ;
+        }else if (gallary_image_count > 9){
+           return TYPE_MANY_IMAGE ;
+        }else {
+            return TYPE_UNKNOW;
         }
-        return gallary_image_count > 0 ? TYPE_THREE_IMAGE : TYPE_TEXT;
     }
 
     @Override
     public AbstractHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == TYPE_TEXT){
             return new TexTHolder(mLayoutInflater.inflate(R.layout.item_hot_data_text,null,false));
-        }else if (viewType == TYPE_VIDEO){
+        }else if (viewType == TYPE_ONE_IMAGE){
+            return new OneImageHolder(mLayoutInflater.inflate(R.layout.item_hot_data_one_image,null,false));
+        }else if (viewType == TYPE_THREE_IMAGE){
+            return new ThreeImageHolder(mLayoutInflater.inflate(R.layout.item_hot_data_three_image,null,false));
+        }else if (viewType == TYPE_MANY_IMAGE){
+            return new ManyImageHolder(mLayoutInflater.inflate(R.layout.item_hot_data_many_image,null,false));
+        } else if (viewType == TYPE_VIDEO){
             return new VideoHolder(mLayoutInflater.inflate(R.layout.item_hot_data_video,null,false));
         }else {
-            return new ThreeImageHolder(mLayoutInflater.inflate(R.layout.item_hot_data_three_image,null,false));
+            return new AbstractHolder(mLayoutInflater.inflate(R.layout.unknow,null,false));
         }
     }
-
     @Override
     public void onBindViewHolder(AbstractHolder holder, int position) {
         HotContent hotContent = mContents.get(position);
@@ -90,6 +106,9 @@ public class HotDataAdapter  extends RecyclerView.Adapter<HotDataAdapter.Abstrac
             int video_duration = hotContent.getVideo_duration();
             VideoDetailInfo video_detail_info = hotContent.getVideo_detail_info();
             Glide.with(mContext).load(video_detail_info.getDetail_video_large_image().getUrl()).into(((VideoHolder)holder).iv_1);
+        }else if (holder instanceof  OneImageHolder){
+            MiddleImage middle_image = hotContent.getMiddle_image();
+            Glide.with(mContext).load(middle_image.getUrl()).into(((OneImageHolder)holder).iv_1);
         }
     }
 
@@ -110,9 +129,10 @@ public class HotDataAdapter  extends RecyclerView.Adapter<HotDataAdapter.Abstrac
      *  显示一张图片的 Holder
      */
     static class  OneImageHolder extends AbstractHolder{
-
+        ImageView iv_1;
         public OneImageHolder(View itemView) {
             super(itemView);
+            iv_1 = itemView.findViewById(R.id.iv_1);
         }
     }
     /**
@@ -131,9 +151,9 @@ public class HotDataAdapter  extends RecyclerView.Adapter<HotDataAdapter.Abstrac
     /**
      *  显示多张图片的 Holder
      */
-    static class  ThreeManyHolder extends AbstractHolder{
+    static class  ManyImageHolder extends AbstractHolder{
 
-        private ThreeManyHolder(View itemView) {
+        private ManyImageHolder(View itemView) {
             super(itemView);
         }
     }
