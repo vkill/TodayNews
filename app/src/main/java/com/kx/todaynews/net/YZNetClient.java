@@ -40,7 +40,8 @@ public class YZNetClient {
     private String userAgent;
     private OkHttpClient okHttpClient;
 
-    private final String HOST = "http://lf.snssdk.com";
+   // private final String HOST = "http://lf.snssdk.com";
+    private final String HOST = "http://a3.pstatp.com";
 
 
     private YZNetClient(){
