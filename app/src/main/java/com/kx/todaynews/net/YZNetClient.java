@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import me.jessyan.retrofiturlmanager.RetrofitUrlManager;
 import okhttp3.Cache;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -40,9 +41,8 @@ public class YZNetClient {
     private String userAgent;
     private OkHttpClient okHttpClient;
 
-   // private final String HOST = "http://lf.snssdk.com";
-    private final String HOST = "http://a3.pstatp.com";
-
+    public static String HOST_1F = "http://lf.snssdk.com";
+    public static  String HOST_A3 = "http://a3.pstatp.com";
 
     private YZNetClient(){
       //  cookies = getCookie();
@@ -74,7 +74,7 @@ public class YZNetClient {
             okHttpClient = getOkHttpClient();
         }
         retrofit = new Retrofit.Builder()
-                .baseUrl(HOST)
+                .baseUrl(HOST_1F)
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create(new GsonBuilder().serializeNulls().setLenient().create()))
@@ -110,7 +110,9 @@ public class YZNetClient {
         newBuilder.writeTimeout(TIMEOUT_VALUE, TimeUnit.MILLISECONDS);
         newBuilder.retryOnConnectionFailure(true);
 
-        return newBuilder.build();
+       // return newBuilder.build();
+       return RetrofitUrlManager.getInstance().with(newBuilder)
+                .build();
     }
 
     public <T> T get(Class<T> apiClass){

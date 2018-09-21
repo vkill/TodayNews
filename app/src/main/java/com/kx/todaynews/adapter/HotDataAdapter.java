@@ -26,12 +26,14 @@ public class HotDataAdapter  extends RecyclerView.Adapter<HotDataAdapter.Abstrac
     public static final int TYPE_ONE_IMAGE =  1 ;
     //  显示三张图片，位于底边
     public static final int TYPE_THREE_IMAGE =  2 ;
-    //  多张图片                    count >=10
+    //  多张图片                    count >=6
     public static final int TYPE_MANY_IMAGE =  3 ;
     //  视频 Item
     public static final int TYPE_VIDEO=  4 ;
-    // 为编写布局的Item类型
-    public static final int TYPE_UNKNOW=  5 ;
+    //  广告
+    public static final int TYPE_ADVERTISEMENT=  5 ;
+    // 未编写布局的Item类型
+    public static final int TYPE_UNKNOW=  6 ;
 
     private LayoutInflater mLayoutInflater ;
     private List<HotContent> mContents  = new ArrayList<>();
@@ -56,6 +58,8 @@ public class HotDataAdapter  extends RecyclerView.Adapter<HotDataAdapter.Abstrac
         ArrayList<ImageList> image_list = hotContent.getImage_list();
         if (has_video){
             return TYPE_VIDEO;
+        }else if ("广告".equals(hotContent.getLabel())){
+            return TYPE_ADVERTISEMENT;
         }else if (gallary_image_count==0){
             return TYPE_TEXT;
         }else if (image_list!=null && image_list.size()>=3 ){
@@ -81,6 +85,8 @@ public class HotDataAdapter  extends RecyclerView.Adapter<HotDataAdapter.Abstrac
             return new ManyImageHolder(mLayoutInflater.inflate(R.layout.item_hot_data_many_image,null,false));
         } else if (viewType == TYPE_VIDEO){
             return new VideoHolder(mLayoutInflater.inflate(R.layout.item_hot_data_video,null,false));
+        }else if (viewType == TYPE_ADVERTISEMENT){
+            return new AbstractHolder(mLayoutInflater.inflate(R.layout.item_data_advertisement,null,false));
         }else {
             return new AbstractHolder(mLayoutInflater.inflate(R.layout.unknow,null,false));
         }
@@ -120,12 +126,22 @@ public class HotDataAdapter  extends RecyclerView.Adapter<HotDataAdapter.Abstrac
                 ((OneImageHolder)holder).tv_image_count.setText(String.format("%s图",gallary_image_count));
             }
         }else if (holder instanceof  ManyImageHolder){
-            MiddleImage middle_image = hotContent.getMiddle_image();
-            ((ManyImageHolder)holder).tv_image_count.setText(String.format("%s图",middle_image));
+            int gallary_image_count = hotContent.getGallary_image_count();
+            ((ManyImageHolder)holder).tv_image_count.setText(String.format("%s图",gallary_image_count));
             ArrayList<ImageList> image_list = hotContent.getImage_list();
             if (image_list !=null && image_list .size()>0 ){
-               // ((ManyImageHolder)holder).iv.setText(String.format("%s图",image_list.get(0).getUrl()));
+                Glide.with(mContext).load(image_list.get(0).getUrl()).into(((ManyImageHolder)holder).iv_1);
+            }else if ( hotContent.getMiddle_image() !=null){
+                Glide.with(mContext).load(hotContent.getMiddle_image().getUrl()).into(((ManyImageHolder)holder).iv_1);
             }
+        }
+        if (mListener!=null && getItemViewType(position) != TYPE_ADVERTISEMENT){
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mListener.onItemClick(hotContent.getGroup_id()+"");
+                }
+            });
         }
     }
 
@@ -200,5 +216,13 @@ public class HotDataAdapter  extends RecyclerView.Adapter<HotDataAdapter.Abstrac
             media_name = itemView.findViewById(R.id.media_name);
             comment_count = itemView.findViewById(R.id.comment_count);
         }
+    }
+    public interface onItemClickListener {
+        void onItemClick(String groupId);
+    }
+    onItemClickListener mListener;
+
+    public void setOnItemClickListener(onItemClickListener listener) {
+        mListener = listener;
     }
 }

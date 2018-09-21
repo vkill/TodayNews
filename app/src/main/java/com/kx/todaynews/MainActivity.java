@@ -10,6 +10,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.AnimationUtils;
@@ -24,10 +25,17 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.kx.todaynews.adapter.HotDataAdapter;
+import com.kx.todaynews.bean.HotBean;
+import com.kx.todaynews.bean.HotContent;
 import com.kx.todaynews.bean.TextDetailInfo;
 import com.kx.todaynews.net.YZNetClient;
 import com.kx.todaynews.utils.LogUtils;
 import com.kx.todaynews.utils.ToastUtils;
+import com.kx.todaynews.webview.ArticleDetailWebView;
+import com.kx.todaynews.webview.onWebViewImageClickListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -45,14 +53,11 @@ public class MainActivity extends AppCompatActivity {
     SwipeRefreshLayout refreshLayout;
     @BindView(R.id.tips)
     TextView tips;
-    @BindView(R.id.webView)
-    WebView webView;
     private long lastTime = Long.valueOf((System.currentTimeMillis() + "").substring(0, 9));
     private long locTime = System.currentTimeMillis();
     private Gson mGson = new Gson();
     private HotDataAdapter mHotDataAdapter;
 
-    // TODO: 2018/9/20  Android仿今日头条详情页实现   大问题    WebView  + ListView  WebView中的图片点击问题
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,28 +67,8 @@ public class MainActivity extends AppCompatActivity {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recycleView.setLayoutManager(linearLayoutManager);
-        // recycleView.setAdapter(mHotDataAdapter);
-        WebSettings webSettings = webView.getSettings();
-        webSettings.setJavaScriptEnabled(true);//支持js
-        webSettings.setBlockNetworkImage(false);//解决图片不显示
-       //    WebView加载网页不显示图片解决办法   开启混合模式
-        if (Build.VERSION.SDK_INT>Build.VERSION_CODES.LOLLIPOP){
-            webSettings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
-        }
-        webSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);//把html中的内容放大webview等宽的一列中
-       // webSettings.setBuiltInZoomControls(true); // 显示放大缩小
-       // webSettings.setSupportZoom(true); // 可以缩放
-        webView.setWebChromeClient(new WebChromeClient(){
-            @Override
-            public void onProgressChanged(WebView view, int newProgress) {
-                super.onProgressChanged(view, newProgress);
-                LogUtils.e("newProgress = "  + newProgress);
-            }
-        });
-        webView.setWebViewClient(new MyWebViewClient());
-        webView.addJavascriptInterface(new JavaScriptInterface(this), "imagelistner");
+         recycleView.setAdapter(mHotDataAdapter);
         getHotData();
-      //  webView.loadUrl("https://m2.people.cn/r/MV8wXzExNjQxNTM2XzIwNDQwOV8xNTM3NDMwMzA4?source=da");
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -91,6 +76,12 @@ public class MainActivity extends AppCompatActivity {
                 getHotData();
             }
         });
+        mHotDataAdapter.setOnItemClickListener(groupId -> {
+            Intent intent = new Intent(this,ArticleDetailActivity.class);
+            intent.putExtra(ArticleDetailActivity.GROUPID,groupId);
+            startActivity(intent);
+        });
+
     }
 
     //  @Query("min_behot_time") long min_behot_time ,
@@ -103,56 +94,37 @@ public class MainActivity extends AppCompatActivity {
     //  &resolution=720*1344&dpi=320&_rticket=1537233213   989&ts=1537233214&
     private void getHotData() {
 
-//        Disposable subscribe = YZNetClient.getInstance().get(Api.class).getHotData("news_hot",
-//                lastTime, Long.valueOf((System.currentTimeMillis() + "").substring(0, 9)),  System.currentTimeMillis(),Long.valueOf((System.currentTimeMillis() + "").substring(0, 9))
-//              //  , System.currentTimeMillis()
-//                , "720*1344", "320"
-        Disposable subscribe = YZNetClient.getInstance().get(Api.class).getArticleDetail("6603220675295445512")
+        Disposable subscribe = YZNetClient.getInstance().get(Api.class).getHotData("news_hot",
+                lastTime, Long.valueOf((System.currentTimeMillis() + "").substring(0, 9)),  System.currentTimeMillis(),Long.valueOf((System.currentTimeMillis() + "").substring(0, 9))
+              //  , System.currentTimeMillis()
+                , "720*1344", "320"      )                                                           // 6603220675295445512    6603478830382318094
+      //  Disposable subscribe = YZNetClient.getInstance().get(Api.class).getArticleDetail("6601721469728719368","6601721469728719368",Long.valueOf((System.currentTimeMillis() + "").substring(0, 9)), System.currentTimeMillis())
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<TextDetailInfo>() {
+                .subscribe(new Consumer<HotBean>() {
                     @Override
-                    public void accept(TextDetailInfo hotBean) throws Exception {
+                    public void accept(HotBean hotBean) throws Exception {
                         refreshLayout.setRefreshing(false);
-//                        HotBean.TipsBean tipsBean = hotBean.getTips();
-//                        tips.setText(TextUtils.isEmpty(tipsBean.getDisplay_info()) ? "暂无更新休息一会" : tipsBean.getDisplay_info());
-//                        List<HotBean.DataBean> data = hotBean.getData();
-//                        if (data!=null && data.size()>0){
-//                            List<HotContent> hotContents = new ArrayList<>();
-//                            HotContent hotContent ;
-//                            for (HotBean.DataBean dataBean: data) {
-//                                String content = dataBean.getContent();
-//                                hotContent = mGson.fromJson(content,HotContent.class);
-//                                hotContents.add(hotContent);
-//                            }
-//                            mHotDataAdapter.setHotDatas(hotContents);
+                        HotBean.TipsBean tipsBean = hotBean.getTips();
+                        tips.setText(TextUtils.isEmpty(tipsBean.getDisplay_info()) ? "暂无更新休息一会" : tipsBean.getDisplay_info());
+                        List<HotBean.DataBean> data = hotBean.getData();
+                        if (data!=null && data.size()>0){
+                            List<HotContent> hotContents = new ArrayList<>();
+                            HotContent hotContent ;
+                            for (HotBean.DataBean dataBean: data) {
+                                String content = dataBean.getContent();
+                                hotContent = mGson.fromJson(content,HotContent.class);
+                                hotContents.add(hotContent);
+                            }
+                            mHotDataAdapter.setHotDatas(hotContents);
+                        }
+                        showTipsAnimation();
+//                        String content = hotBean.getData().getContent();
+//                        int size = hotBean.getData().getImage_detail().size();
+//                        for (int i = size-1; i >= 0; i--) {
+//                            String xx = "&index=" +i;
+//                            content = content.replace(xx," ");
 //                        }
-//                        showTipsAnimation();
-                        String content = hotBean.getData().getContent();
-                        // TODO: 2018/9/21   对接口返回的数据进行处理
-                        String replace = content.replace("bytedance://large_image?url=", "")
-                               // .replace("class=\"image\"","class=\"img\"")
-                                .replace("%3A",":")
-                                .replace("href","src")
-                                .replace("<a class=\"image\"","<img class=\"image\"")
-                                .replace("</a>","</img>")
-                                .replace("%2F","/")
-                                ;
-                        for (int i = 0; i <= 12; i++) {
-                            replace = replace.replace("&index=" +i,"");
-                        }
-                        LogUtils.e(replace);
-                        webView.loadDataWithBaseURL(null, replace, "text/html", "utf-8", null);
-
-                        //  判断一个字符串里面的子串出现的次数
-                        String s2 = "blockquote";
-                        int count=0;
-                        for (int i= 0; replace.indexOf(s2) != -1; i++) {
-                            count++;
-                            replace = replace.substring(replace.indexOf(s2) + 2);
-                        }
-                        System.out.println(count);
-                        // TODO: 2018/9/21    解决字体过小的问题，自定义一个样式文件，通过WebView去加载
-
+//                        webView.loadHtmlStringData(content);
                     }
                 }, new Consumer<Throwable>() {
                     @Override
@@ -161,7 +133,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
     }
-
     private void showTipsAnimation() {
         tips.setVisibility(View.VISIBLE);
         int height = tips.getHeight();
@@ -186,83 +157,5 @@ public class MainActivity extends AppCompatActivity {
                 tips.setVisibility(View.INVISIBLE);
             }
         }, 1500);
-    }
-    private class MyWebViewClient extends WebViewClient {
-
-        @Override
-        public void onPageFinished(WebView view, String url) {
-            super.onPageFinished(view, url);
-            LogUtils.e(url);
-            imgReset();//重置webview中img标签的图片大小
-            // html加载完成之后，添加监听图片的点击js函数
-            addImageClickListner();
-        }
-
-        @Override
-        public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            view.loadUrl(url);
-            return true;
-        }
-        @Override
-        public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
-            // 跳过 访问 https 网站导致的证书错误
-            handler.proceed();
-        }
-    }
-
-    /**
-     * 对图片进行重置大小，宽度就是手机屏幕宽度，高度根据宽度比便自动缩放
-     **/
-    private void imgReset() {
-        webView.loadUrl("javascript:(function(){" +
-                "var objs = document.getElementsByTagName('img'); " +
-                "for(var i=0;i<objs.length;i++)  " +
-                "{"
-                + "var img = objs[i];   " +
-                "    img.style.width = '100%'; img.style.height = 'auto';  " +
-                "}" +
-                "})()");
-        webView.loadUrl("javascript:(function(){" +
-                "var objs = document.getElementsByTagName('p'); " +
-                "for(var i=0;i<objs.length;i++)  " +
-                "{"
-                + "var p = objs[i];   " +
-                "    p.style.font-size = 50px;" +
-                "}" +
-                "})()");
-
-    }
-    private void addImageClickListner() {
-        // 这段js函数的功能就是，遍历所有的img节点，并添加onclick函数，函数的功能是在图片点击的时候调用本地java接口并传递url过去
-        webView.loadUrl("javascript:(function(){" +
-                "var objs = document.getElementsByTagName(\"img\"); " +
-                "for(var i=0;i<objs.length;i++)  " +
-                "{"
-                + "    objs[i].onclick=function()  " +
-                "    {  "
-                + "        window.imagelistner.openImage(this.src);  " +
-                "    }  " +
-                "}" +
-                "})()");
-    }
-    public static class JavaScriptInterface {
-
-        private Context context;
-
-        public JavaScriptInterface(Context context) {
-            this.context = context;
-        }
-
-        //点击图片回调方法
-        //必须添加注解,否则无法响应
-        @JavascriptInterface
-        public void openImage(String img) {
-            LogUtils.e("响应点击事件!  图片地址 =     "  +  img);
-            ToastUtils.showToast("图片地址 =     "  +  img);
-            Intent intent = new Intent();
-           // intent.putExtra("image", img);
-           // intent.setClass(context, MainActivity.class);//BigImageActivity查看大图的类，自己定义就好
-            //context.startActivity(intent);
-        }
     }
 }

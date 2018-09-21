@@ -143,6 +143,16 @@ public class HotContent {
     private ArrayList<ImageList> image_list ;
     private VideoDetailInfo video_detail_info ;
     private MiddleImage middle_image ;
+    private String label;
+    private int label_style;
+
+    public String getLabel() {
+        return label;
+    }
+
+    public int getLabel_style() {
+        return label_style;
+    }
 
     public MiddleImage getMiddle_image() {
         return middle_image;
