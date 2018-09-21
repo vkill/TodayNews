@@ -110,10 +110,18 @@ public class MainActivity extends AppCompatActivity {
 //                            mHotDataAdapter.setHotDatas(hotContents);
 //                        }
 //                        showTipsAnimation();
-
+                        //  bytedance://large_image?url=
                         String content = hotBean.getData().getContent();
-                        LogUtils.e(content);
-                        webView.loadDataWithBaseURL(null, content, "text/html", "utf-8", null);
+                        String replace = content.replace("bytedance://large_image?url=", "")
+                                .replace("class=\"image\"","class=\"img\"")
+                                .replace("%3A",":")
+                                .replace("%2F","/")
+                                ;
+                        for (int i = 0; i <= 12; i++) {
+                            replace = replace.replace("&index=" +i,"");
+                        }
+                        LogUtils.e(replace);
+                        webView.loadDataWithBaseURL(null, replace, "text/html", "utf-8", null);
                     }
                 }, new Consumer<Throwable>() {
                     @Override
@@ -154,6 +162,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
+            LogUtils.e(url);
             imgReset();//重置webview中img标签的图片大小
             // html加载完成之后，添加监听图片的点击js函数
             addImageClickListner();
