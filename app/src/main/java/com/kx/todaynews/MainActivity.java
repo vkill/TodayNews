@@ -3,6 +3,8 @@ package com.kx.todaynews;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
+import android.net.http.SslError;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +14,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.webkit.JavascriptInterface;
+import android.webkit.SslErrorHandler;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -23,6 +27,7 @@ import com.kx.todaynews.adapter.HotDataAdapter;
 import com.kx.todaynews.bean.TextDetailInfo;
 import com.kx.todaynews.net.YZNetClient;
 import com.kx.todaynews.utils.LogUtils;
+import com.kx.todaynews.utils.ToastUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -60,13 +65,25 @@ public class MainActivity extends AppCompatActivity {
         // recycleView.setAdapter(mHotDataAdapter);
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);//支持js
+        webSettings.setBlockNetworkImage(false);//解决图片不显示
+       //    WebView加载网页不显示图片解决办法   开启混合模式
+        if (Build.VERSION.SDK_INT>Build.VERSION_CODES.LOLLIPOP){
+            webSettings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+        }
         webSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);//把html中的内容放大webview等宽的一列中
        // webSettings.setBuiltInZoomControls(true); // 显示放大缩小
        // webSettings.setSupportZoom(true); // 可以缩放
+        webView.setWebChromeClient(new WebChromeClient(){
+            @Override
+            public void onProgressChanged(WebView view, int newProgress) {
+                super.onProgressChanged(view, newProgress);
+                LogUtils.e("newProgress = "  + newProgress);
+            }
+        });
         webView.setWebViewClient(new MyWebViewClient());
         webView.addJavascriptInterface(new JavaScriptInterface(this), "imagelistner");
         getHotData();
-        //  tips.startAnimation(AnimationUtils.loadAnimation(MainActivity.this,R.anim.scale_aniation));
+      //  webView.loadUrl("https://m2.people.cn/r/MV8wXzExNjQxNTM2XzIwNDQwOV8xNTM3NDMwMzA4?source=da");
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -110,11 +127,14 @@ public class MainActivity extends AppCompatActivity {
 //                            mHotDataAdapter.setHotDatas(hotContents);
 //                        }
 //                        showTipsAnimation();
-                        //  bytedance://large_image?url=
                         String content = hotBean.getData().getContent();
+                        // TODO: 2018/9/21   对接口返回的数据进行处理
                         String replace = content.replace("bytedance://large_image?url=", "")
-                                .replace("class=\"image\"","class=\"img\"")
+                               // .replace("class=\"image\"","class=\"img\"")
                                 .replace("%3A",":")
+                                .replace("href","src")
+                                .replace("<a class=\"image\"","<img class=\"image\"")
+                                .replace("</a>","</img>")
                                 .replace("%2F","/")
                                 ;
                         for (int i = 0; i <= 12; i++) {
@@ -122,11 +142,21 @@ public class MainActivity extends AppCompatActivity {
                         }
                         LogUtils.e(replace);
                         webView.loadDataWithBaseURL(null, replace, "text/html", "utf-8", null);
+
+                        //  判断一个字符串里面的子串出现的次数
+                        String s2 = "blockquote";
+                        int count=0;
+                        for (int i= 0; replace.indexOf(s2) != -1; i++) {
+                            count++;
+                            replace = replace.substring(replace.indexOf(s2) + 2);
+                        }
+                        System.out.println(count);
+                        // TODO: 2018/9/21    解决字体过小的问题，自定义一个样式文件，通过WebView去加载
+
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
-                        LogUtils.e(throwable.toString());
                         refreshLayout.setRefreshing(false);
                     }
                 });
@@ -173,6 +203,11 @@ public class MainActivity extends AppCompatActivity {
             view.loadUrl(url);
             return true;
         }
+        @Override
+        public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+            // 跳过 访问 https 网站导致的证书错误
+            handler.proceed();
+        }
     }
 
     /**
@@ -184,9 +219,18 @@ public class MainActivity extends AppCompatActivity {
                 "for(var i=0;i<objs.length;i++)  " +
                 "{"
                 + "var img = objs[i];   " +
-                "    img.style.maxWidth = '100%'; img.style.height = 'auto';  " +
+                "    img.style.width = '100%'; img.style.height = 'auto';  " +
                 "}" +
                 "})()");
+        webView.loadUrl("javascript:(function(){" +
+                "var objs = document.getElementsByTagName('p'); " +
+                "for(var i=0;i<objs.length;i++)  " +
+                "{"
+                + "var p = objs[i];   " +
+                "    p.style.font-size = 50px;" +
+                "}" +
+                "})()");
+
     }
     private void addImageClickListner() {
         // 这段js函数的功能就是，遍历所有的img节点，并添加onclick函数，函数的功能是在图片点击的时候调用本地java接口并传递url过去
@@ -213,8 +257,8 @@ public class MainActivity extends AppCompatActivity {
         //必须添加注解,否则无法响应
         @JavascriptInterface
         public void openImage(String img) {
-            Log.i("TAG", "响应点击事件!");
             LogUtils.e("响应点击事件!  图片地址 =     "  +  img);
+            ToastUtils.showToast("图片地址 =     "  +  img);
             Intent intent = new Intent();
            // intent.putExtra("image", img);
            // intent.setClass(context, MainActivity.class);//BigImageActivity查看大图的类，自己定义就好
