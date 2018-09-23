@@ -1,9 +1,9 @@
-package com.kx.todaynews.bean;
+package com.kx.todaynews.bean.article;
 
 import java.util.List;
 
 /**
- * Created by admin on 2018/9/20.
+ * 新闻详情的Bean
  */
 public class TextDetailInfo {
 

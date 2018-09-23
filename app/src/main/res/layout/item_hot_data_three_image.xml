@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:paddingLeft="15dp"
-    android:paddingRight="15dp"
-    android:paddingTop="15dp"
+    android:paddingTop="13dp"
+    android:paddingBottom="13dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -72,7 +71,7 @@
         android:id="@+id/comment_count"
         android:textColor="@color/gray_black"
         android:textSize="14sp"
-        android:text="1评论"
+        android:text="0评论"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
@@ -81,9 +80,10 @@
         app:layout_constraintLeft_toRightOf="@id/media_name"
         />
     <TextView
+        android:id="@+id/tv_time"
         android:textColor="@color/gray_black"
         android:textSize="14sp"
-        android:text="52分钟前"
+        android:text="0分钟前"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
@@ -93,7 +93,7 @@
         />
 
     <View
-        android:layout_marginTop="13dp"
+        android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/media_name"
         android:layout_width="match_parent"
         android:layout_height="1px"

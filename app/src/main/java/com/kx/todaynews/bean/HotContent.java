@@ -81,7 +81,7 @@ public class HotContent {
     private int article_type;
     private String article_url;
     private int ban_comment;
-    private int behot_time;
+    private long behot_time;
     private int bury_count;
     private int cell_flag;
     private int cell_layout_style;
@@ -110,7 +110,7 @@ public class HotContent {
     private String media_name;
     private int need_client_impr_recycle;
     private int preload_web;
-    private int publish_time;
+    private long publish_time;
     private int read_count;
     private int repin_count;
     private String rid;
@@ -138,13 +138,48 @@ public class HotContent {
     private List<FilterWordsBean> filter_words;
     private int video_duration;
     private String video_id;
-    private int video_proportion_article;
+    private double video_proportion_article;
     private ArrayList<LargeImageList> large_image_list ;
     private ArrayList<ImageList> image_list ;
     private VideoDetailInfo video_detail_info ;
     private MiddleImage middle_image ;
     private String label;
     private int label_style;
+    private int participated;
+    private String participated_suffix;
+    private String status_display;
+    private int status;
+    private int start_time;
+    private int background_type;
+    private BackGround background ;
+
+    public int getParticipated() {
+        return participated;
+    }
+
+    public String getParticipated_suffix() {
+        return participated_suffix;
+    }
+
+    public String getStatus_display() {
+        return status_display;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public int getStart_time() {
+        return start_time;
+    }
+
+    public int getBackground_type() {
+        return background_type;
+    }
+
+    public BackGround getBackground() {
+        return background;
+    }
 
     public String getLabel() {
         return label;
@@ -198,11 +233,11 @@ public class HotContent {
         this.video_id = video_id;
     }
 
-    public int getVideo_proportion_article() {
+    public double getVideo_proportion_article() {
         return video_proportion_article;
     }
 
-    public void setVideo_proportion_article(int video_proportion_article) {
+    public void setVideo_proportion_article(double video_proportion_article) {
         this.video_proportion_article = video_proportion_article;
     }
 
@@ -270,11 +305,11 @@ public class HotContent {
         this.ban_comment = ban_comment;
     }
 
-    public int getBehot_time() {
+    public long getBehot_time() {
         return behot_time;
     }
 
-    public void setBehot_time(int behot_time) {
+    public void setBehot_time(long behot_time) {
         this.behot_time = behot_time;
     }
 
@@ -502,11 +537,11 @@ public class HotContent {
         this.preload_web = preload_web;
     }
 
-    public int getPublish_time() {
+    public long getPublish_time() {
         return publish_time;
     }
 
-    public void setPublish_time(int publish_time) {
+    public void setPublish_time(long publish_time) {
         this.publish_time = publish_time;
     }
 

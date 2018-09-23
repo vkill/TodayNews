@@ -3,6 +3,10 @@ package com.kx.todaynews.net;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.franmontiel.persistentcookiejar.ClearableCookieJar;
+import com.franmontiel.persistentcookiejar.PersistentCookieJar;
+import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
+import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
 import com.google.gson.GsonBuilder;
 import com.kx.todaynews.YZBaseConstants;
 
@@ -40,7 +44,7 @@ public class YZNetClient {
   //  private String cookies;
     private String userAgent;
     private OkHttpClient okHttpClient;
-
+    private ClearableCookieJar cookieJar;
     public static String HOST_1F = "http://lf.snssdk.com";
     public static  String HOST_A3 = "http://a3.pstatp.com";
 
@@ -70,6 +74,9 @@ public class YZNetClient {
         if (context==null){
             throw new IllegalArgumentException("YZNetClient was release");
         }
+        if (cookieJar == null){
+            cookieJar = new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(context));
+        }
         if (okHttpClient==null){
             okHttpClient = getOkHttpClient();
         }
@@ -94,7 +101,10 @@ public class YZNetClient {
                 builder.addHeader("User-Agent", userAgent);
             }
            // if (!TextUtils.isEmpty(cookies)) {
-               // builder.addHeader("Cookie", cookies);
+                builder.addHeader("Cookie", "qh[360]=1");
+                builder.addHeader("Cookie", "install_id=44267707161");
+                builder.addHeader("Cookie", "ttreq=1$3f444d47ef856e20e0f985771f5f89ccdde0d70c");
+                builder.addHeader("Cookie", "alert_coverage=32");
            // }
           //  builder.addHeader("Connection", "close");
             return chain.proceed(builder.build());
@@ -112,6 +122,7 @@ public class YZNetClient {
 
        // return newBuilder.build();
        return RetrofitUrlManager.getInstance().with(newBuilder)
+               .cookieJar(cookieJar)
                 .build();
     }
 

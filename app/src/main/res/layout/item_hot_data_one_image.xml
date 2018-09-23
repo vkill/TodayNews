@@ -1,26 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:paddingLeft="15dp"
-    android:paddingRight="15dp"
-    android:paddingTop="15dp"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:paddingTop="13dp"
+    android:paddingBottom="13dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/title"
-        android:textColor="@color/black"
-        android:textSize="16sp"
-        android:text="金针菇的“神奇力量”：这家公司轻松赚了1个亿"
-        android:layout_width="0dp"
-        app:layout_constraintRight_toLeftOf="@id/iv_1"
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/ll_content"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_height="wrap_content"
+        app:layout_constraintRight_toLeftOf="@id/iv_1"
         app:layout_constraintHorizontal_weight="2"
-        />
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+        <TextView
+            android:id="@+id/title"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:text="金针菇的“神奇力量”："
+            android:layout_width="0dp"
+            app:layout_constraintBottom_toTopOf="@id/media_name"
+            android:layout_height="wrap_content"
+            />
+
+        <TextView
+            android:id="@+id/media_name"
+            android:textColor="@color/gray_black"
+            android:textSize="14sp"
+            android:text="每日经济新闻"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            app:layout_constraintTop_toBottomOf="@id/title"
+
+            />
+        <TextView
+            android:id="@+id/comment_count"
+            android:textColor="@color/gray_black"
+            android:textSize="14sp"
+            android:text="1评论"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="5dp"
+            app:layout_constraintTop_toBottomOf="@id/title"
+            app:layout_constraintLeft_toRightOf="@id/media_name"
+            />
+        <TextView
+            android:id="@+id/tv_time"
+            android:textColor="@color/gray_black"
+            android:textSize="14sp"
+            android:text="52分钟前"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="5dp"
+            app:layout_constraintTop_toBottomOf="@id/title"
+            app:layout_constraintLeft_toRightOf="@id/comment_count"
+            />
+</android.support.constraint.ConstraintLayout>
+
 
     <ImageView
-        android:layout_marginTop="5dp"
+        android:layout_marginStart="5dp"
         android:scaleType="fitXY"
         android:id="@+id/iv_1"
         android:src="@drawable/a"
@@ -28,42 +73,9 @@
         android:layout_height="0dp"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintDimensionRatio="H,17:10"
-        app:layout_constraintLeft_toRightOf="@id/title"
+        app:layout_constraintLeft_toRightOf="@id/ll_content"
         app:layout_constraintRight_toRightOf="parent"
-        />
-
-    <TextView
-        android:id="@+id/media_name"
-        android:textColor="@color/gray_black"
-        android:textSize="14sp"
-        android:text="每日经济新闻"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        app:layout_constraintTop_toBottomOf="@id/title"
-        />
-    <TextView
-        android:id="@+id/comment_count"
-        android:textColor="@color/gray_black"
-        android:textSize="14sp"
-        android:text="1评论"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="5dp"
-        app:layout_constraintTop_toBottomOf="@id/title"
-        app:layout_constraintLeft_toRightOf="@id/media_name"
-        />
-    <TextView
-        android:textColor="@color/gray_black"
-        android:textSize="14sp"
-        android:text="52分钟前"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="5dp"
-        app:layout_constraintTop_toBottomOf="@id/title"
-        app:layout_constraintLeft_toRightOf="@id/comment_count"
+        app:layout_constraintTop_toTopOf="parent"
         />
 
     <TextView
@@ -85,10 +97,12 @@
         android:layout_height="wrap_content" />
 
     <View
-        android:layout_marginTop="13dp"
-        app:layout_constraintTop_toBottomOf="@id/media_name"
-        android:layout_width="match_parent"
+        android:visibility="gone"
+        android:layout_marginTop="15dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_width="0dp"
         android:layout_height="1px"
-        android:background="@color/gray_line"
-        />
+        android:background="@color/gray_line" />
 </android.support.constraint.ConstraintLayout>

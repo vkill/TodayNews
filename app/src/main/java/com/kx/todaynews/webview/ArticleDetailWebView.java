@@ -3,19 +3,28 @@ package com.kx.todaynews.webview;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.net.http.SslError;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.JavascriptInterface;
 import android.webkit.SslErrorHandler;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.AbsoluteLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.kx.todaynews.R;
 import com.kx.todaynews.utils.LogUtils;
+import com.kx.todaynews.utils.ToastUtils;
 
 /**
  * Created by admin on 2018/9/21.
@@ -54,7 +63,7 @@ public class ArticleDetailWebView extends WebView {
         webSettings.setJavaScriptEnabled(true);//支持js
         //    WebView加载网页不显示图片解决办法   开启混合模式
         if (Build.VERSION.SDK_INT>Build.VERSION_CODES.LOLLIPOP){
-            webSettings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+           // webSettings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
         }
         webSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);//把html中的内容放大webview等宽的一列中
         setWebChromeClient(new WebChromeClient(){
@@ -94,8 +103,15 @@ public class ArticleDetailWebView extends WebView {
                 .replace("<a class=\"image\"","<img class=\"image\"")
                 .replace("<a class=\"img\"","<img class=\"img\"")
                 .replace("</a>","</img>")
-                .replace("%2F","/")
-        ;
+                .replace("%2F","/");
+
+        // java读取html文件，截取<header>标签和<header>中的内容
+        String start = "<header>";
+        String end = "</header>";
+        int startIndex = htmlData.indexOf(start) + start.length();
+        int endIndex = htmlData.indexOf(end);
+        // 截取Html数据中的title数据
+       // htmlData = htmlData.substring(endIndex,htmlData.length());
         loadDataWithBaseURL(null, CSS_STYLE+htmlData, "text/html", "utf-8", null);
     }
     private class MyWebViewClient extends WebViewClient {
@@ -103,7 +119,6 @@ public class ArticleDetailWebView extends WebView {
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
-            LogUtils.e(url);
             imgReset();//重置webview中img标签的图片大小
             // html加载完成之后，添加监听图片的点击js函数
             addImageClickListner();
@@ -121,7 +136,13 @@ public class ArticleDetailWebView extends WebView {
         }
         @Override
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) { // Handle the
+            ToastUtils.showToast("加载失败," + description);
             goBack() ;
+        }
+
+        @Override
+        public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+            super.onReceivedError(view, request, error);
         }
     }
     /**
@@ -157,7 +178,17 @@ public class ArticleDetailWebView extends WebView {
         lp.y = t;
         progress_bar_.setLayoutParams(lp);
         super.onScrollChanged(l, t, oldl, oldt);
+        scrollTo(0,t);
     }
+
+    /**x
+     * 禁止WebView左右滑动
+     */
+    @Override
+    public void scrollTo(int x, int y) {
+        super.scrollTo(x, y);
+    }
+
     /**
      * 对图片进行重置大小，宽度就是手机屏幕宽度，高度根据宽度比便自动缩放
      **/
@@ -170,6 +201,7 @@ public class ArticleDetailWebView extends WebView {
                 "    img.style.width = '100%'; img.style.height = 'auto';  " +
                 "}" +
                 "})()");
+
         loadUrl("javascript:(function(){" +
                 "var objs = document.getElementsByTagName('p'); " +
                 "for(var i=0;i<objs.length;i++)  " +
@@ -212,10 +244,27 @@ public class ArticleDetailWebView extends WebView {
             }
         }
     }
+    private  boolean xx = false;
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+        if (!xx){
+            xx = true;
+            if (mOnPageFinishedListener!=null){
+                mOnPageFinishedListener.onPageLoadedFinish();
+            }
+        }
+    }
+
     public onWebViewImageClickListener mListener;
 
     public void setOnWebViewImageClickListener(onWebViewImageClickListener listener) {
         mListener = listener;
     }
 
+    private onPageFinishedListener mOnPageFinishedListener;
+
+    public void setOnPageFinishedListener(onPageFinishedListener onPageFinishedListener) {
+        mOnPageFinishedListener = onPageFinishedListener;
+    }
 }

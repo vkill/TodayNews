@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="15dp"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/user_avatar"
+        android:src="@drawable/beq"
+        android:layout_width="40dp"
+        android:layout_height="40dp" />
+
+    <TextView
+        android:textSize="14sp"
+        android:layout_marginTop="2dp"
+        android:layout_marginStart="5dp"
+        android:textColor="#992C9AFC"
+        android:text="今日头条"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/user_avatar"
+        android:id="@+id/user_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:textSize="12sp"
+        android:layout_marginStart="5dp"
+        android:textColor="#66000000"
+        android:text="xxxxxxxxxxxxxxx"
+        app:layout_constraintBottom_toBottomOf="@id/user_avatar"
+        app:layout_constraintLeft_toRightOf="@id/user_avatar"
+        android:id="@+id/user_verified_reason"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/digg_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:text="0"
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/user_name" />
+    <ImageView
+        android:src="@drawable/article_comments_like"
+        app:layout_constraintTop_toTopOf="@id/user_name"
+        app:layout_constraintRight_toLeftOf="@id/digg_count"
+        android:layout_width="24dp"
+        android:layout_height="24dp" />
+
+    <TextView
+        android:id="@+id/reply_content"
+        android:layout_width="0dp"
+        android:layout_marginStart="5dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="6"
+        android:text="我是内容我是内容我是内容我是内容我是内容我是内容我是内容"
+        android:textColor="@color/black"
+        android:textSize="15sp"
+        app:layout_constraintLeft_toRightOf="@id/user_avatar"
+        app:layout_constraintRight_toRightOf="@id/digg_count"
+        app:layout_constraintTop_toBottomOf="@id/user_verified_reason" />
+    <TextView
+        android:textSize="12sp"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="5dp"
+        android:text="0小时前 ·"
+        app:layout_constraintTop_toBottomOf="@id/reply_content"
+        app:layout_constraintLeft_toRightOf="@id/user_avatar"
+        android:id="@+id/create_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:textSize="12sp"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="5dp"
+        android:textColor="@color/black"
+        android:text="0回复"
+        app:layout_constraintTop_toBottomOf="@id/reply_content"
+        app:layout_constraintLeft_toRightOf="@id/create_time"
+        android:id="@+id/reply_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</android.support.constraint.ConstraintLayout>

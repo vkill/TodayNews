@@ -2,6 +2,7 @@ package com.kx.todaynews.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,11 +11,13 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.kx.todaynews.R;
+import com.kx.todaynews.bean.BackGround;
 import com.kx.todaynews.bean.HotContent;
 import com.kx.todaynews.bean.ImageList;
 import com.kx.todaynews.bean.LargeImageList;
 import com.kx.todaynews.bean.MiddleImage;
 import com.kx.todaynews.bean.VideoDetailInfo;
+import com.kx.todaynews.utils.TYDateUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,8 +35,10 @@ public class HotDataAdapter  extends RecyclerView.Adapter<HotDataAdapter.Abstrac
     public static final int TYPE_VIDEO=  4 ;
     //  广告
     public static final int TYPE_ADVERTISEMENT=  5 ;
+    //  直播
+    public static final int TYPE_LIVE=  6 ;
     // 未编写布局的Item类型
-    public static final int TYPE_UNKNOW=  6 ;
+    public static final int TYPE_UNKNOW=  7 ;
 
     private LayoutInflater mLayoutInflater ;
     private List<HotContent> mContents  = new ArrayList<>();
@@ -49,6 +54,9 @@ public class HotDataAdapter  extends RecyclerView.Adapter<HotDataAdapter.Abstrac
             notifyDataSetChanged();
         }
     }
+    public int getListCount(){
+        return mContents.size();
+    }
 
     @Override
     public int getItemViewType(int position) {
@@ -58,7 +66,9 @@ public class HotDataAdapter  extends RecyclerView.Adapter<HotDataAdapter.Abstrac
         ArrayList<ImageList> image_list = hotContent.getImage_list();
         if (has_video){
             return TYPE_VIDEO;
-        }else if ("广告".equals(hotContent.getLabel())){
+        }else if (hotContent.getBackground()!=null){
+            return TYPE_LIVE;
+        } else if ("广告".equals(hotContent.getLabel())){
             return TYPE_ADVERTISEMENT;
         }else if (gallary_image_count==0){
             return TYPE_TEXT;
@@ -76,27 +86,30 @@ public class HotDataAdapter  extends RecyclerView.Adapter<HotDataAdapter.Abstrac
     @Override
     public AbstractHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == TYPE_TEXT){
-            return new TexTHolder(mLayoutInflater.inflate(R.layout.item_hot_data_text,null,false));
+            return new TexTHolder(mLayoutInflater.inflate(R.layout.item_hot_data_text,parent,false));
         }else if (viewType == TYPE_ONE_IMAGE){
-            return new OneImageHolder(mLayoutInflater.inflate(R.layout.item_hot_data_one_image,null,false));
+            return new OneImageHolder(mLayoutInflater.inflate(R.layout.item_hot_data_one_image,parent,false));
         }else if (viewType == TYPE_THREE_IMAGE){
-            return new ThreeImageHolder(mLayoutInflater.inflate(R.layout.item_hot_data_three_image,null,false));
+            return new ThreeImageHolder(mLayoutInflater.inflate(R.layout.item_hot_data_three_image,parent,false));
         }else if (viewType == TYPE_MANY_IMAGE){
-            return new ManyImageHolder(mLayoutInflater.inflate(R.layout.item_hot_data_many_image,null,false));
+            return new ManyImageHolder(mLayoutInflater.inflate(R.layout.item_hot_data_many_image,parent,false));
         } else if (viewType == TYPE_VIDEO){
-            return new VideoHolder(mLayoutInflater.inflate(R.layout.item_hot_data_video,null,false));
+            return new VideoHolder(mLayoutInflater.inflate(R.layout.item_hot_data_video,parent,false));
         }else if (viewType == TYPE_ADVERTISEMENT){
-            return new AbstractHolder(mLayoutInflater.inflate(R.layout.item_data_advertisement,null,false));
+            return new AbstractHolder(mLayoutInflater.inflate(R.layout.item_data_advertisement,parent,false));
+        }else if (viewType == TYPE_LIVE){
+            return new AbstractHolder(mLayoutInflater.inflate(R.layout.item_hot_data_live_broadcast,parent,false));
         }else {
-            return new AbstractHolder(mLayoutInflater.inflate(R.layout.unknow,null,false));
+            return new AbstractHolder(mLayoutInflater.inflate(R.layout.unknow,parent,false));
         }
     }
     @Override
     public void onBindViewHolder(AbstractHolder holder, int position) {
         HotContent hotContent = mContents.get(position);
         holder.title.setText(hotContent.getTitle());
-        holder.media_name.setText(hotContent.getMedia_name());
+        holder.media_name.setText(hotContent.getSource());
         holder.comment_count.setText(String.format("%s评论",hotContent.getComment_count()));
+        holder.tv_time.setText(String.format("%s", TYDateUtils.getFriendlytimeByTime(hotContent.getPublish_time())));
         if (holder instanceof  ThreeImageHolder){
             ArrayList<ImageList> image_list = hotContent.getImage_list();
                 Glide.with(mContext).load(image_list.get(0).getUrl()).into(((ThreeImageHolder)holder).iv_1);
@@ -105,7 +118,7 @@ public class HotDataAdapter  extends RecyclerView.Adapter<HotDataAdapter.Abstrac
         }else if (holder instanceof  VideoHolder){
             //  视频时长  单位 秒   需要自行转换成  HH：mm : ss  格式
             int video_duration = hotContent.getVideo_duration();
-            ((VideoHolder)holder).tv_video_duration.setText(String.format("%s秒",video_duration));
+            ((VideoHolder)holder).tv_video_duration.setText(String.format("%s",TYDateUtils.getTimeStrBySecond(video_duration)));
             VideoDetailInfo video_detail_info = hotContent.getVideo_detail_info();
             if (video_detail_info!=null){
                 Glide.with(mContext).load(video_detail_info.getDetail_video_large_image().getUrl()).into(((VideoHolder)holder).iv_1);
@@ -134,6 +147,18 @@ public class HotDataAdapter  extends RecyclerView.Adapter<HotDataAdapter.Abstrac
             }else if ( hotContent.getMiddle_image() !=null){
                 Glide.with(mContext).load(hotContent.getMiddle_image().getUrl()).into(((ManyImageHolder)holder).iv_1);
             }
+        }else if (holder instanceof LiveHolder){
+            BackGround background = hotContent.getBackground();
+            if (background!=null){
+                BackGround.VideoBean video = background.getVideo();
+                if (video!=null){
+                    Glide.with(mContext).load(video.getCovers()).into(((LiveHolder)holder).iv_1);
+                }
+            }
+            ((LiveHolder)holder).status_display.setText(hotContent.getStatus_display());
+            ((LiveHolder)holder).participated_count.setText(String.format("%s%S",hotContent.getParticipated(),hotContent.getParticipated_suffix()));
+
+
         }
         if (mListener!=null && getItemViewType(position) != TYPE_ADVERTISEMENT){
             holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -204,17 +229,29 @@ public class HotDataAdapter  extends RecyclerView.Adapter<HotDataAdapter.Abstrac
             tv_video_duration = itemView.findViewById(R.id.tv_video_duration);
         }
     }
+    static class  LiveHolder extends AbstractHolder{
+        ImageView iv_1;
+        TextView status_display,participated_count,attention;
+        private LiveHolder(View itemView) {
+            super(itemView);
+            iv_1 = itemView.findViewById(R.id.iv_1);
+            status_display = itemView.findViewById(R.id.status_display);
+            participated_count = itemView.findViewById(R.id.participated_count);
+            attention = itemView.findViewById(R.id.attention);
+        }
+    }
 
      static  class AbstractHolder extends RecyclerView.ViewHolder{
         /**
          * 每个item布局公有的控件
          */
-        TextView title ,media_name,comment_count;
+        TextView title ,media_name,comment_count,tv_time;
         private AbstractHolder(View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.title);
             media_name = itemView.findViewById(R.id.media_name);
             comment_count = itemView.findViewById(R.id.comment_count);
+            tv_time = itemView.findViewById(R.id.tv_time);
         }
     }
     public interface onItemClickListener {

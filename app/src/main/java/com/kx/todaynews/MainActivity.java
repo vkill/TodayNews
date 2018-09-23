@@ -1,25 +1,16 @@
 package com.kx.todaynews;
 
 import android.animation.ValueAnimator;
-import android.content.Context;
 import android.content.Intent;
-import android.net.http.SslError;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.AnimationUtils;
-import android.webkit.JavascriptInterface;
-import android.webkit.SslErrorHandler;
-import android.webkit.WebChromeClient;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -27,14 +18,12 @@ import com.google.gson.Gson;
 import com.kx.todaynews.adapter.HotDataAdapter;
 import com.kx.todaynews.bean.HotBean;
 import com.kx.todaynews.bean.HotContent;
-import com.kx.todaynews.bean.TextDetailInfo;
 import com.kx.todaynews.net.YZNetClient;
 import com.kx.todaynews.utils.LogUtils;
-import com.kx.todaynews.utils.ToastUtils;
-import com.kx.todaynews.webview.ArticleDetailWebView;
-import com.kx.todaynews.webview.onWebViewImageClickListener;
+import com.kx.todaynews.utils.TYDateUtils;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -53,8 +42,9 @@ public class MainActivity extends AppCompatActivity {
     SwipeRefreshLayout refreshLayout;
     @BindView(R.id.tips)
     TextView tips;
-    private long lastTime = Long.valueOf((System.currentTimeMillis() + "").substring(0, 9));
+    private long lastTime = Long.valueOf((System.currentTimeMillis() + "").substring(0, 10));
     private long locTime = System.currentTimeMillis();
+    private int session_refresh_idx = 1;
     private Gson mGson = new Gson();
     private HotDataAdapter mHotDataAdapter;
 
@@ -66,13 +56,13 @@ public class MainActivity extends AppCompatActivity {
         mHotDataAdapter = new HotDataAdapter(this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        recycleView.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
         recycleView.setLayoutManager(linearLayoutManager);
          recycleView.setAdapter(mHotDataAdapter);
         getHotData();
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                lastTime = Long.valueOf((System.currentTimeMillis() + "").substring(0, 9));
                 getHotData();
             }
         });
@@ -81,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra(ArticleDetailActivity.GROUPID,groupId);
             startActivity(intent);
         });
-
     }
 
     //  @Query("min_behot_time") long min_behot_time ,
@@ -94,15 +83,16 @@ public class MainActivity extends AppCompatActivity {
     //  &resolution=720*1344&dpi=320&_rticket=1537233213   989&ts=1537233214&
     private void getHotData() {
 
-        Disposable subscribe = YZNetClient.getInstance().get(Api.class).getHotData("news_hot",
-                lastTime, Long.valueOf((System.currentTimeMillis() + "").substring(0, 9)),  System.currentTimeMillis(),Long.valueOf((System.currentTimeMillis() + "").substring(0, 9))
+        Disposable subscribe = YZNetClient.getInstance().get(Api.class).getHotData("news_hot",session_refresh_idx,mHotDataAdapter.getListCount()+17,
+                lastTime, Long.valueOf((System.currentTimeMillis() + "").substring(0, 10)),  System.currentTimeMillis(),Long.valueOf((System.currentTimeMillis() + "").substring(0, 10))
               //  , System.currentTimeMillis()
                 , "720*1344", "320"      )                                                           // 6603220675295445512    6603478830382318094
-      //  Disposable subscribe = YZNetClient.getInstance().get(Api.class).getArticleDetail("6601721469728719368","6601721469728719368",Long.valueOf((System.currentTimeMillis() + "").substring(0, 9)), System.currentTimeMillis())
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<HotBean>() {
                     @Override
                     public void accept(HotBean hotBean) throws Exception {
+                        lastTime = Long.valueOf((System.currentTimeMillis() + "").substring(0, 10));
+                        session_refresh_idx ++;
                         refreshLayout.setRefreshing(false);
                         HotBean.TipsBean tipsBean = hotBean.getTips();
                         tips.setText(TextUtils.isEmpty(tipsBean.getDisplay_info()) ? "暂无更新休息一会" : tipsBean.getDisplay_info());
