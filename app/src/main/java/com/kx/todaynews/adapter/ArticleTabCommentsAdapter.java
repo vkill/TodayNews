@@ -1,6 +1,18 @@
 package com.kx.todaynews.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextPaint;
+import android.text.style.DynamicDrawableSpan;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.ImageSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +25,8 @@ import com.kx.todaynews.R;
 import com.kx.todaynews.bean.article.ArticleTabCommentsBean;
 import com.kx.todaynews.utils.GlideCircleTransform;
 import com.kx.todaynews.utils.TYDateUtils;
+import com.kx.todaynews.widget.CenterAlignImageSpan;
+import com.kx.todaynews.widget.VerticalImageSpan;
 
 import java.util.ArrayList;
 
@@ -27,9 +41,12 @@ public class ArticleTabCommentsAdapter extends BaseAdapter {
 
     private LayoutInflater mLayoutInflater;
     private Context mContext ;
+    private ArrayList<Integer> mIntegers;
+    Typeface mTypeFace ;
     public ArticleTabCommentsAdapter(Context context) {
         mLayoutInflater = LayoutInflater.from(context);
         mContext = context ;
+        mTypeFace =Typeface.createFromAsset(mContext.getAssets(),"fonts/roundfont.ttf");
     }
 
     public void setTabCommentsData(ArrayList<ArticleTabCommentsBean.DataBean> comments) {
@@ -86,7 +103,37 @@ public class ArticleTabCommentsAdapter extends BaseAdapter {
         holder.userName.setText(String.format("%s",dataBean.getUser_name()));
         holder.userVerifiedReason.setText(String.format("%s",dataBean.getVerified_reason()));
         holder.diggCount.setText(String.format("%s",dataBean.getDigg_count()));
-        holder.replyContent.setText(String.format("%s",dataBean.getText()));
+        String text = dataBean.getText();
+        SpannableString spannableString = new SpannableString(text);
+        int startIndex= -1;
+        int endIndex= -1;
+        if (mIntegers ==null){
+            mIntegers = new ArrayList<>();
+        }else {
+            mIntegers.clear();
+        }
+        int textSize = text.length();
+        Drawable drawable = mContext.getResources().getDrawable(R.drawable.jingjing);
+        drawable.setBounds(5,0, getTextHeight("测试高度",holder.replyContent)+5, getTextHeight("测试高度",holder.replyContent));
+        for (int i = 0; i < textSize; i ++) {
+            if (text.charAt(i) == '[') {
+                startIndex = i;
+                mIntegers.add(startIndex);
+            }
+            if (text.charAt(i) == ']') {
+                endIndex = i;
+                mIntegers.add(endIndex);
+            }
+        }
+        int indexSize = mIntegers.size();
+        for (int i = 0; i <indexSize; i++) {
+            if ( i %2 == 1){
+                continue;
+            }
+            VerticalImageSpan imageSpan = new VerticalImageSpan(drawable);
+            spannableString.setSpan(imageSpan, mIntegers.get(i), mIntegers.get(i+1)+1, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+        }
+        holder.replyContent.setText(spannableString);
         holder.createTime.setText(String.format("%s", TYDateUtils.getFriendlytimeByTime(dataBean.getCreate_time())));
         holder.replyCount.setText(String.format("%s回复",dataBean.getReply_count()));
 
@@ -111,5 +158,12 @@ public class ArticleTabCommentsAdapter extends BaseAdapter {
          CommentsHolder(View itemView) {
              ButterKnife.bind(this, itemView);
         }
+    }
+
+    private int getTextHeight(String text,TextView textView){
+        TextPaint textPaint = new TextPaint();
+        textPaint.setTextSize(textView.getTextSize());
+        Paint.FontMetricsInt fontMetricsInt = textPaint.getFontMetricsInt();
+        return 10 + fontMetricsInt.descent - fontMetricsInt.ascent;
     }
 }

@@ -7,5 +7,16 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
+    <style name="Comment_Dialog" parent="@style/AppTheme">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <!--<item name="android:windowSoftInputMode">stateAlwaysVisible</item>&lt;!&ndash;显示软件盘&ndash;&gt;-->
+        <item name="android:backgroundDimAmount">0.5</item>
+    </style>
+    <style name="CustomCheckboxTheme" parent="@android:style/Widget.CompoundButton.CheckBox">
+        <item name="android:button">@drawable/bg_smile_face</item>
+    </style>
 
 </resources>
