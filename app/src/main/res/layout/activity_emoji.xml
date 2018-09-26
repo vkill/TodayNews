@@ -1,23 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/ll_root"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@android:color/white"
-    android:orientation="vertical">
-
-    <View
-        android:id="@+id/xx"
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background=" @android:color/transparent"/>
+        android:layout_height="match_parent">
+        <View
+            android:onClick="xx"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"/>
 
     <LinearLayout
         android:id="@+id/ll_commit"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/iv_emoji"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/white"
@@ -66,6 +62,8 @@
             android:textSize="16sp" />
     </LinearLayout>
     <LinearLayout
+        android:visibility="gone"
+        android:background="@android:color/white"
         android:id="@+id/ll_emoji"
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -75,6 +73,7 @@
             android:layout_height="0dp"
             android:layout_weight="1"/>
         <CheckBox
+            android:onClick="change"
             style="@style/CustomCheckboxTheme"
             android:id="@+id/iv_emoji"
             android:layout_width="26dp"
@@ -98,43 +97,42 @@
         android:orientation="vertical"
         android:visibility="gone">
 
-            <android.support.v4.view.ViewPager
-                android:id="@+id/viewPager"
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:layout_gravity="center"
-                 />
+        <android.support.v4.view.ViewPager
+            android:id="@+id/viewPager"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:background="@color/red"
+            />
 
-            <com.kx.todaynews.widget.emoji.CircleIndicator
-                android:background="@color/red"
-                android:id="@+id/circleIndicator"
-                android:layout_width="match_parent"
-                android:layout_height="10dp"
-                android:gravity="center" />
+        <com.kx.todaynews.widget.emoji.CircleIndicator
+            android:background="@color/red"
+            android:id="@+id/circleIndicator"
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:gravity="center" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="#ecedf1"
-                android:visibility="visible" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="#ecedf1"
+            android:visibility="visible" />
 
-            <ImageView
-                android:id="@+id/iv_type"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
-                android:layout_marginStart="10dp"
-                android:src="@drawable/jingjing"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:gravity="center"
-                android:text="+"
-                android:textSize="25sp"
-                android:visibility="visible" />
+        <ImageView
+            android:id="@+id/iv_type"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginStart="10dp"
+            android:src="@drawable/jingjing"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:gravity="center"
+            android:text="+"
+            android:textSize="25sp"
+            android:visibility="visible" />
 
     </com.kx.todaynews.widget.keyboard.widget.KPSwitchPanelLinearLayout>
 
 
-
-
-</LinearLayout>
+    </LinearLayout>

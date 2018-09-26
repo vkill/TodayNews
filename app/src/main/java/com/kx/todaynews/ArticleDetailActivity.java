@@ -1,5 +1,6 @@
 package com.kx.todaynews;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.WindowManager;
@@ -13,8 +14,8 @@ import com.kx.todaynews.bean.article.CommentsAndDetailBean;
 import com.kx.todaynews.bean.article.TextDetailInfo;
 import com.kx.todaynews.net.YZNetClient;
 import com.kx.todaynews.utils.ToastUtils;
-import com.kx.todaynews.widget.SoftKeyBoardListener;
 import com.kx.todaynews.widget.emoji.CommentDialog;
+import com.kx.todaynews.widget.emoji.EmojiActivity;
 import com.kx.todaynews.widget.webview.ArticleDetailWebView;
 
 import java.util.ArrayList;
@@ -42,7 +43,8 @@ public class ArticleDetailActivity extends AppCompatActivity {
     private  ArticleTabCommentsAdapter mCommentsAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN| WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+       // this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_article_detail);
         ButterKnife.bind(this);
@@ -52,17 +54,6 @@ public class ArticleDetailActivity extends AppCompatActivity {
         String groupId = getIntent().getStringExtra(GROUPID);
         getArticleDetailData("6604400736325337604");
 
-        SoftKeyBoardListener.setListener(this, new SoftKeyBoardListener.OnSoftKeyBoardChangeListener() {
-            @Override
-            public void keyBoardShow(int height) {
-                commentDialog.setSoftKeyBoardHeight(height);
-            }
-            @Override
-            public void keyBoardHide(int height) {
-               // ToastUtils.showToast("键盘隐藏 高度" + height);
-
-            }
-        });
     }
 
     private void getArticleDetailData(String groupId) {
@@ -120,12 +111,14 @@ public class ArticleDetailActivity extends AppCompatActivity {
     CommentDialog commentDialog ;
     @OnClick(R.id.rl_comment)
     public void showDialog(){
-         commentDialog = new CommentDialog(listView,"优质评论将会被优先展示", new CommentDialog.SendListener() {
+      startActivity(new Intent(this, EmojiActivity.class));
+
+        commentDialog = new CommentDialog("优质评论将会被优先展示", new CommentDialog.SendListener() {
             @Override
             public void sendComment(String inputText) {
                 Toast.makeText(getApplicationContext(), inputText, Toast.LENGTH_SHORT).show();
             }
         });
-        commentDialog .show(getSupportFragmentManager(), "comment");
+       // commentDialog .show(getSupportFragmentManager(), "comment");
     }
 }
