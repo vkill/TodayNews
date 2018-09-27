@@ -1,14 +1,11 @@
 package com.kx.todaynews.widget.emoji;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.graphics.Rect;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -17,8 +14,6 @@ import android.support.v4.app.DialogFragment;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -33,8 +28,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kx.todaynews.R;
-import com.kx.todaynews.utils.ToastUtils;
-import com.kx.todaynews.widget.SoftKeyBoardListener;
 import com.kx.todaynews.widget.keyboard.util.KeyboardUtil;
 import com.kx.todaynews.widget.keyboard.widget.KPSwitchPanelLinearLayout;
 
@@ -59,7 +52,7 @@ public class CommentDialog extends DialogFragment implements TextWatcher, View.O
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
+      //  setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
         mInputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         sp = getActivity().getSharedPreferences(SHARE_PREFERENCE_NAME, Context.MODE_PRIVATE);
     }
@@ -76,35 +69,6 @@ public class CommentDialog extends DialogFragment implements TextWatcher, View.O
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-       // setLayoutParams();
-        SoftKeyBoardListener.setListener(getActivity(), new SoftKeyBoardListener.OnSoftKeyBoardChangeListener() {
-            @Override
-            public void keyBoardShow(int height) {
-//                WindowManager wm = (WindowManager)getActivity().getSystemService(Context.WINDOW_SERVICE);
-//                Point point=new Point();
-//                wm.getDefaultDisplay().getSize(point);
-//                int width = point.x;
-//                int heights = point.y;
-//                int result = 0;
-//                int resourceId = getActivity().getResources().getIdentifier("status_bar_height", "dimen", "android");
-//                if (resourceId > 0) {
-//                    result = getActivity().getResources().getDimensionPixelSize(resourceId);
-//                }
-//                LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) ll_commit.getLayoutParams();
-//                System.out.println("ll_emoji = " + ll_emoji.getHeight());
-//                System.out.println("ll_commit = " + ll_commit.getHeight());
-//                System.out.println("heights = " + heights);
-//                System.out.println("result = " + result);
-//                ll_root.layout(0,heights - result -ll_emoji.getHeight()-ll_commit.getHeight(),width,0 );
-
-            }
-            @Override
-            public void keyBoardHide(int height) {
-                ToastUtils.showToast("键盘隐藏 高度" + height);
-                System.out.println("键盘隐藏 高度" + height);
-
-            }
-        });
     }
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         View contentView = initDialog();
@@ -115,9 +79,11 @@ public class CommentDialog extends DialogFragment implements TextWatcher, View.O
     public void setSoftKeyBoardHeight(int softKeyBoardHeight) {
         if (mSoftKeyBoardHeight ==0){
             mSoftKeyBoardHeight = softKeyBoardHeight;
-            LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) mPanelRoot.getLayoutParams();
-            layoutParams.height = mSoftKeyBoardHeight;
-           // mPanelRoot.setLayoutParams(layoutParams);
+            if (mPanelRoot!=null){
+                LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) mPanelRoot.getLayoutParams();
+                layoutParams.height = mSoftKeyBoardHeight;
+                mPanelRoot.setLayoutParams(layoutParams);
+            }
         }
     }
     public CommentDialog() {
@@ -155,8 +121,12 @@ public class CommentDialog extends DialogFragment implements TextWatcher, View.O
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_UP && mPanelRoot.isShown()) {
-                    hideEmotionLayout(true);
-                    emojiView.setChecked(false);
+                    if (!isSoftInputShown()){
+                        emojiView.setChecked(false);
+                        lockContentHeight();//显示软件盘时，锁定内容高度，防止跳闪。
+                        hideEmotionLayout();//隐藏表情布局，显示软件盘
+                       // unlockContentHeightDelayed();//软件盘显示后，释放内容高度
+                    }
                 }
                 return false;
             }
@@ -245,7 +215,7 @@ public class CommentDialog extends DialogFragment implements TextWatcher, View.O
             inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(),
                     InputMethodManager.HIDE_NOT_ALWAYS);
         }
-        mPanelRoot.setVisibility(View.GONE);
+        mPanelRoot.setVisibility(View.INVISIBLE);
     }
 
     @NonNull
@@ -260,7 +230,7 @@ public class CommentDialog extends DialogFragment implements TextWatcher, View.O
         xx.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                hideSoftKeyBoard(getActivity());
+               // hideSoftKeyBoard(getActivity());
                 dialog.dismiss();
             }
         });
@@ -324,23 +294,16 @@ public class CommentDialog extends DialogFragment implements TextWatcher, View.O
                 break;
             case R.id.iv_emoji:
                 if (mPanelRoot.isShown()) {
-
-
-
-                   // lockContentHeight();
-                   // hideEmotionLayout(true);
                     emojiView.setChecked(false);
-                    mPanelRoot.setVisibility(View.GONE);
-                    showSoftInput();
-                   // unlockContentHeightDelayed();
+                    lockContentHeight();//显示软件盘时，锁定内容高度，防止跳闪。
+                    hideEmotionLayout();//隐藏表情布局，显示软件盘
+                  //  unlockContentHeightDelayed();//软件盘显示后，释放内容高度
                 } else {
-                    hideSoftInput();
-                    mPanelRoot.setVisibility(View.VISIBLE);
+                    lockContentHeight();
+                    showEmotionLayout();
+                    emojiView.setChecked(true);
+                    //unlockContentHeightDelayed();
 //                    if (isSoftInputShown()) {
-//                       // lockContentHeight();
-//                        showEmotionLayout();
-//                        emojiView.setChecked(true);
-//                        //unlockContentHeightDelayed();
 //                    } else {
 //                        showEmotionLayout();
 //                    }
@@ -351,22 +314,46 @@ public class CommentDialog extends DialogFragment implements TextWatcher, View.O
         }
     }
     private void showEmotionLayout() {
-        int softInputHeight = getSupportSoftInputHeight();
-        if (softInputHeight == 0) {
-            softInputHeight = sp.getInt(SHARE_PREFERENCE_TAG, 400);
-        }
+//        int softInputHeight = getSupportSoftInputHeight();
+//        if (softInputHeight == 0) {
+//           // softInputHeight = sp.getInt(SHARE_PREFERENCE_SOFT_INPUT_HEIGHT, 400);
+//        }
         hideSoftInput();
-        // mPanelRoot.getLayoutParams().height = softInputHeight;
+        mPanelRoot.getLayoutParams().height = mSoftKeyBoardHeight;
         mPanelRoot.setVisibility(View.VISIBLE);
     }
-    private void hideEmotionLayout(boolean showSoftInput) {
+    /**
+     * 隐藏表情布局
+     * @param
+     */
+    private void hideEmotionLayout() {
         if (mPanelRoot.isShown()) {
-            mPanelRoot.setVisibility(View.INVISIBLE);
-            if (showSoftInput) {
-                showSoftInput();
-            }
+              showSoftInput();
+            // mPanelRoot.setVisibility(View.INVISIBLE);
         }
     }
+    /**
+     * 锁定内容高度，防止跳闪
+     */
+    private void lockContentHeight() {
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) xx.getLayoutParams();
+        params.height = xx.getHeight();
+        params.weight = 0.0F;
+    }
+    /**
+     * 释放被锁定的内容高度
+     */
+    private void unlockContentHeightDelayed() {
+        inputText.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                ((LinearLayout.LayoutParams) xx.getLayoutParams()).weight = 1.0F;
+            }
+        }, 200L);
+    }
+    /**
+     * 编辑框获取焦点，并显示软件盘
+     */
     private void showSoftInput() {
         inputText.requestFocus();
         inputText.post(new Runnable() {
@@ -376,45 +363,18 @@ public class CommentDialog extends DialogFragment implements TextWatcher, View.O
             }
         });
     }
-
+    /**
+     * 隐藏软件盘
+     */
     private void hideSoftInput() {
         mInputManager.hideSoftInputFromWindow(inputText.getWindowToken(), 0);
     }
-
+    /**
+     * 是否显示软件盘
+     * @return
+     */
     private boolean isSoftInputShown() {
-        return getSupportSoftInputHeight() != 0;
-    }
-
-    private int getSupportSoftInputHeight() {
-        Rect r = new Rect();
-        getActivity().getWindow().getDecorView().getWindowVisibleDisplayFrame(r);
-        int screenHeight = getActivity().getWindow().getDecorView().getRootView().getHeight();
-        int softInputHeight = screenHeight - r.bottom;
-        if (Build.VERSION.SDK_INT >= 20) {
-            // When SDK Level >= 20 (Android L), the softInputHeight will contain the height of softButtonsBar (if has)
-            softInputHeight = softInputHeight - getSoftButtonsBarHeight();
-        }
-        if (softInputHeight < 0) {
-            Log.w("EmotionInputDetector", "Warning: value of softInputHeight is below zero!");
-        }
-        if (softInputHeight > 0) {
-            sp.edit().putInt(SHARE_PREFERENCE_TAG, softInputHeight).apply();
-        }
-        return softInputHeight;
-    }
-
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
-    private int getSoftButtonsBarHeight() {
-        DisplayMetrics metrics = new DisplayMetrics();
-        getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        int usableHeight = metrics.heightPixels;
-        getActivity().getWindowManager().getDefaultDisplay().getRealMetrics(metrics);
-        int realHeight = metrics.heightPixels;
-        if (realHeight > usableHeight) {
-            return realHeight - usableHeight;
-        } else {
-            return 0;
-        }
+        return mSoftKeyBoardHeight != 0;
     }
 
     private void checkContent() {

@@ -14,6 +14,7 @@ import com.kx.todaynews.bean.article.CommentsAndDetailBean;
 import com.kx.todaynews.bean.article.TextDetailInfo;
 import com.kx.todaynews.net.YZNetClient;
 import com.kx.todaynews.utils.ToastUtils;
+import com.kx.todaynews.widget.SoftKeyBoardListener;
 import com.kx.todaynews.widget.emoji.CommentDialog;
 import com.kx.todaynews.widget.emoji.EmojiActivity;
 import com.kx.todaynews.widget.webview.ArticleDetailWebView;
@@ -53,6 +54,22 @@ public class ArticleDetailActivity extends AppCompatActivity {
         webView.setOnWebViewImageClickListener(imageUrl -> ToastUtils.showToast("图片地址 =     " + imageUrl));
         String groupId = getIntent().getStringExtra(GROUPID);
         getArticleDetailData("6604400736325337604");
+
+        SoftKeyBoardListener.setListener(this, new SoftKeyBoardListener.OnSoftKeyBoardChangeListener() {
+            @Override
+            public void keyBoardShow(int height) {
+               // LogUtils.e("keyBoardShow = "  + height);
+                if (commentDialog!=null)
+                commentDialog.setSoftKeyBoardHeight(height);
+            }
+
+            @Override
+            public void keyBoardHide(int height) {
+              //  LogUtils.e("keyBoardHide = "  + height);
+                if (commentDialog!=null)
+                commentDialog.setSoftKeyBoardHeight(0);
+            }
+        });
 
     }
 
@@ -111,7 +128,7 @@ public class ArticleDetailActivity extends AppCompatActivity {
     CommentDialog commentDialog ;
     @OnClick(R.id.rl_comment)
     public void showDialog(){
-     // startActivity(new Intent(this, EmojiActivity.class));
+      startActivity(new Intent(this, EmojiActivity.class));
 
         commentDialog = new CommentDialog("优质评论将会被优先展示", new CommentDialog.SendListener() {
             @Override
@@ -119,6 +136,6 @@ public class ArticleDetailActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), inputText, Toast.LENGTH_SHORT).show();
             }
         });
-        commentDialog .show(getSupportFragmentManager(), "comment");
+      // commentDialog .show(getSupportFragmentManager(), "comment");
     }
 }

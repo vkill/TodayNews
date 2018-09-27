@@ -14,18 +14,18 @@
             android:background="@android:color/transparent"/>
 
     <LinearLayout
+        android:gravity="center_vertical"
         android:id="@+id/ll_commit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/white"
         android:orientation="horizontal"
-        android:minHeight="45dp"
         android:paddingLeft="12dp"
         android:paddingRight="12dp">
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_margin="6dp"
             android:layout_weight="1"
             android:background="@drawable/shape_input_keyboard"
@@ -34,16 +34,15 @@
             android:paddingLeft="5dp"
             android:paddingRight="5dp">
 
-            <EditText
+            <com.kx.todaynews.widget.emoji.NulllEditText
                 android:id="@+id/send_edt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@null"
                 android:gravity="center_vertical"
-                android:hint=""
+                android:hint="优质评论将会被优先展示"
                 android:maxLines="3"
                 android:padding="5dp"
-                android:text=""
                 android:textColor="@android:color/black"
                 android:textColorHint="#cccccc"
                 android:textSize="16sp" />
@@ -109,21 +108,27 @@
         android:background="#fffefefe"
         android:orientation="vertical"
         android:visibility="gone">
-
-        <android.support.v4.view.ViewPager
-            android:id="@+id/viewPager"
+        <fragment
+            android:name="com.kx.todaynews.widget.emoji.EmoJiFragment"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:layout_gravity="center"
-            android:background="@color/red"
-            />
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
 
-        <com.kx.todaynews.widget.emoji.CircleIndicator
-            android:background="@color/red"
-            android:id="@+id/circleIndicator"
-            android:layout_width="match_parent"
-            android:layout_height="10dp"
-            android:gravity="center" />
+        <!--<android.support.v4.view.ViewPager-->
+            <!--android:id="@+id/emojiViewPager"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="0dp"-->
+            <!--android:layout_weight="1"-->
+            <!--android:layout_gravity="center"-->
+            <!--android:background="@color/red"-->
+            <!--/>-->
+
+        <!--<com.kx.todaynews.widget.emoji.CircleIndicator-->
+            <!--android:background="@color/red"-->
+            <!--android:id="@+id/circleIndicator"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="10dp"-->
+            <!--android:gravity="center" />-->
 
         <View
             android:layout_width="match_parent"
