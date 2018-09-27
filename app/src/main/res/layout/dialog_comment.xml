@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:id="@+id/ll_root"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@android:color/white"
+    android:background=" @android:color/transparent"
     android:orientation="vertical">
 
     <View
@@ -66,6 +66,7 @@
             android:textSize="16sp" />
     </LinearLayout>
     <LinearLayout
+        android:background="@android:color/white"
         android:id="@+id/ll_emoji"
         android:orientation="horizontal"
         android:layout_width="match_parent"

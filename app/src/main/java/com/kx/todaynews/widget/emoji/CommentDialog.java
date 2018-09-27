@@ -59,7 +59,7 @@ public class CommentDialog extends DialogFragment implements TextWatcher, View.O
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-       // setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
+        setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
         mInputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         sp = getActivity().getSharedPreferences(SHARE_PREFERENCE_NAME, Context.MODE_PRIVATE);
     }
@@ -260,7 +260,8 @@ public class CommentDialog extends DialogFragment implements TextWatcher, View.O
         xx.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ToastUtils.showToast("点击了白色区域");
+                hideSoftKeyBoard(getActivity());
+                dialog.dismiss();
             }
         });
         return contentView;
@@ -274,8 +275,6 @@ public class CommentDialog extends DialogFragment implements TextWatcher, View.O
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE| WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
        lp.gravity = Gravity.BOTTOM; // 紧贴底部
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-      //  lp.x = 100;
-       // lp.y = 300;
         lp.alpha = 1;
         lp.dimAmount = 0.0f;
         lp.width = WindowManager.LayoutParams.MATCH_PARENT; // 宽度持平

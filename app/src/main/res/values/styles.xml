@@ -28,7 +28,7 @@
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowAnimationStyle">@null</item>
     </style>
-    <style name="MyDialogStyleBottom" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="MyDialogStyleBottom" parent="Theme.AppCompat.Dialog">
         <item name="android:windowFrame">@null</item>
         <!-- 边框 -->
         <item name="android:windowIsFloating">true</item>

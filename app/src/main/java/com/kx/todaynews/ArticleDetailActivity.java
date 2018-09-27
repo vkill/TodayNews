@@ -111,7 +111,7 @@ public class ArticleDetailActivity extends AppCompatActivity {
     CommentDialog commentDialog ;
     @OnClick(R.id.rl_comment)
     public void showDialog(){
-      startActivity(new Intent(this, EmojiActivity.class));
+     // startActivity(new Intent(this, EmojiActivity.class));
 
         commentDialog = new CommentDialog("优质评论将会被优先展示", new CommentDialog.SendListener() {
             @Override
@@ -119,6 +119,6 @@ public class ArticleDetailActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), inputText, Toast.LENGTH_SHORT).show();
             }
         });
-       // commentDialog .show(getSupportFragmentManager(), "comment");
+        commentDialog .show(getSupportFragmentManager(), "comment");
     }
 }
