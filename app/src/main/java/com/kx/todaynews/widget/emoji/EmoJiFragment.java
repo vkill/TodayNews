@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import com.kx.todaynews.ArticleDetailActivity;
 import com.kx.todaynews.R;
 
 
@@ -29,7 +30,7 @@ public class EmoJiFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        EmojiActivity mainActivity = (EmojiActivity) getActivity();
+        ArticleDetailActivity mainActivity = (ArticleDetailActivity) getActivity();
         et_input_container = mainActivity.findViewById(R.id.send_edt);
         initView();
     }

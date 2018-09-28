@@ -1,13 +1,10 @@
 package com.kx.todaynews.widget.emoji;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -29,7 +26,6 @@ import android.widget.Toast;
 
 import com.kx.todaynews.R;
 import com.kx.todaynews.widget.SoftKeyBoardListener;
-import com.kx.todaynews.widget.keyboard.util.KeyboardUtil;
 import com.kx.todaynews.widget.keyboard.widget.KPSwitchPanelLinearLayout;
 
 
@@ -48,8 +44,6 @@ public class CommentDialog extends DialogFragment implements TextWatcher, View.O
     private  int mSoftKeyBoardHeight = 0;
     private  int tempSoftInputHeight;
     private InputMethodManager mInputManager;
-    private static final String SHARE_PREFERENCE_NAME = "com.mumu.easyemoji";
-    private static final String SHARE_PREFERENCE_TAG = "soft_input_height";
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,11 +89,6 @@ public class CommentDialog extends DialogFragment implements TextWatcher, View.O
             }
         }
     }
-    public void hide() {
-        if (mSoftKeyBoardHeight ==0){
-
-        }
-    }
     public CommentDialog() {
 
     }
@@ -130,6 +119,7 @@ public class CommentDialog extends DialogFragment implements TextWatcher, View.O
         inputText.setFocusable(true);
         inputText.setFocusableInTouchMode(true);
         inputText.requestFocus();
+        showSoftInput();
         inputText.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -153,19 +143,19 @@ public class CommentDialog extends DialogFragment implements TextWatcher, View.O
         // 使用不带Theme的构造器, 获得的dialog边框距离屏幕仍有几毫米的缝隙。
         dialog = new Dialog(getActivity(), R.style.Comment_Dialog);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // 设置Content前设定
-        View contentView = View.inflate(getActivity(), R.layout.dialog_comment, null);
-        xx = contentView.findViewById(R.id.xx);
-        dialog.setContentView(contentView);
+        View dialogContentView = View.inflate(getActivity(), R.layout.dialog_comment, null);
+        contentView = dialogContentView.findViewById(R.id.contentView);
+        dialog.setContentView(dialogContentView);
         dialog.setCanceledOnTouchOutside(true); // 外部点击取消
-        xx.setOnClickListener(new View.OnClickListener() {
+        contentView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
             }
         });
-        return contentView;
+        return dialogContentView;
     }
-    View xx ;
+    View contentView ;
     private void setLayoutParams() {
         // 设置宽度为屏宽, 靠近屏幕底部。
         Window window = dialog.getWindow();
@@ -244,10 +234,6 @@ public class CommentDialog extends DialogFragment implements TextWatcher, View.O
         }
     }
     private void showEmotionLayout() {
-//        int softInputHeight = getSupportSoftInputHeight();
-//        if (softInputHeight == 0) {
-//           // softInputHeight = sp.getInt(SHARE_PREFERENCE_SOFT_INPUT_HEIGHT, 400);
-//        }
         hideSoftInput();
         tempSoftInputHeight = 0;
         if (!mPanelRoot.isShown()) {
@@ -270,8 +256,8 @@ public class CommentDialog extends DialogFragment implements TextWatcher, View.O
      * 锁定内容高度，防止跳闪
      */
     private void lockContentHeight() {
-        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) xx.getLayoutParams();
-        params.height = xx.getHeight();
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) contentView.getLayoutParams();
+        params.height = contentView.getHeight();
         params.weight = 0.0F;
     }
     /**
@@ -281,7 +267,7 @@ public class CommentDialog extends DialogFragment implements TextWatcher, View.O
         inputText.postDelayed(new Runnable() {
             @Override
             public void run() {
-                ((LinearLayout.LayoutParams) xx.getLayoutParams()).weight = 1.0F;
+                ((LinearLayout.LayoutParams) contentView.getLayoutParams()).weight = 1.0F;
             }
         }, 200L);
     }

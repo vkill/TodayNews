@@ -8,9 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Spannable;
 import android.text.TextUtils;
-import android.text.style.ImageSpan;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
@@ -21,11 +19,8 @@ import com.kx.todaynews.adapter.HotDataAdapter;
 import com.kx.todaynews.bean.HotBean;
 import com.kx.todaynews.bean.HotContent;
 import com.kx.todaynews.net.YZNetClient;
-import com.kx.todaynews.utils.LogUtils;
-import com.kx.todaynews.utils.TYDateUtils;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -61,12 +56,7 @@ public class MainActivity extends AppCompatActivity {
         recycleView.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
         recycleView.setLayoutManager(linearLayoutManager);
          recycleView.setAdapter(mHotDataAdapter);
-       // getHotData();
-        List<HotContent> hotContents = new ArrayList<>();
-        HotContent hotContent = new HotContent();
-        hotContent.setTitle("我是测试标题");
-        hotContents.add(hotContent);
-        mHotDataAdapter.setHotDatas(hotContents);
+        getHotData();
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -110,29 +100,17 @@ public class MainActivity extends AppCompatActivity {
                         HotBean.TipsBean tipsBean = hotBean.getTips();
                         tips.setText(TextUtils.isEmpty(tipsBean.getDisplay_info()) ? "暂无更新休息一会" : tipsBean.getDisplay_info());
                         List<HotBean.DataBean> data = hotBean.getData();
-                        List<HotContent> hotContents = new ArrayList<>();
-                        HotContent hotContent = new HotContent();
-                        hotContent.setTitle("我是测试标题");
-                        hotContents.add(hotContent);
-                        mHotDataAdapter.setHotDatas(hotContents);
-//                        if (data!=null && data.size()>0){
-//                            List<HotContent> hotContents = new ArrayList<>();
-//                            HotContent hotContent ;
-//                            for (HotBean.DataBean dataBean: data) {
-//                                String content = dataBean.getContent();
-//                                hotContent = mGson.fromJson(content,HotContent.class);
-//                                hotContents.add(hotContent);
-//                            }
-//                            mHotDataAdapter.setHotDatas(hotContents);
-//                        }
+                        if (data!=null && data.size()>0){
+                            List<HotContent> hotContents = new ArrayList<>();
+                            HotContent hotContent ;
+                            for (HotBean.DataBean dataBean: data) {
+                                String content = dataBean.getContent();
+                                hotContent = mGson.fromJson(content,HotContent.class);
+                                hotContents.add(hotContent);
+                            }
+                            mHotDataAdapter.setHotDatas(hotContents);
+                        }
                         showTipsAnimation();
-//                        String content = hotBean.getData().getContent();
-//                        int size = hotBean.getData().getImage_detail().size();
-//                        for (int i = size-1; i >= 0; i--) {
-//                            String xx = "&index=" +i;
-//                            content = content.replace(xx," ");
-//                        }
-//                        webView.loadHtmlStringData(content);
                     }
                 }, new Consumer<Throwable>() {
                     @Override

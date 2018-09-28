@@ -1,6 +1,5 @@
 package com.kx.todaynews;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.WindowManager;
@@ -17,7 +16,6 @@ import com.kx.todaynews.utils.LogUtils;
 import com.kx.todaynews.utils.ToastUtils;
 import com.kx.todaynews.widget.SoftKeyBoardListener;
 import com.kx.todaynews.widget.emoji.CommentDialog;
-import com.kx.todaynews.widget.emoji.EmojiActivity;
 import com.kx.todaynews.widget.webview.ArticleDetailWebView;
 
 import java.util.ArrayList;
@@ -54,7 +52,7 @@ public class ArticleDetailActivity extends AppCompatActivity {
         RetrofitUrlManager.getInstance().putDomain("a3", YZNetClient.HOST_A3);
         webView.setOnWebViewImageClickListener(imageUrl -> ToastUtils.showToast("图片地址 =     " + imageUrl));
         String groupId = getIntent().getStringExtra(GROUPID);
-        getArticleDetailData("6604400736325337604");
+        getArticleDetailData(groupId);
 
         SoftKeyBoardListener.setListener(this, new SoftKeyBoardListener.OnSoftKeyBoardChangeListener() {
             @Override

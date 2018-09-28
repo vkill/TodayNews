@@ -6,6 +6,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.GridView;
 
 import com.kx.todaynews.R;
 
@@ -46,7 +47,7 @@ public class EmoJiHelper {
     public View getGridView(int position) {
         List mEmoJiList = new ArrayList<>();
         View containerView = View.inflate(mContext, R.layout.container_gridview, null);
-        ExpandGridView eg_gridView = (ExpandGridView) containerView.findViewById(R.id.eg_gridView);
+       GridView eg_gridView = containerView.findViewById(R.id.eg_gridView);
         eg_gridView.setGravity(Gravity.CENTER_VERTICAL);
         List<String> emojiPageList = null;
         if (position == mPageNum)//最后一页
