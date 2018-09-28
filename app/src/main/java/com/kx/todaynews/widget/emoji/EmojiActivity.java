@@ -83,7 +83,7 @@ public class EmojiActivity extends AppCompatActivity {
                 return false;
             }
         });
-        showSoftInput();
+       // showSoftInput();
         emojiView.setLongClickable(false);
         if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.M) {
             // call that method
@@ -112,9 +112,6 @@ public class EmojiActivity extends AppCompatActivity {
                         emojiView.setChecked(true);
                         unlockContentHeightDelayed();
                     }
-//                    else {
-//                        showEmotionLayout();
-//                    }
                 }
             }
         });
@@ -127,10 +124,10 @@ public class EmojiActivity extends AppCompatActivity {
 //        }
         hideSoftInput();
         tempSoftInputHeight = 0;
-      //  if (!mPanelRoot.isShown()) {
+        if (!mPanelRoot.isShown()) {
             mPanelRoot.getLayoutParams().height = softInputHeight;
             mPanelRoot.setVisibility(View.VISIBLE);
-      //  }
+       }
     }
 
     /**
