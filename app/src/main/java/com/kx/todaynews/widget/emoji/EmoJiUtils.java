@@ -1,11 +1,12 @@
 package com.kx.todaynews.widget.emoji;
 
 import android.content.Context;
+import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.support.v4.util.ArrayMap;
 import android.text.Spannable;
 import android.text.SpannableString;
-import android.text.style.ImageSpan;
+import android.widget.TextView;
 
 import com.kx.todaynews.R;
 
@@ -40,9 +41,11 @@ public class EmoJiUtils {
 
 
 /**************************************************头条表情包**************************************************/
+        toutiaoMap.put("[捂脸]", R.drawable.arl);     //  19
         toutiaoMap.put("[允悲]", R.drawable.arl);     //  19
         toutiaoMap.put("[大笑]", R.drawable.arq);     //  21
         toutiaoMap.put("[坏笑]", R.drawable.atg); //  8
+        toutiaoMap.put("[呲牙]", R.drawable.atg); //  8
         toutiaoMap.put("[色]", R.drawable.arm);     //  2
         toutiaoMap.put("[流泪]", R.drawable.asv);      //  6
         toutiaoMap.put("[害羞]", R.drawable.aqy);      // 10
@@ -175,7 +178,7 @@ public class EmoJiUtils {
         toutiaoMap.put("[删除]", R.drawable.au2);
 
 
-        toutiaoList.add("[允悲]");
+        toutiaoList.add("[捂脸]");
         toutiaoList.add("[大笑]");
         toutiaoList.add("[坏笑]");
         toutiaoList.add("[色]");
@@ -317,13 +320,9 @@ public class EmoJiUtils {
 
     /**
      * 解析EmoJi表情
-     *
-     * @param type
-     * @param context
-     * @param content
      * @return
      */
-    public static SpannableString parseEmoJi(int type, Context context, String content) {
+    public static SpannableString parseEmoJi(TextView editText, Context context, String content) {
 
         SpannableString spannable = new SpannableString(content);
         String reg = "\\[[a-zA-Z0-9\\u4e00-\\u9fa5]+\\]";//校验表情正则
@@ -340,13 +339,17 @@ public class EmoJiUtils {
             if (resId != null) {
 
                 Drawable drawable = context.getResources().getDrawable(resId);
-                drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-                ImageSpan imageSpan = new ImageSpan(drawable, content);
+              //  drawable.setBounds(5, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+               // drawable.setBounds(5, 0, getTextHeight(editText)+5, getTextHeight(editText));
+                CenterImageSpan imageSpan = new CenterImageSpan(context,resId);
                 spannable.setSpan(imageSpan, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
 
         }
         return spannable;
     }
-
+    private static  int getTextHeight(TextView editText){
+        Paint.FontMetricsInt fontMetricsInt =  editText.getPaint().getFontMetricsInt();
+        return   fontMetricsInt.descent - fontMetricsInt.ascent;
+    }
 }

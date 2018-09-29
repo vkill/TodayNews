@@ -9,7 +9,6 @@ import android.widget.EditText;
 import android.widget.GridView;
 
 import com.kx.todaynews.R;
-import com.kx.todaynews.utils.ToastUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,14 +72,13 @@ public class EmoJiHelper {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int positionIndex, long id) {
                 String fileName = mEmoJiAdapter.getItem(positionIndex);
-                ToastUtils.showToast(fileName);
                 // 不是删除键，显示表情
-//                if (fileName != "[删除]") {
-//                    showEmoJi(fileName);
-//                    // 删除文字或者表情
-//                } else {
-//                    deleteContent();
-//                }
+                if (!TextUtils.equals("[删除]",fileName)) {
+                    showEmoJi(fileName);
+                } else {
+                    // 删除文字或者表情
+                    deleteContent();
+                }
             }
         });
         return containerView;
@@ -96,7 +94,7 @@ public class EmoJiHelper {
         String body = et_input_container.getText().toString();
         StringBuilder stringBuilder = new StringBuilder(body);
         stringBuilder.insert(selectionStart, fileName);
-        et_input_container.setText(EmoJiUtils.parseEmoJi(type, mContext, stringBuilder.toString()));
+        et_input_container.setText(EmoJiUtils.parseEmoJi(et_input_container,mContext, stringBuilder.toString()));
         et_input_container.setSelection(selectionStart + fileName.length());
     }
 

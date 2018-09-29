@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.view.ViewPager;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -26,7 +27,6 @@ import android.widget.Toast;
 
 import com.kx.todaynews.R;
 import com.kx.todaynews.widget.SoftKeyBoardListener;
-import com.kx.todaynews.widget.keyboard.widget.KPSwitchPanelLinearLayout;
 
 
 public class CommentDialog extends DialogFragment implements TextWatcher, View.OnClickListener {
@@ -38,7 +38,7 @@ public class CommentDialog extends DialogFragment implements TextWatcher, View.O
     private CheckBox emojiView;
     private ImageView iv_type;
     private LinearLayout ll_commit,ll_emoji,ll_root;
-    private KPSwitchPanelLinearLayout mPanelRoot ;
+    private LinearLayout mPanelRoot ;
     //点击发表，内容不为空时的回调
     public SendListener mSendListener;
     private  int mSoftKeyBoardHeight = 0;
@@ -120,6 +120,14 @@ public class CommentDialog extends DialogFragment implements TextWatcher, View.O
         inputText.setFocusable(true);
         inputText.setFocusableInTouchMode(true);
         inputText.requestFocus();
+
+        ViewPager viewPager = contentView.findViewById(R.id.viewPager);
+        CircleIndicator circleIndicator = contentView.findViewById(R.id.circleIndicator);
+        EmoJiHelper emojiHelper = new EmoJiHelper(0, getContext(), inputText);
+        EmoJiContainerAdapter mAdapter = new EmoJiContainerAdapter(emojiHelper.getPagers());
+        viewPager.setAdapter(mAdapter);
+        circleIndicator.setViewPager(viewPager);
+
         showSoftInput();
         inputText.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -211,7 +219,6 @@ public class CommentDialog extends DialogFragment implements TextWatcher, View.O
                 break;
             case R.id.iv_emoji:
                 if (!isSoftInputShown()) {
-                    System.out.println(1);
                     dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
                     emojiView.setChecked(false);
                     lockContentHeight();//显示软件盘时，锁定内容高度，防止跳闪。
@@ -219,14 +226,11 @@ public class CommentDialog extends DialogFragment implements TextWatcher, View.O
                     unlockContentHeightDelayed();
                 } else {
                     if (isSoftInputShown()) {
-                        System.out.println(2);
                         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
                         lockContentHeight();
                         showEmotionLayout();
                         emojiView.setChecked(true);
                         unlockContentHeightDelayed();
-                    }else {
-                        System.out.println(3);
                     }
                 }
 

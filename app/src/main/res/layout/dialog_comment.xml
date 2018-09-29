@@ -91,7 +91,7 @@
             app:layout_constraintTop_toBottomOf="@id/ll_commit" />
     </LinearLayout>
 
-    <com.kx.todaynews.widget.keyboard.widget.KPSwitchPanelLinearLayout
+    <LinearLayout
         android:id="@+id/panel_root"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -99,12 +99,18 @@
         android:orientation="vertical"
         android:visibility="gone">
 
-            <fragment
-                android:name="com.kx.todaynews.widget.emoji.EmoJiFragment"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                />
+        <android.support.v4.view.ViewPager
+            android:id="@+id/viewPager"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_gravity="center"
+            android:layout_weight="1" />
+
+        <com.kx.todaynews.widget.emoji.CircleIndicator
+            android:id="@+id/circleIndicator"
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:gravity="center" />
 
             <View
                 android:layout_width="match_parent"
@@ -124,7 +130,7 @@
                 android:gravity="center"
                 android:visibility="visible" />
 
-    </com.kx.todaynews.widget.keyboard.widget.KPSwitchPanelLinearLayout>
+    </LinearLayout>
 
 
 

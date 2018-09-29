@@ -3,10 +3,6 @@ package com.kx.todaynews.adapter;
 import android.content.Context;
 import android.graphics.Paint;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.TextPaint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +15,7 @@ import com.kx.todaynews.R;
 import com.kx.todaynews.bean.article.ArticleTabCommentsBean;
 import com.kx.todaynews.utils.GlideCircleTransform;
 import com.kx.todaynews.utils.TyDateUtils;
-import com.kx.todaynews.widget.VerticalImageSpan;
+import com.kx.todaynews.widget.emoji.EmoJiUtils;
 
 import java.util.ArrayList;
 
@@ -97,36 +93,7 @@ public class ArticleTabCommentsAdapter extends BaseAdapter {
         holder.userVerifiedReason.setText(String.format("%s",dataBean.getVerified_reason()));
         holder.diggCount.setText(String.format("%s",dataBean.getDigg_count()));
         String text = dataBean.getText();
-        SpannableString spannableString = new SpannableString(text);
-        int startIndex= -1;
-        int endIndex= -1;
-        if (mIntegers ==null){
-            mIntegers = new ArrayList<>();
-        }else {
-            mIntegers.clear();
-        }
-        int textSize = text.length();
-        Drawable drawable = mContext.getResources().getDrawable(R.drawable.jingjing);
-        drawable.setBounds(5,0, getTextHeight("测试高度",holder.replyContent)+5, getTextHeight("测试高度",holder.replyContent));
-        for (int i = 0; i < textSize; i ++) {
-            if (text.charAt(i) == '[') {
-                startIndex = i;
-                mIntegers.add(startIndex);
-            }
-            if (text.charAt(i) == ']') {
-                endIndex = i;
-                mIntegers.add(endIndex);
-            }
-        }
-        int indexSize = mIntegers.size();
-        for (int i = 0; i <indexSize; i++) {
-            if ( i %2 == 1){
-                continue;
-            }
-            VerticalImageSpan imageSpan = new VerticalImageSpan(drawable);
-            spannableString.setSpan(imageSpan, mIntegers.get(i), mIntegers.get(i+1)+1, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-        }
-        holder.replyContent.setText(spannableString);
+        holder.replyContent.setText(EmoJiUtils.parseEmoJi( holder.replyContent,mContext,text));
         holder.createTime.setText(String.format("%s", TyDateUtils.getFriendlytimeByTime(dataBean.getCreate_time())));
         holder.replyCount.setText(String.format("%s回复",dataBean.getReply_count()));
 
@@ -153,10 +120,8 @@ public class ArticleTabCommentsAdapter extends BaseAdapter {
         }
     }
 
-    private int getTextHeight(String text,TextView textView){
-        TextPaint textPaint = new TextPaint();
-        textPaint.setTextSize(textView.getTextSize());
-        Paint.FontMetricsInt fontMetricsInt = textPaint.getFontMetricsInt();
+    private int getTextHeight(TextView textView){
+        Paint.FontMetricsInt fontMetricsInt =  textView.getPaint().getFontMetricsInt();
         return 10 + fontMetricsInt.descent - fontMetricsInt.ascent;
     }
 }
