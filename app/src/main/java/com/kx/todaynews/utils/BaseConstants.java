@@ -7,6 +7,7 @@ import java.io.File;
 
 /**
  * Description: App基础的常量，包含URL，FILE路径等可能会被修改的参数。主要是配置级别的。
+ * @author Administrator
  */
 public class BaseConstants {
 
@@ -18,7 +19,9 @@ public class BaseConstants {
 
     public static final String MODEL_FILE_NAME = "model.yz";
 
-    //拍摄视频路径
+    /**
+     *  //拍摄视频路径
+     */
     public static final String VIDEO_FOLDER = "BIMCamera";
 
     //可清空

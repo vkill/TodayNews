@@ -41,7 +41,6 @@ public class YZNetClient {
     private HttpLoggingInterceptor.Level logLevel = HttpLoggingInterceptor.Level.BODY;
     private Retrofit retrofit;
     private Map<Class,Object> apiMap;
-  //  private String cookies;
     private String userAgent;
     private OkHttpClient okHttpClient;
     private ClearableCookieJar cookieJar;
@@ -106,7 +105,6 @@ public class YZNetClient {
                 builder.addHeader("Cookie", "ttreq=1$3f444d47ef856e20e0f985771f5f89ccdde0d70c");
                 builder.addHeader("Cookie", "alert_coverage=32");
            // }
-          //  builder.addHeader("Connection", "close");
             return chain.proceed(builder.build());
         };
         newBuilder.addNetworkInterceptor(requestInterceptor);
@@ -120,7 +118,6 @@ public class YZNetClient {
         newBuilder.writeTimeout(TIMEOUT_VALUE, TimeUnit.MILLISECONDS);
         newBuilder.retryOnConnectionFailure(true);
 
-       // return newBuilder.build();
        return RetrofitUrlManager.getInstance().with(newBuilder)
                .cookieJar(cookieJar)
                 .build();

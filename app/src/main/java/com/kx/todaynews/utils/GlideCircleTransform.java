@@ -10,7 +10,9 @@ import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 
 /**
- * Created by admin on 2018/9/22.
+ *
+ * @author admin
+ * @date 2018/9/22
  */
 public class GlideCircleTransform extends BitmapTransformation {
 
@@ -24,7 +26,9 @@ public class GlideCircleTransform extends BitmapTransformation {
     }
 
     private static Bitmap circleCrop(BitmapPool pool, Bitmap source) {
-        if (source == null) return null;
+        if (source == null) {
+            return null;
+        }
 
         int size = Math.min(source.getWidth(), source.getHeight());
         int x = (source.getWidth() - size) / 2;

@@ -7,13 +7,16 @@ import android.graphics.drawable.Drawable;
 import android.text.style.ImageSpan;
 
 /**
- * Created by admin on 2018/9/24.
+ *
+ * @author admin
+ * @date 2018/9/24
  */
 public class VerticalImageSpan  extends ImageSpan{
     public VerticalImageSpan(Drawable drawable) {
         super(drawable);
     }
 
+    @Override
     public int getSize(Paint paint, CharSequence text, int start, int end,
                        Paint.FontMetricsInt fontMetricsInt) {
         Drawable drawable = getDrawable();

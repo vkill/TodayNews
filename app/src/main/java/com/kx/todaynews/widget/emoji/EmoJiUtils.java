@@ -296,7 +296,6 @@ public class EmoJiUtils {
         toutiaoList.add("[刀]");
         toutiaoList.add("[V5]");
         toutiaoList.add("[给力]");
-       // toutiaoList.add("[删除]");
 
 
         allRes.addAll(toutiaoList);

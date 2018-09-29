@@ -125,8 +125,9 @@ public class RequestBodyUtils {
 
 
     private static List<MultipartBody.Part> imagePathtoMultiPart(List<String> filePaths) {
-        if (filePaths == null || filePaths.size() == 0)
+        if (filePaths == null || filePaths.size() == 0) {
             return new ArrayList<>();
+        }
         int count = 0;
         List<MultipartBody.Part> parts = new ArrayList<>();
         for (int i = 0; i < filePaths.size(); i++) {
@@ -142,8 +143,9 @@ public class RequestBodyUtils {
     }
 
     public static List<MultipartBody.Part> imageFiletoMultiPart(List<File> fileList) {
-        if (fileList == null || fileList.size() == 0)
+        if (fileList == null || fileList.size() == 0){
             return new ArrayList<>();
+        }
         int count = 0;
         List<MultipartBody.Part> parts = new ArrayList<>();
         for (int i = 0; i < fileList.size(); i++) {
@@ -265,8 +267,9 @@ public class RequestBodyUtils {
 
 
     public static List<RequestBody> toRequestBodyList(List<String> values) {
-        if (values == null)
+        if (values == null) {
             return null;
+        }
         List<RequestBody> requestBodies = new ArrayList<>();
         for (String value : values) {
             requestBodies.add(RequestBody.create(MediaType.parse("text/plain"), value));

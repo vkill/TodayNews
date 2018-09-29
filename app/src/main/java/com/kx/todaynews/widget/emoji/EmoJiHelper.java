@@ -9,12 +9,14 @@ import android.widget.EditText;
 import android.widget.GridView;
 
 import com.kx.todaynews.R;
+import com.kx.todaynews.utils.ToastUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by lq on 2016/10/28.
+ *
+ * @author admin
  */
 
 public class EmoJiHelper {
@@ -44,16 +46,18 @@ public class EmoJiHelper {
         return pageViewList;
     }
 
-    public View getGridView(int position) {
+    private View getGridView(int position) {
         List mEmoJiList = new ArrayList<>();
         View containerView = View.inflate(mContext, R.layout.container_gridview, null);
        GridView eg_gridView = containerView.findViewById(R.id.eg_gridView);
         eg_gridView.setGravity(Gravity.CENTER_VERTICAL);
         List<String> emojiPageList = null;
-        if (position == mPageNum)//最后一页
+        //最后一页
+        if (position == mPageNum) {
             emojiPageList = emojiResList.subList((position - 1) * EMOJI_PAGE_COUNT, emojiResList.size());
-        else
+        } else {
             emojiPageList = emojiResList.subList((position - 1) * EMOJI_PAGE_COUNT, EMOJI_PAGE_COUNT * position);
+        }
         mEmoJiList.addAll(emojiPageList);
         //添加删除表情
 //        if (position == mPageNum) {
@@ -69,11 +73,14 @@ public class EmoJiHelper {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int positionIndex, long id) {
                 String fileName = mEmoJiAdapter.getItem(positionIndex);
-                if (fileName != "[删除]") { // 不是删除键，显示表情
-                    showEmoJi(fileName);
-                } else { // 删除文字或者表情
-                    deleteContent();
-                }
+                ToastUtils.showToast(fileName);
+                // 不是删除键，显示表情
+//                if (fileName != "[删除]") {
+//                    showEmoJi(fileName);
+//                    // 删除文字或者表情
+//                } else {
+//                    deleteContent();
+//                }
             }
         });
         return containerView;
@@ -98,21 +105,29 @@ public class EmoJiHelper {
      */
     private void deleteContent() {
         if (!TextUtils.isEmpty(et_input_container.getText())) {
-            int selectionStart = et_input_container.getSelectionStart();//获取光标位置
+            //获取光标位置
+            int selectionStart = et_input_container.getSelectionStart();
             if (selectionStart > 0) {
                 String body = et_input_container.getText().toString();
-                String lastStr = body.substring(selectionStart - 1, selectionStart);//获取最后一个字符
-                if (lastStr.equals("]")) {//表情
-                    if (selectionStart < body.length()) {//从中间开始删除
+                //获取最后一个字符
+                String lastStr = body.substring(selectionStart - 1, selectionStart);
+                //表情
+                if (("]").equals(lastStr)) {
+                    //从中间开始删除
+                    if (selectionStart < body.length()) {
                         body = body.substring(0, selectionStart);
                     }
                     int i = body.lastIndexOf("[");
                     if (i != -1) {
-                        String tempStr = body.substring(i, selectionStart);//截取表情码
-                        if (EmoJiUtils.getAllRes().contains(tempStr)) {//校验是否是表情
-                            et_input_container.getEditableText().delete(i, selectionStart);//删除表情
+                        //截取表情码
+                        String tempStr = body.substring(i, selectionStart);
+                        //校验是否是表情
+                        if (EmoJiUtils.getAllRes().contains(tempStr)) {
+                            //删除表情
+                            et_input_container.getEditableText().delete(i, selectionStart);
                         } else {
-                            et_input_container.getEditableText().delete(selectionStart - 1, selectionStart);//删除一个字符
+                            //删除一个字符
+                            et_input_container.getEditableText().delete(selectionStart - 1, selectionStart);
                         }
                     } else {
                         et_input_container.getEditableText().delete(selectionStart - 1, selectionStart);

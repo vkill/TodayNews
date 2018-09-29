@@ -6,6 +6,9 @@ import android.widget.Toast;
 import com.kx.todaynews.AndroidApplication;
 
 
+/**
+ * @author Administrator
+ */
 public class ToastUtils {
     private static Toast toast ;
     public static  void showToast(@NonNull String message){

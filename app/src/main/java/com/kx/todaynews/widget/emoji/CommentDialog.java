@@ -70,6 +70,7 @@ public class CommentDialog extends DialogFragment implements TextWatcher, View.O
             }
         });
     }
+    @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         View contentView = initDialog();
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
@@ -303,7 +304,9 @@ public class CommentDialog extends DialogFragment implements TextWatcher, View.O
             Toast.makeText(getContext(), "评论内容不能为空", Toast.LENGTH_SHORT).show();
             return;
         }
-        if (mSendListener != null) mSendListener.sendComment(content);
+        if (mSendListener != null) {
+            mSendListener.sendComment(content);
+        }
        // dismiss();
     }
 
@@ -314,7 +317,9 @@ public class CommentDialog extends DialogFragment implements TextWatcher, View.O
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (mSendListener != null) mSendListener = null;
+        if (mSendListener != null) {
+            mSendListener = null;
+        }
     }
 
 }

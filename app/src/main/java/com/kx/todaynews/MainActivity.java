@@ -31,6 +31,9 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 
+/**
+ * @author Administrator
+ */
 public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.recycleView)
@@ -55,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recycleView.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
         recycleView.setLayoutManager(linearLayoutManager);
-         recycleView.setAdapter(mHotDataAdapter);
+        recycleView.setAdapter(mHotDataAdapter);
         getHotData();
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override

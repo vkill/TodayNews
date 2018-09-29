@@ -3,6 +3,9 @@ package com.kx.todaynews.utils;
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.Logger;
 
+/**
+ * @author Administrator
+ */
 public class LogUtils {
     public static void init(){
         Logger.addLogAdapter(new AndroidLogAdapter());

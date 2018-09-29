@@ -2,7 +2,6 @@ package com.kx.todaynews.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +16,7 @@ import com.kx.todaynews.bean.ImageList;
 import com.kx.todaynews.bean.LargeImageList;
 import com.kx.todaynews.bean.MiddleImage;
 import com.kx.todaynews.bean.VideoDetailInfo;
-import com.kx.todaynews.utils.TYDateUtils;
+import com.kx.todaynews.utils.TyDateUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -109,7 +108,7 @@ public class HotDataAdapter  extends RecyclerView.Adapter<HotDataAdapter.Abstrac
         holder.title.setText(hotContent.getTitle());
         holder.media_name.setText(hotContent.getSource());
         holder.comment_count.setText(String.format("%s评论",hotContent.getComment_count()));
-        holder.tv_time.setText(String.format("%s", TYDateUtils.getFriendlytimeByTime(hotContent.getPublish_time())));
+        holder.tv_time.setText(String.format("%s", TyDateUtils.getFriendlytimeByTime(hotContent.getPublish_time())));
         if (holder instanceof  ThreeImageHolder){
             ArrayList<ImageList> image_list = hotContent.getImage_list();
                 Glide.with(mContext).load(image_list.get(0).getUrl()).into(((ThreeImageHolder)holder).iv_1);
@@ -118,7 +117,7 @@ public class HotDataAdapter  extends RecyclerView.Adapter<HotDataAdapter.Abstrac
         }else if (holder instanceof  VideoHolder){
             //  视频时长  单位 秒   需要自行转换成  HH：mm : ss  格式
             int video_duration = hotContent.getVideo_duration();
-            ((VideoHolder)holder).tv_video_duration.setText(String.format("%s",TYDateUtils.getTimeStrBySecond(video_duration)));
+            ((VideoHolder)holder).tv_video_duration.setText(String.format("%s", TyDateUtils.getTimeStrBySecond(video_duration)));
             VideoDetailInfo video_detail_info = hotContent.getVideo_detail_info();
             if (video_detail_info!=null){
                 Glide.with(mContext).load(video_detail_info.getDetail_video_large_image().getUrl()).into(((VideoHolder)holder).iv_1);

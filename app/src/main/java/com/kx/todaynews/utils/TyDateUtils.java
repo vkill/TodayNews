@@ -2,7 +2,10 @@ package com.kx.todaynews.utils;
 
 import java.util.Date;
 
-public class TYDateUtils {
+/**
+ * @author Administrator
+ */
+public class TyDateUtils {
     /**
      * 一小时的秒数
      */
@@ -18,7 +21,7 @@ public class TYDateUtils {
      * 与当前时间比较，得到多少年，多少月，多少天前,多少小时前，多小分钟前
      */
     public static String getFriendlytimeByDate(Date d) {
-        long delta = (new Date().getTime() - d.getTime()) / 1000;
+        long delta = (System.currentTimeMillis() - d.getTime()) / 1000;
         if (delta <= 0) return d.toLocaleString();
         if (delta / (60 * 60 * 24 * 365) > 0) return delta / (60 * 60 * 24 * 365) + "年前";
         if (delta / (60 * 60 * 24 * 30) > 0) return delta / (60 * 60 * 24 * 30) + "个月前";
@@ -31,7 +34,8 @@ public class TYDateUtils {
 
     public static String getFriendlytimeByTime(Long date) {
         long time = (Long.valueOf(String.format("%s",System.currentTimeMillis()).substring(0,10)) - date);
-        if (time > 0 && time < 60) {// 1小时内  
+        // 1小时内  
+        if (time > 0 && time < 60) {
            // return time + "秒前";
             return "刚刚";
         } else if (time >= 60 && time < 3600) {

@@ -31,10 +31,12 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import me.jessyan.retrofiturlmanager.RetrofitUrlManager;
 
+/**
+ * @author Administrator
+ */
 public class ArticleDetailActivity extends AppCompatActivity {
     public static final String GROUPID = "GROUPID";
 
-    // @BindView(R.id.webView)
     ArticleDetailWebView webView;
     @BindView(R.id.title)
     TextView title;
@@ -44,7 +46,6 @@ public class ArticleDetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-       // this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_article_detail);
         ButterKnife.bind(this);
@@ -58,8 +59,9 @@ public class ArticleDetailActivity extends AppCompatActivity {
             @Override
             public void keyBoardShow(int height) {
                 LogUtils.e("keyBoardShow = "  + height);
-                if (commentDialog!=null)
+                if (commentDialog!=null) {
                     commentDialog.setSoftKeyBoardHeight(height);
+                }
             }
 
             @Override

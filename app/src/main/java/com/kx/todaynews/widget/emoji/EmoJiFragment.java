@@ -13,6 +13,9 @@ import com.kx.todaynews.ArticleDetailActivity;
 import com.kx.todaynews.R;
 
 
+/**
+ * @author Administrator
+ */
 public class EmoJiFragment extends Fragment {
     private int type = 0;
     private EditText et_input_container;
@@ -36,7 +39,6 @@ public class EmoJiFragment extends Fragment {
     }
 
     private void initView() {
-       // type = getArguments().getInt("EmoJiType");
         ViewPager viewPager = (ViewPager) getView().findViewById(R.id.viewPager);
         CircleIndicator circleIndicator = (CircleIndicator) getView().findViewById(R.id.circleIndicator);
         EmoJiHelper emojiHelper = new EmoJiHelper(type, getContext(), et_input_container);

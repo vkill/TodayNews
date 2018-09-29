@@ -1,18 +1,12 @@
 package com.kx.todaynews.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
-import android.text.style.DynamicDrawableSpan;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.ImageSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,8 +18,7 @@ import com.bumptech.glide.Glide;
 import com.kx.todaynews.R;
 import com.kx.todaynews.bean.article.ArticleTabCommentsBean;
 import com.kx.todaynews.utils.GlideCircleTransform;
-import com.kx.todaynews.utils.TYDateUtils;
-import com.kx.todaynews.widget.CenterAlignImageSpan;
+import com.kx.todaynews.utils.TyDateUtils;
 import com.kx.todaynews.widget.VerticalImageSpan;
 
 import java.util.ArrayList;
@@ -134,7 +127,7 @@ public class ArticleTabCommentsAdapter extends BaseAdapter {
             spannableString.setSpan(imageSpan, mIntegers.get(i), mIntegers.get(i+1)+1, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
         }
         holder.replyContent.setText(spannableString);
-        holder.createTime.setText(String.format("%s", TYDateUtils.getFriendlytimeByTime(dataBean.getCreate_time())));
+        holder.createTime.setText(String.format("%s", TyDateUtils.getFriendlytimeByTime(dataBean.getCreate_time())));
         holder.replyCount.setText(String.format("%s回复",dataBean.getReply_count()));
 
         return convertView;

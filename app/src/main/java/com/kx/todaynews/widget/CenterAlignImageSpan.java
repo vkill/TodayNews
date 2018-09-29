@@ -8,7 +8,9 @@ import android.support.annotation.NonNull;
 import android.text.style.ImageSpan;
 
 /**
- * Created by admin on 2018/9/23.
+ *
+ * @author admin
+ * @date 2018/9/23
  */
 public class CenterAlignImageSpan extends ImageSpan {
 
@@ -17,19 +19,17 @@ public class CenterAlignImageSpan extends ImageSpan {
 
     }
 
-    public CenterAlignImageSpan(Bitmap b) {
-        super(b);
-    }
-
     @Override
     public void draw(@NonNull Canvas canvas, CharSequence text, int start, int end, float x, int top, int y, int bottom,
                      @NonNull Paint paint) {
 
         Drawable b = getDrawable();
         Paint.FontMetricsInt fm = paint.getFontMetricsInt();
-        int transY = (y + fm.descent + y + fm.ascent) / 2 - b.getBounds().bottom / 2;//计算y方向的位移
+        //计算y方向的位移
+        int transY = (y + fm.descent + y + fm.ascent) / 2 - b.getBounds().bottom / 2;
         canvas.save();
-        canvas.translate(x+5, transY);//绘制图片位移一段距离
+        //绘制图片位移一段距离
+        canvas.translate(x+5, transY);
         b.draw(canvas);
         canvas.restore();
     }

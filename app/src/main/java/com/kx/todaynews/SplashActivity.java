@@ -7,6 +7,9 @@ import android.os.Bundle;
 
 import java.util.PrimitiveIterator;
 
+/**
+ * @author Administrator
+ */
 public class SplashActivity extends AppCompatActivity {
     private Handler mHandler = new Handler();
     @Override
