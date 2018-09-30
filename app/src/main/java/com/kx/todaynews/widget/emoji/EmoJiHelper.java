@@ -21,15 +21,15 @@ import java.util.List;
 public class EmoJiHelper {
 
     private Context mContext;
-    private EditText et_input_container;
+    private EditText sendEt;
     private static int EMOJI_PAGE_COUNT = 20;
     private int mPageNum;
     private List<String> emojiResList;
     private int type;
 
-    public EmoJiHelper(int type, Context mContext, EditText et_input) {
+    public EmoJiHelper(int type, Context mContext, EditText sendEt) {
         this.mContext = mContext;
-        this.et_input_container = et_input;
+        this.sendEt = sendEt;
         this.type = type;
         this.emojiResList = EmoJiUtils.getResList(type);
         getPagers();
@@ -48,8 +48,8 @@ public class EmoJiHelper {
     private View getGridView(int position) {
         List mEmoJiList = new ArrayList<>();
         View containerView = View.inflate(mContext, R.layout.container_gridview, null);
-       GridView eg_gridView = containerView.findViewById(R.id.eg_gridView);
-        eg_gridView.setGravity(Gravity.CENTER_VERTICAL);
+       GridView egGridView = containerView.findViewById(R.id.eg_gridView);
+        egGridView.setGravity(Gravity.CENTER_VERTICAL);
         List<String> emojiPageList = null;
         //最后一页
         if (position == mPageNum) {
@@ -64,16 +64,16 @@ public class EmoJiHelper {
 //            for (int i = 0; i < res; i++)
 //                mEmoJiList.add("[空格]");
 //        }
-        mEmoJiList.add("[删除]");
+        mEmoJiList.add(EMOJI_DETELE);
 
         final EmoJiAdapter mEmoJiAdapter = new EmoJiAdapter(type, mContext, position, mEmoJiList);
-        eg_gridView.setAdapter(mEmoJiAdapter);
-        eg_gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        egGridView.setAdapter(mEmoJiAdapter);
+        egGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int positionIndex, long id) {
                 String fileName = mEmoJiAdapter.getItem(positionIndex);
                 // 不是删除键，显示表情
-                if (!TextUtils.equals("[删除]",fileName)) {
+                if (!TextUtils.equals(EMOJI_DETELE,fileName)) {
                     showEmoJi(fileName);
                 } else {
                     // 删除文字或者表情
@@ -86,54 +86,55 @@ public class EmoJiHelper {
 
     /**
      * 显示EmoJi表情
-     *
-     * @param fileName
      */
     private void showEmoJi(String fileName) {
-        int selectionStart = et_input_container.getSelectionStart();
-        String body = et_input_container.getText().toString();
+        int selectionStart = sendEt.getSelectionStart();
+        String body = sendEt.getText().toString();
         StringBuilder stringBuilder = new StringBuilder(body);
         stringBuilder.insert(selectionStart, fileName);
-        et_input_container.setText(EmoJiUtils.parseEmoJi(et_input_container,mContext, stringBuilder.toString()));
-        et_input_container.setSelection(selectionStart + fileName.length());
+        sendEt.setText(EmoJiUtils.parseEmoJi(sendEt,mContext, stringBuilder.toString()));
+        sendEt.setSelection(selectionStart + fileName.length());
     }
 
     /**
      * 删除表情或文字
      */
     private void deleteContent() {
-        if (!TextUtils.isEmpty(et_input_container.getText())) {
+        if (!TextUtils.isEmpty(sendEt.getText())) {
             //获取光标位置
-            int selectionStart = et_input_container.getSelectionStart();
+            int selectionStart = sendEt.getSelectionStart();
             if (selectionStart > 0) {
-                String body = et_input_container.getText().toString();
+                String body = sendEt.getText().toString();
                 //获取最后一个字符
                 String lastStr = body.substring(selectionStart - 1, selectionStart);
                 //表情
-                if (("]").equals(lastStr)) {
+                if ((EMOJI_END).equals(lastStr)) {
                     //从中间开始删除
                     if (selectionStart < body.length()) {
                         body = body.substring(0, selectionStart);
                     }
-                    int i = body.lastIndexOf("[");
+                    int i = body.lastIndexOf(EMOJI_START);
                     if (i != -1) {
                         //截取表情码
                         String tempStr = body.substring(i, selectionStart);
                         //校验是否是表情
                         if (EmoJiUtils.getAllRes().contains(tempStr)) {
                             //删除表情
-                            et_input_container.getEditableText().delete(i, selectionStart);
+                            sendEt.getEditableText().delete(i, selectionStart);
                         } else {
                             //删除一个字符
-                            et_input_container.getEditableText().delete(selectionStart - 1, selectionStart);
+                            sendEt.getEditableText().delete(selectionStart - 1, selectionStart);
                         }
                     } else {
-                        et_input_container.getEditableText().delete(selectionStart - 1, selectionStart);
+                        sendEt.getEditableText().delete(selectionStart - 1, selectionStart);
                     }
                 } else {//非表情
-                    et_input_container.getEditableText().delete(selectionStart - 1, selectionStart);
+                    sendEt.getEditableText().delete(selectionStart - 1, selectionStart);
                 }
             }
         }
     }
+    private static final String EMOJI_START = "[";
+    private static final String EMOJI_END = "]";
+    private static final String EMOJI_DETELE = "[删除]";
 }

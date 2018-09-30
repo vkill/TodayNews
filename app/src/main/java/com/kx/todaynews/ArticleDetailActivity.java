@@ -11,6 +11,7 @@ import com.kx.todaynews.adapter.ArticleTabCommentsAdapter;
 import com.kx.todaynews.bean.article.ArticleTabCommentsBean;
 import com.kx.todaynews.bean.article.CommentsAndDetailBean;
 import com.kx.todaynews.bean.article.TextDetailInfo;
+import com.kx.todaynews.module.ArticleReplyBottomFragment;
 import com.kx.todaynews.net.YZNetClient;
 import com.kx.todaynews.utils.LogUtils;
 import com.kx.todaynews.utils.ToastUtils;
@@ -49,11 +50,18 @@ public class ArticleDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_article_detail);
         ButterKnife.bind(this);
+        mCommentsAdapter = new ArticleTabCommentsAdapter(ArticleDetailActivity.this);
+        listView.setAdapter(mCommentsAdapter);
         webView = new ArticleDetailWebView(this);
         RetrofitUrlManager.getInstance().putDomain("a3", YZNetClient.HOST_A3);
         webView.setOnWebViewImageClickListener(imageUrl -> ToastUtils.showToast("图片地址 =     " + imageUrl));
         String groupId = getIntent().getStringExtra(GROUPID);
         getArticleDetailData(groupId);
+        mCommentsAdapter.setOnArticleReplyClickListener((commentBean, position) -> {
+            ArticleReplyBottomFragment bottomSheetFragment = new ArticleReplyBottomFragment();
+            bottomSheetFragment.show(getSupportFragmentManager(), ArticleReplyBottomFragment.class.getSimpleName());
+        });
+
 
         SoftKeyBoardListener.setListener(this, new SoftKeyBoardListener.OnSoftKeyBoardChangeListener() {
             @Override
@@ -96,10 +104,6 @@ public class ArticleDetailActivity extends AppCompatActivity {
                             for (int i = size - 1; i >= 0; i--) {
                                 String xx = "&index=" + i;
                                 content = content.replace(xx, " ");
-                            }
-                            if (mCommentsAdapter ==null){
-                                mCommentsAdapter = new ArticleTabCommentsAdapter(ArticleDetailActivity.this);
-                                listView.setAdapter(mCommentsAdapter);
                             }
                             listView.addHeaderView(webView);
                             webView.loadHtmlStringData(content);

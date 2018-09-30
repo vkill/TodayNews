@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.kx.todaynews.R;
 import com.kx.todaynews.bean.article.ArticleTabCommentsBean;
+import com.kx.todaynews.listener.OnArticleReplyClickListener;
 import com.kx.todaynews.utils.GlideCircleTransform;
 import com.kx.todaynews.utils.TyDateUtils;
 import com.kx.todaynews.widget.emoji.EmoJiUtils;
@@ -23,7 +24,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Created by admin on 2018/9/22.
+ *
+ * @author admin
+ * @date 2018/9/22
  */
 public class ArticleTabCommentsAdapter extends BaseAdapter {
     private ArrayList<ArticleTabCommentsBean.DataBean> mComments = new ArrayList<>();
@@ -96,7 +99,14 @@ public class ArticleTabCommentsAdapter extends BaseAdapter {
         holder.replyContent.setText(EmoJiUtils.parseEmoJi( holder.replyContent,mContext,text));
         holder.createTime.setText(String.format("%s", TyDateUtils.getFriendlytimeByTime(dataBean.getCreate_time())));
         holder.replyCount.setText(String.format("%s回复",dataBean.getReply_count()));
-
+        if (mOnArticleReplyClickListener!=null){
+            holder.replyCount.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mOnArticleReplyClickListener.onarticlereplyclick(dataBean,position);
+                }
+            });
+        }
         return convertView;
     }
 
@@ -123,5 +133,10 @@ public class ArticleTabCommentsAdapter extends BaseAdapter {
     private int getTextHeight(TextView textView){
         Paint.FontMetricsInt fontMetricsInt =  textView.getPaint().getFontMetricsInt();
         return 10 + fontMetricsInt.descent - fontMetricsInt.ascent;
+    }
+    OnArticleReplyClickListener<ArticleTabCommentsBean.DataBean.CommentBean> mOnArticleReplyClickListener;
+
+    public void setOnArticleReplyClickListener(OnArticleReplyClickListener<ArticleTabCommentsBean.DataBean.CommentBean> onArticleReplyClickListener) {
+        mOnArticleReplyClickListener = onArticleReplyClickListener;
     }
 }
