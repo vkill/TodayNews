@@ -1,5 +1,8 @@
 package com.kx.todaynews.bean.article;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -373,7 +376,7 @@ public class ArticleTabCommentsBean {
             this.comment = comment;
         }
 
-        public static class CommentBean {
+        public static class CommentBean implements Parcelable{
             /**
              * author_badge : []
              * bury_count : 0
@@ -443,6 +446,50 @@ public class ArticleTabCommentsBean {
             private List<?> large_image_list;
             private List<?> reply_list;
             private List<?> thumb_image_list;
+
+            protected CommentBean(Parcel in) {
+                bury_count = in.readInt();
+                content_rich_span = in.readString();
+                create_time = in.readLong();
+                digg_count = in.readInt();
+                forward_count = in.readInt();
+                has_author_digg = in.readInt();
+                id = in.readLong();
+                interact_style = in.readInt();
+                is_blocked = in.readInt();
+                is_blocking = in.readInt();
+                is_followed = in.readInt();
+                is_following = in.readInt();
+                is_pgc_author = in.readInt();
+                media_info = in.readParcelable(MediaInfoBean.class.getClassLoader());
+                platform = in.readString();
+                remark_name = in.readString();
+                reply_count = in.readInt();
+                score = in.readDouble();
+                text = in.readString();
+                user_auth_info = in.readString();
+                user_bury = in.readInt();
+                user_decoration = in.readString();
+                user_digg = in.readInt();
+                user_id = in.readLong();
+                user_name = in.readString();
+                user_profile_image_url = in.readString();
+                user_relation = in.readInt();
+                user_verified = in.readByte() != 0;
+                verified_reason = in.readString();
+            }
+
+            public static final Creator<CommentBean> CREATOR = new Creator<CommentBean>() {
+                @Override
+                public CommentBean createFromParcel(Parcel in) {
+                    return new CommentBean(in);
+                }
+
+                @Override
+                public CommentBean[] newArray(int size) {
+                    return new CommentBean[size];
+                }
+            };
 
             public int getBury_count() {
                 return bury_count;
@@ -708,7 +755,45 @@ public class ArticleTabCommentsBean {
                 this.thumb_image_list = thumb_image_list;
             }
 
-            public static class MediaInfoBean {
+            @Override
+            public int describeContents() {
+                return 0;
+            }
+
+            @Override
+            public void writeToParcel(Parcel dest, int flags) {
+                dest.writeInt(bury_count);
+                dest.writeString(content_rich_span);
+                dest.writeLong(create_time);
+                dest.writeInt(digg_count);
+                dest.writeInt(forward_count);
+                dest.writeInt(has_author_digg);
+                dest.writeLong(id);
+                dest.writeInt(interact_style);
+                dest.writeInt(is_blocked);
+                dest.writeInt(is_blocking);
+                dest.writeInt(is_followed);
+                dest.writeInt(is_following);
+                dest.writeInt(is_pgc_author);
+                dest.writeParcelable(media_info, flags);
+                dest.writeString(platform);
+                dest.writeString(remark_name);
+                dest.writeInt(reply_count);
+                dest.writeDouble(score);
+                dest.writeString(text);
+                dest.writeString(user_auth_info);
+                dest.writeInt(user_bury);
+                dest.writeString(user_decoration);
+                dest.writeInt(user_digg);
+                dest.writeLong(user_id);
+                dest.writeString(user_name);
+                dest.writeString(user_profile_image_url);
+                dest.writeInt(user_relation);
+                dest.writeByte((byte) (user_verified ? 1 : 0));
+                dest.writeString(verified_reason);
+            }
+
+            public static class MediaInfoBean implements Parcelable{
                 /**
                  * avatar_url :
                  * name :
@@ -716,6 +801,23 @@ public class ArticleTabCommentsBean {
 
                 private String avatar_url;
                 private String name;
+
+                protected MediaInfoBean(Parcel in) {
+                    avatar_url = in.readString();
+                    name = in.readString();
+                }
+
+                public static final Creator<MediaInfoBean> CREATOR = new Creator<MediaInfoBean>() {
+                    @Override
+                    public MediaInfoBean createFromParcel(Parcel in) {
+                        return new MediaInfoBean(in);
+                    }
+
+                    @Override
+                    public MediaInfoBean[] newArray(int size) {
+                        return new MediaInfoBean[size];
+                    }
+                };
 
                 public String getAvatar_url() {
                     return avatar_url;
@@ -731,6 +833,17 @@ public class ArticleTabCommentsBean {
 
                 public void setName(String name) {
                     this.name = name;
+                }
+
+                @Override
+                public int describeContents() {
+                    return 0;
+                }
+
+                @Override
+                public void writeToParcel(Parcel dest, int flags) {
+                    dest.writeString(avatar_url);
+                    dest.writeString(name);
                 }
             }
         }

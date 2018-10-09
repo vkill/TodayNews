@@ -58,7 +58,7 @@ public class ArticleDetailActivity extends AppCompatActivity {
         String groupId = getIntent().getStringExtra(GROUPID);
         getArticleDetailData(groupId);
         mCommentsAdapter.setOnArticleReplyClickListener((commentBean, position) -> {
-            ArticleReplyBottomFragment bottomSheetFragment = new ArticleReplyBottomFragment();
+            ArticleReplyBottomFragment bottomSheetFragment =  ArticleReplyBottomFragment.getInstance(commentBean);
             bottomSheetFragment.show(getSupportFragmentManager(), ArticleReplyBottomFragment.class.getSimpleName());
         });
 

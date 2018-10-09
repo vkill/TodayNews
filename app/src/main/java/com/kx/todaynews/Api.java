@@ -2,8 +2,9 @@ package com.kx.todaynews;
 
 
 import com.kx.todaynews.bean.HotBean;
-import com.kx.todaynews.bean.article.TextDetailInfo;
+import com.kx.todaynews.bean.article.ArticleReplyListBean;
 import com.kx.todaynews.bean.article.ArticleTabCommentsBean;
+import com.kx.todaynews.bean.article.TextDetailInfo;
 
 import io.reactivex.Observable;
 import retrofit2.http.GET;
@@ -50,6 +51,10 @@ public interface Api {
             @Query("_rticket") long _rticket,
             @Query("ts") long ts
    );
+
+    /**
+     * 获取新闻评论数据
+     */
     //  http://lf.snssdk.com/article/v3/tab_comments/?group_id=6603942533846270472&item_id=6603942533846270472&aggr_type=1&count=20&offset=0&tab_index=0&fold=1&iid=44267707161&device_id=57548705831&ac=wifi&channel=tengxun2&aid=13&app_name=news_article&version_code=691&version_name=6.9.1&device_platform=android&ab_version=468954%2C271178%2C424178%2C326524%2C326532%2C476036%2C513126%2C496389%2C345191%2C504889%2C512336%2C512047%2C504723%2C513201%2C424606%2C514035%2C455643%2C424177%2C214069%2C513805%2C507002%2C442255%2C511870%2C512958%2C489509%2C280449%2C281299%2C513401%2C511104%2C325618%2C508560%2C510116%2C512807%2C498551%2C509887%2C508594%2C386889%2C498375%2C397995%2C467514%2C513891%2C512007%2C444464%2C506751%2C512806%2C425530%2C511489%2C512678%2C486952%2C442428%2C500130%2C504794%2C494121%2C499728%2C478963%2C496464%2C239097%2C500092%2C170988%2C493249%2C480607%2C374117%2C495946%2C478532%2C489312%2C501963%2C509852%2C513538%2C276206%2C453560%2C435216%2C459650%2C459993%2C511225%2C500386%2C416055%2C510641%2C392484%2C511164%2C495897%2C378451%2C471406%2C510754%2C513728%2C508932%2C509307%2C512915%2C261578%2C403270%2C491728%2C491265%2C293032%2C457481%2C502679%2C510535%2C491255%2C507368&ab_client=a1%2Cc4%2Ce1%2Cf1%2Cg2%2Cf7&ab_feature=94563%2C102749&abflag=3&ssmix=a&device_type=Redmi+Note+4X&device_brand=xiaomi&language=zh&os_api=24&os_version=7.0&openudid=30f2074ddcee24da&manifest_version_code=691&resolution=1080*1920&dpi=480&update_version_code=69111&_rticket=1537609732549&fp=irT_JzPqFlKtFlD_PlU1F2mIFSF1&tma_jssdk_version=1.2.2.4&pos=5r_-9Onkv6e_ezA7eywUeCUfv7G_8fLz-vTp6Pn4v6esrKmzqaqqrKupsb_x_On06ej5-L-nrq2zqK2tqqmusb_88Pzt3vTp5L-nv3swO3ssFHglH7-xv_zw_O3R8vP69Ono-fi_p6ysqbOppa-lra6xv_zw_O3R_On06ej5-L-nrq2zqaSkpa2k4A%3D%3D&rom_version=miui_v9_v9.6.2.0.ncfcnfd&plugin=26958&ts=1537609732&as=a245b18ae4b0cbc0a68110&mas=0014a6a332b1c033c57c10923e9a967fc0684e0cd2454cccde
     @Headers({"Domain-Name: 1f"}) // Add the Domain-Name header
     @GET("article/v3/tab_comments/?&aggr_type=1&count=20&offset=0&tab_index=0&fold=1&iid=44267707161&device_id=57548705831&ac=wifi" +
@@ -62,6 +67,18 @@ public interface Api {
             @Query("group_id") String group_id,
             @Query("item_id") String item_id,
             @Query("_rticket") long _rticket,
-            @Query("ts") long ts
-    );
+            @Query("ts") long ts);
+
+    /**
+     *  获取回复列表数据
+     */
+    @Headers({"Domain-Name: 1f"}) // Add the Domain-Name header
+     @GET("2/comment/v3/reply_list/?count=20&offset=0&iid=44267707161&device_id=57548705831&ac=wifi&channel=tengxun2&aid=13&app_name=news_article&version_code=691&version_name=6.9.1&device_platform=android&" +
+             "ab_version=496389%2C536182%2C531432%2C518641%2C504723%2C513201%2C523417%2C525310%2C424177%2C214069%2C442255%2C519256%2C523095%2C280449%2C523503%2C281299%2C513401%2C523456%2C325618%2C526720%2C524588%2C535577%2C498375%2C467514%2C515673%2C444464%2C425530%2C511489%2C486952%2C442428%2C494121%2C239097%2C500092%2C170988%2C493249%2C523525%2C374117%2C495946%2C478532%2C516058%2C517715%2C489312%2C501963%2C276206%2C533728%2C533847%2C435216%2C459650%2C459993%2C536020%2C416055%2C533534%2C392484%2C470731%2C520076%2C378451%2C471406%2C522904%2C519795%2C523156%2C509307%2C512915%2C468954%2C271178%2C424178%2C536459%2C326524%2C523980%2C326532%2C535661%2C261578%2C403270%2C293032%2C457481%2C510535%2C491255%2C525040&ab_client=a1%2Cc4%2Ce1%2Cf1%2Cg2%2Cf7&ab_feature=94563%2C102749&abflag=3&ssmix=a&device_type=Redmi+Note+4X&device_brand=xiaomi&language=zh&os_api=24&os_version=7.0&openudid=30f2074ddcee24da&manifest_version_code=691&resolution=1080*1920&dpi=480&update_version_code=69111" +
+             "&fp=irT_JzPqFlKtFlD_PlU1F2mIFSF1&tma_jssdk_version=1.2.2.4&rom_version=miui_v9_v9.6.2.0.ncfcnfd&plugin=26958&" +
+             "as=a205fb9b1709bb2cdc5971&mas=0005d62e1bdfda633339ae93acf52100860a42acc85e2d4a90")
+    Observable<ArticleReplyListBean> getArticleReplyList(
+            @Query("id") long replyId,
+            @Query("_rticket") long _rticket,
+            @Query("ts") long ts);
 }
