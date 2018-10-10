@@ -2,6 +2,7 @@ package com.kx.todaynews;
 
 
 import com.kx.todaynews.bean.HotBean;
+import com.kx.todaynews.bean.article.ArticleReplyDiggListBean;
 import com.kx.todaynews.bean.article.ArticleReplyListBean;
 import com.kx.todaynews.bean.article.ArticleTabCommentsBean;
 import com.kx.todaynews.bean.article.TextDetailInfo;
@@ -81,4 +82,18 @@ public interface Api {
             @Query("id") String replyId,
             @Query("_rticket") long rTicket,
             @Query("ts") long ts);
+
+    /**
+     *  获取回复数据点赞列表
+     */
+    @Headers({"Domain-Name: 1f"}) // Add the Domain-Name header
+    @GET("2/comment/v1/digg_list/?count=20&offset=0&iid=44267707161&device_id=57548705831&ac=wifi&channel=tengxun2&aid=13&app_name=news_article&version_code=691&version_name=6.9.1&device_platform=android&ab_version=425530%2C537722%2C538539%2C486952%2C442428%2C494121%2C537120%2C239097%2C500092%2C170988%2C493249%2C523525%2C374117%2C495946%2C478532%2C516058%2C517715%2C489312%2C501963%2C276206%2C537597%2C533847%2C435216%2C537153%2C459650%2C459993%2C538044%2C536020%2C416055%2C392484%2C470731%2C520076%2C378451%2C471406%2C522904%2C519795%2C523156%2C509307%2C512915%2C468954%2C271178%2C424178%2C536459%2C326524%2C537133%2C326532%2C537903%2C496389%2C537857%2C518641%2C504723%2C513201%2C523417%2C537553%2C525310%2C424177%2C214069%2C538015%2C442255%2C523095%2C537165%2C280449%2C523503%2C281299%2C523456%2C325618%2C526720%2C524588%2C537141%2C498375%2C467514%2C515673%2C444464%2C538429%2C491255%2C525040%2C261578%2C403270%2C293032%2C457481&ab_client=a1%2Cc4%2Ce1%2Cf1%2Cg2%2Cf7&ab_feature=94563%2C102749&abflag=3&ssmix=a&device_type=Redmi+Note+4X&device_brand=xiaomi&language=zh&os_api=24&os_version=7.0&openudid=30f2074ddcee24da&manifest_version_code=691&resolution=1080*1920&dpi=480&update_version_code=69111" +
+            "&fp=irT_JzPqFlKtFlD_PlU1F2mIFSF1&tma_jssdk_version=1.2.2.4&rom_version=miui_v9_v9.6.2.0.ncfcnfd&plugin=26958" +
+            "&as=a2250f5bca1deb8ddd7336&mas=0028a47499749589e0f4583e76d4628b3fef4c4c860a08a839")
+    Observable<ArticleReplyDiggListBean> getArticleReplyDiggList(
+            @Query("id") String diggId,
+            @Query("_rticket") long rTicket,
+            @Query("ts") long ts);
+
+
 }

@@ -33,7 +33,6 @@ public class ArticleTabCommentsAdapter extends BaseAdapter {
 
     private LayoutInflater mLayoutInflater;
     private Context mContext ;
-    private ArrayList<Integer> mIntegers;
     Typeface mTypeFace ;
     public ArticleTabCommentsAdapter(Context context) {
         mLayoutInflater = LayoutInflater.from(context);

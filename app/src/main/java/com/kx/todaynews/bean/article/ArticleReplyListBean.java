@@ -13,11 +13,19 @@ public class ArticleReplyListBean {
      * message : success
      * stable : true
      */
-
+    private List<String> diggListImages;
     private boolean ban_face;
     private DataBeanX data;
     private String message;
     private boolean stable;
+
+    public List<String> getDiggListImages() {
+        return diggListImages;
+    }
+
+    public void setDiggListImages(List<String> diggListImages) {
+        this.diggListImages = diggListImages;
+    }
 
     public boolean isBan_face() {
         return ban_face;

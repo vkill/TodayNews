@@ -15,11 +15,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.kx.todaynews.Api;
 import com.kx.todaynews.R;
+import com.kx.todaynews.bean.article.ArticleReplyDiggListBean;
 import com.kx.todaynews.bean.article.ArticleReplyListBean;
 import com.kx.todaynews.bean.article.ArticleTabCommentsBean;
 import com.kx.todaynews.module.adapter.ArticleReplyListFragmentAdapter;
@@ -30,15 +32,16 @@ import com.kx.todaynews.utils.TyDateUtils;
 import com.kx.todaynews.utils.UiUtils;
 import com.kx.todaynews.widget.emoji.EmoJiUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.Unbinder;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
@@ -82,8 +85,10 @@ public class ArticleReplyBottomFragment extends BottomSheetDialogFragment {
     ImageView userAvatar;
     TextView userName;
     TextView diggCount;
+    TextView fabulousCount;
     TextView replyContent;
     TextView createTime;
+    LinearLayout llIvContainer;
     private BottomSheetBehavior mBehavior;
     private BottomSheetBehavior.BottomSheetCallback mBottomSheetBehaviorCallback
             = new BottomSheetBehavior.BottomSheetCallback() {
@@ -138,14 +143,16 @@ public class ArticleReplyBottomFragment extends BottomSheetDialogFragment {
         userAvatar = headerView.findViewById(R.id.user_avatar);
         userName = headerView.findViewById(R.id.user_name);
         diggCount = headerView.findViewById(R.id.digg_count);
+        fabulousCount = headerView.findViewById(R.id.fabulous_count);
         replyContent = headerView.findViewById(R.id.reply_content);
         createTime = headerView.findViewById(R.id.create_time);
+        llIvContainer = headerView.findViewById(R.id.ll_iv_container);
         mReplyListAdapter.addHeaderView(headerView);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recycleView.setLayoutManager(linearLayoutManager);
         recycleView.setAdapter(mReplyListAdapter);
-
+        mReplyListAdapter.setonReplyUserNameClickLintener(userName -> ToastUtils.showToast(userName,getActivity()));
         return dialog;
     }
 
@@ -172,16 +179,48 @@ public class ArticleReplyBottomFragment extends BottomSheetDialogFragment {
                 Glide.with(getContext()).load(commentBean.getUser_profile_image_url()).transform(new GlideCircleTransform(getContext())).into(userAvatar);
                 userName.setText(String.format("%s",commentBean.getUser_name()));
                 diggCount.setText(String.format("%s",commentBean.getDigg_count()));
+                fabulousCount.setText(String.format("%s人赞过",commentBean.getDigg_count()));
                 String text = commentBean.getText();
                 replyContent.setText(EmoJiUtils.parseEmoJi( replyContent,getContext(),text));
                 createTime.setText(String.format("%s", TyDateUtils.getFriendlytimeByTime(commentBean.getCreate_time())));
 
-                Disposable subscribe = getArticleReplyLists(commentBean.getId()).subscribe(new Consumer<ArticleReplyListBean>() {
+                Disposable subscribe = Observable.zip(getArticleReplyLists(commentBean.getId()), getArticleReplyDiggLists(commentBean.getId()), new BiFunction<ArticleReplyListBean, ArticleReplyDiggListBean, ArticleReplyListBean>() {
+                    @Override
+                    public ArticleReplyListBean apply(ArticleReplyListBean articleReplyListBean, ArticleReplyDiggListBean articleReplyDiggListBean) throws Exception {
+                        if (articleReplyDiggListBean!=null){
+                            List<ArticleReplyDiggListBean.DataBeanX.DataBean> data = articleReplyDiggListBean.getData().getData();
+                            if (data!=null && data.size()>0 ){
+                                List<String> strings = new ArrayList<>();
+                                for ( ArticleReplyDiggListBean.DataBeanX.DataBean dataBean :  data) {
+                                    if (strings.size()==3){
+                                        break;
+                                    }
+                                    strings.add(dataBean.getAvatar_url());
+                                }
+                                articleReplyListBean.setDiggListImages(strings);
+                            }
+                        }
+                        return articleReplyListBean;
+                    }
+                }).subscribe(new Consumer<ArticleReplyListBean>() {
                     @Override
                     public void accept(ArticleReplyListBean articleReplyListBean) throws Exception {
                         int totalCount = articleReplyListBean.getData().getTotal_count();
                         if (totalCount > 0) {
                             titleReplyCount.setText(String.format("%S条回复", totalCount));
+                        }
+                        List<String> diggListImages = articleReplyListBean.getDiggListImages();
+                        if (diggListImages!=null){
+                            for (String images: diggListImages) {
+                                ImageView imageView = new ImageView(getContext());
+                                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                                params.width = (int) UiUtils.dp2px(getContext(),25);
+                                params.height = (int) UiUtils.dp2px(getContext(),25);
+                                params.rightMargin = (int) UiUtils.dp2px(getContext(),4);
+                                imageView.setLayoutParams(params);
+                                Glide.with(getContext()).load(images).transform(new GlideCircleTransform(getContext())).into(imageView);
+                                llIvContainer.addView(imageView);
+                            }
                         }
                         List<ArticleReplyListBean.DataBeanX.DataBean> data = articleReplyListBean.getData().getData();
                         if (data != null && data.size() > 0) {
@@ -201,6 +240,11 @@ public class ArticleReplyBottomFragment extends BottomSheetDialogFragment {
     private Observable<ArticleReplyListBean> getArticleReplyLists(long replyId) {
         return YZNetClient.getInstance().get(Api.class).getArticleReplyList(
                 replyId + "", Long.valueOf((System.currentTimeMillis() + "").substring(0, 10)), System.currentTimeMillis())
+                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+    }
+    private Observable<ArticleReplyDiggListBean> getArticleReplyDiggLists(long diggId) {
+        return YZNetClient.getInstance().get(Api.class).getArticleReplyDiggList(
+                diggId + "", Long.valueOf((System.currentTimeMillis() + "").substring(0, 10)), System.currentTimeMillis())
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 

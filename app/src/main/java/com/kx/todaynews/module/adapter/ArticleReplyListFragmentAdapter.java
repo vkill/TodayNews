@@ -19,9 +19,9 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import com.kx.todaynews.R;
 import com.kx.todaynews.bean.article.ArticleReplyListBean;
 import com.kx.todaynews.utils.GlideCircleTransform;
-import com.kx.todaynews.utils.ToastUtils;
 import com.kx.todaynews.utils.TyDateUtils;
 import com.kx.todaynews.widget.emoji.EmoJiUtils;
+
 
 /**
  * @author Administrator
@@ -59,7 +59,9 @@ public class ArticleReplyListFragmentAdapter extends BaseQuickAdapter<ArticleRep
                 @Override
                 public void onClick(View view) {
                     TextView textView = (TextView) view;
-                    textView.post(() -> ToastUtils.showToast(textView.getTag().toString()));
+                    if (mLintener!=null){
+                        mLintener.onUserNameClick(textView.getTag().toString());
+                    }
                 }
                 // 去掉下划线
                 @Override
@@ -72,5 +74,14 @@ public class ArticleReplyListFragmentAdapter extends BaseQuickAdapter<ArticleRep
             replyContent.setHighlightColor(Color.parseColor("#36969696"));
         }
         holder.setText(R.id.reply_content,spannableString);
+    }
+    onReplyUserNameClickLintener  mLintener ;
+
+    public void setonReplyUserNameClickLintener(onReplyUserNameClickLintener lintener) {
+        mLintener = lintener;
+    }
+
+    public interface onReplyUserNameClickLintener {
+        void onUserNameClick(String userName);
     }
 }
