@@ -98,7 +98,7 @@ public class ArticleTabCommentsAdapter extends BaseAdapter {
         String text = dataBean.getText();
         holder.replyContent.setText(EmoJiUtils.parseEmoJi( holder.replyContent,mContext,text));
         holder.createTime.setText(String.format("%s", TyDateUtils.getFriendlytimeByTime(dataBean.getCreate_time())));
-        holder.replyCount.setText(String.format("%s回复",dataBean.getReply_count()));
+        holder.replyCount.setText(String.format("%s回复",(dataBean.getReply_count()<=0 ? "": dataBean.getReply_count())));
         if (mOnArticleReplyClickListener!=null){
             holder.replyCount.setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -64,9 +64,9 @@ public interface Api {
             "&tma_jssdk_version=1.2.2.4&pos=5r_-9Onkv6e_ezA7eywUeCUfv7G_8fLz-vTp6Pn4v6esrKmzqaqqrKupsb_x_On06ej5-L-nrq2zqK2tqqmusb_88Pzt3vTp5L-nv3swO3ssFHglH7-xv_zw_O3R8vP69Ono-fi_p6ysqbOppa-lra6xv_zw_O3R_On06ej5-L-nrq2zqaSkpa2k4A%3D%3D" +
             "&rom_version=miui_v9_v9.6.2.0.ncfcnfd&plugin=26958&&as=a245b18ae4b0cbc0a68110&mas=0014a6a332b1c033c57c10923e9a967fc0684e0cd2454cccde")
     Observable<ArticleTabCommentsBean> getTabComments(
-            @Query("group_id") String group_id,
-            @Query("item_id") String item_id,
-            @Query("_rticket") long _rticket,
+            @Query("group_id") String groupId,
+            @Query("item_id") String itemId,
+            @Query("_rticket") long rTicket,
             @Query("ts") long ts);
 
     /**
@@ -78,7 +78,7 @@ public interface Api {
              "&fp=irT_JzPqFlKtFlD_PlU1F2mIFSF1&tma_jssdk_version=1.2.2.4&rom_version=miui_v9_v9.6.2.0.ncfcnfd&plugin=26958&" +
              "as=a205fb9b1709bb2cdc5971&mas=0005d62e1bdfda633339ae93acf52100860a42acc85e2d4a90")
     Observable<ArticleReplyListBean> getArticleReplyList(
-            @Query("id") long replyId,
-            @Query("_rticket") long _rticket,
+            @Query("id") String replyId,
+            @Query("_rticket") long rTicket,
             @Query("ts") long ts);
 }

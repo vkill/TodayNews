@@ -17,20 +17,25 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.kx.todaynews.Api;
 import com.kx.todaynews.R;
 import com.kx.todaynews.bean.article.ArticleReplyListBean;
 import com.kx.todaynews.bean.article.ArticleTabCommentsBean;
 import com.kx.todaynews.module.adapter.ArticleReplyListFragmentAdapter;
 import com.kx.todaynews.net.YZNetClient;
+import com.kx.todaynews.utils.GlideCircleTransform;
 import com.kx.todaynews.utils.ToastUtils;
+import com.kx.todaynews.utils.TyDateUtils;
 import com.kx.todaynews.utils.UiUtils;
+import com.kx.todaynews.widget.emoji.EmoJiUtils;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -72,7 +77,13 @@ public class ArticleReplyBottomFragment extends BottomSheetDialogFragment {
     ImageView ivFinish;
     @BindView(R.id.recycleView)
     RecyclerView recycleView;
-    ArticleReplyListFragmentAdapter mReplyListAdapter ;
+    ArticleReplyListFragmentAdapter mReplyListAdapter;
+    ArticleTabCommentsBean.DataBean.CommentBean commentBean;
+    ImageView userAvatar;
+    TextView userName;
+    TextView diggCount;
+    TextView replyContent;
+    TextView createTime;
     private BottomSheetBehavior mBehavior;
     private BottomSheetBehavior.BottomSheetCallback mBottomSheetBehaviorCallback
             = new BottomSheetBehavior.BottomSheetCallback() {
@@ -94,9 +105,10 @@ public class ArticleReplyBottomFragment extends BottomSheetDialogFragment {
             }
         }
     };
-    public static ArticleReplyBottomFragment getInstance(ArticleTabCommentsBean.DataBean.CommentBean commentBean){
+
+    public static ArticleReplyBottomFragment getInstance(ArticleTabCommentsBean.DataBean.CommentBean commentBean) {
         Bundle bundle = new Bundle();
-        bundle.putParcelable(COMMENTBEAN,commentBean);
+        bundle.putParcelable(COMMENTBEAN, commentBean);
         ArticleReplyBottomFragment articleReplyBottomFragment = new ArticleReplyBottomFragment();
         articleReplyBottomFragment.setArguments(bundle);
         return articleReplyBottomFragment;
@@ -120,8 +132,23 @@ public class ArticleReplyBottomFragment extends BottomSheetDialogFragment {
                 .setBackgroundColor(getResources().getColor(android.R.color.transparent));
         mBehavior = BottomSheetBehavior.from((View) view.getParent());
         mBehavior.setBottomSheetCallback(mBottomSheetBehaviorCallback);
+
+        mReplyListAdapter = new ArticleReplyListFragmentAdapter(getActivity(), R.layout.item_article_reply_list);
+        View headerView = View.inflate(getContext(), R.layout.header_view_article_reply_list, null);
+        userAvatar = headerView.findViewById(R.id.user_avatar);
+        userName = headerView.findViewById(R.id.user_name);
+        diggCount = headerView.findViewById(R.id.digg_count);
+        replyContent = headerView.findViewById(R.id.reply_content);
+        createTime = headerView.findViewById(R.id.create_time);
+        mReplyListAdapter.addHeaderView(headerView);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        recycleView.setLayoutManager(linearLayoutManager);
+        recycleView.setAdapter(mReplyListAdapter);
+
         return dialog;
     }
+
 
     @Override
     public void onStart() {
@@ -130,25 +157,34 @@ public class ArticleReplyBottomFragment extends BottomSheetDialogFragment {
         mBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
         //mBehavior.setSkipCollapsed(true);
         // mBehavior.setPeekHeight(0);
-        mReplyListAdapter = new ArticleReplyListFragmentAdapter(R.layout.item_article_tab_comments);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        recycleView.setLayoutManager(linearLayoutManager);
-        recycleView.setAdapter(mReplyListAdapter);
     }
 
     @Override
     public void onResume() {
         super.onResume();
         Bundle arguments = getArguments();
-        if (arguments!=null){
-            ArticleTabCommentsBean.DataBean.CommentBean commentBean = arguments.getParcelable(COMMENTBEAN);
-            if (commentBean!=null){
+        if (arguments != null) {
+            if (commentBean != null) {
+                return;
+            }
+            commentBean = arguments.getParcelable(COMMENTBEAN);
+            if (commentBean != null) {
+                Glide.with(getContext()).load(commentBean.getUser_profile_image_url()).transform(new GlideCircleTransform(getContext())).into(userAvatar);
+                userName.setText(String.format("%s",commentBean.getUser_name()));
+                diggCount.setText(String.format("%s",commentBean.getDigg_count()));
+                String text = commentBean.getText();
+                replyContent.setText(EmoJiUtils.parseEmoJi( replyContent,getContext(),text));
+                createTime.setText(String.format("%s", TyDateUtils.getFriendlytimeByTime(commentBean.getCreate_time())));
+
                 Disposable subscribe = getArticleReplyLists(commentBean.getId()).subscribe(new Consumer<ArticleReplyListBean>() {
                     @Override
                     public void accept(ArticleReplyListBean articleReplyListBean) throws Exception {
+                        int totalCount = articleReplyListBean.getData().getTotal_count();
+                        if (totalCount > 0) {
+                            titleReplyCount.setText(String.format("%S条回复", totalCount));
+                        }
                         List<ArticleReplyListBean.DataBeanX.DataBean> data = articleReplyListBean.getData().getData();
-                        if (data!=null&& data.size()>0){
+                        if (data != null && data.size() > 0) {
                             mReplyListAdapter.replaceData(data);
                         }
                     }
@@ -161,10 +197,13 @@ public class ArticleReplyBottomFragment extends BottomSheetDialogFragment {
             }
         }
     }
-    private Observable<ArticleReplyListBean> getArticleReplyLists(long replyId){
-        return  YZNetClient.getInstance().get(Api.class).getArticleReplyList(replyId, Long.valueOf((System.currentTimeMillis() + "").substring(0, 10)), System.currentTimeMillis())
+
+    private Observable<ArticleReplyListBean> getArticleReplyLists(long replyId) {
+        return YZNetClient.getInstance().get(Api.class).getArticleReplyList(
+                replyId + "", Long.valueOf((System.currentTimeMillis() + "").substring(0, 10)), System.currentTimeMillis())
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
+
     public void doclick(View v) {
         //点击任意布局关闭
         mBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
