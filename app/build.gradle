@@ -10,10 +10,38 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+    //签名
+    signingConfigs {
+        release {
+            //签名文件路径
+            storeFile file(project.relativePath("todaynews.jks"))
+            storePassword "123456"
+            keyAlias "123456"
+            keyPassword "123456"
+            v2SigningEnabled true
+            v1SigningEnabled true
+        }
+        debug {
+            //签名文件路径
+            storeFile file(project.relativePath("todaynews.jks"))
+            storePassword "123456"
+            keyAlias "123456"
+            keyPassword "123456"
+            v2SigningEnabled true
+            v1SigningEnabled true
+        }
+    }
     buildTypes {
         release {
             minifyEnabled false
+            shrinkResources false
+            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField "boolean", "LOG_DEBUG", "false"
+        }
+        debug {
+            signingConfig signingConfigs.debug
+            buildConfigField "boolean", "LOG_DEBUG", "true"
         }
     }
     compileOptions {
