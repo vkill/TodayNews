@@ -20,6 +20,10 @@ import com.kx.todaynews.R;
 import com.kx.todaynews.utils.LogUtils;
 import com.kx.todaynews.utils.ToastUtils;
 
+import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * Created by admin on 2018/9/21.
  */
@@ -28,6 +32,7 @@ public class ArticleDetailWebView extends WebView {
      * 进度条
      */
     private ProgressBar progress_bar_;
+    private  ArrayList<String> imageLists  = new ArrayList<>();
 
     /**
      *  给Html数据添加的css 样式   定义了  字体大小   行高  颜色
@@ -104,6 +109,7 @@ public class ArticleDetailWebView extends WebView {
         String end = "</header>";
         int startIndex = htmlData.indexOf(start) + start.length();
         int endIndex = htmlData.indexOf(end);
+        imageLists = getAllImageUrlFromHtml(htmlData);
         // 截取Html数据中的title数据
        // htmlData = htmlData.substring(endIndex,htmlData.length());
         loadDataWithBaseURL(null, CSS_STYLE+htmlData, "text/html", "utf-8", null);
@@ -234,9 +240,27 @@ public class ArticleDetailWebView extends WebView {
         @JavascriptInterface
         public void openImage(String img) {
             if (mListener !=null){
-                mListener.onImageClickCallBack(img);
+                mListener.onImageClickCallBack(img,imageLists);
             }
         }
+    }
+    /***
+     * 获取页面所有图片对应的地址对象，
+     * 例如 <img src="http://sc1.hao123img.com/data/f44d0aab7bc35b8767de3c48706d429e" />
+     */
+    // 获取img标签正则
+    private static final String IMAGE_URL_REGEX = "<img[^>]+src\\s*=\\s*['\"]([^'\"]+)['\"][^>]*>";
+
+    private ArrayList<String> getAllImageUrlFromHtml(String html) {
+        Matcher matcher = Pattern.compile(IMAGE_URL_REGEX).matcher(html);
+        ArrayList<String> imgUrlList = new ArrayList<>();
+        while (matcher.find()) {
+            int count = matcher.groupCount();
+            if (count >= 1) {
+                imgUrlList.add(matcher.group(1).replace(" ",""));
+            }
+        }
+        return imgUrlList;
     }
     private  boolean xx = false;
     @Override

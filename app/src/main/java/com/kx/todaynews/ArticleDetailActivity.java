@@ -18,6 +18,7 @@ import com.kx.todaynews.utils.ToastUtils;
 import com.kx.todaynews.widget.SoftKeyBoardListener;
 import com.kx.todaynews.widget.emoji.CommentDialog;
 import com.kx.todaynews.widget.webview.ArticleDetailWebView;
+import com.kx.todaynews.widget.webview.onWebViewImageClickListener;
 
 import java.util.ArrayList;
 
@@ -54,7 +55,9 @@ public class ArticleDetailActivity extends AppCompatActivity {
         listView.setAdapter(mCommentsAdapter);
         webView = new ArticleDetailWebView(this);
         RetrofitUrlManager.getInstance().putDomain("a3", YZNetClient.HOST_A3);
-        webView.setOnWebViewImageClickListener(imageUrl -> ToastUtils.showToast("图片地址 =     " + imageUrl));
+        webView.setOnWebViewImageClickListener((imageUrl, imageLists) -> {
+            ImageBrowserActivity.start(this, imageUrl, imageLists);
+        });
         String groupId = getIntent().getStringExtra(GROUPID);
         getArticleDetailData(groupId);
         mCommentsAdapter.setOnArticleReplyClickListener((commentBean, position) -> {

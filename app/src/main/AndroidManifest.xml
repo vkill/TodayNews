@@ -30,6 +30,9 @@
             android:windowSoftInputMode="stateHidden|adjustResize"
             android:theme="@style/MyDialogStyleBottom"
             />
+        <activity
+            android:name=".ImageBrowserActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>
