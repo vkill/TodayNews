@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">头条新闻</string>
+
+    <string name="main_news">新闻</string>
+    <string name="main_user">我的</string>
+    <string name="main_photo">图片</string>
+    <string name="main_video">视频</string>
+
+    <string name="bottom_sheet_behavior">com.kx.todaynews.widget.behavior.BottomNavigationBehavior</string>
 </resources>

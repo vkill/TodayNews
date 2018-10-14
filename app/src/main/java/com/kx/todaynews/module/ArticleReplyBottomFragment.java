@@ -5,10 +5,10 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.BottomSheetDialogFragment;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.kx.todaynews.Api;
 import com.kx.todaynews.R;
 import com.kx.todaynews.bean.article.ArticleReplyDiggListBean;
@@ -89,6 +90,9 @@ public class ArticleReplyBottomFragment extends BottomSheetDialogFragment {
     TextView replyContent;
     TextView createTime;
     LinearLayout llIvContainer;
+    private int offset = 0;
+    private int mTotalNumber;
+    long id;
     private BottomSheetBehavior mBehavior;
     private BottomSheetBehavior.BottomSheetCallback mBottomSheetBehaviorCallback
             = new BottomSheetBehavior.BottomSheetCallback() {
@@ -131,12 +135,15 @@ public class ArticleReplyBottomFragment extends BottomSheetDialogFragment {
         BottomSheetDialog dialog = new BottomSheetDialog(getContext(), R.style.ArticleReplyFragmentAnim);
         View view = View.inflate(getContext(), R.layout.bottom_dialog_article_reply, null);
         ButterKnife.bind(this, view);
-        view.setLayoutParams(new ConstraintLayout.LayoutParams((int) (UiUtils.getScreenWidth(getContext())), (int) (UiUtils.getScreenHeight(getContext()))));
+        CoordinatorLayout.LayoutParams layoutParams = new CoordinatorLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        layoutParams.width=UiUtils.getScreenWidth(getContext());
+        layoutParams.height=UiUtils.getScreenHeight(getContext());
+        view.setLayoutParams(layoutParams);
+        mBehavior = BottomSheetBehavior.from(view);
+        mBehavior.setBottomSheetCallback(mBottomSheetBehaviorCallback);
         dialog.setContentView(view);
         dialog.getDelegate().findViewById(android.support.design.R.id.design_bottom_sheet)
                 .setBackgroundColor(getResources().getColor(android.R.color.transparent));
-        mBehavior = BottomSheetBehavior.from((View) view.getParent());
-        mBehavior.setBottomSheetCallback(mBottomSheetBehaviorCallback);
 
         mReplyListAdapter = new ArticleReplyListFragmentAdapter(getActivity(), R.layout.item_article_reply_list);
         View headerView = View.inflate(getContext(), R.layout.header_view_article_reply_list, null);
@@ -153,6 +160,31 @@ public class ArticleReplyBottomFragment extends BottomSheetDialogFragment {
         recycleView.setLayoutManager(linearLayoutManager);
         recycleView.setAdapter(mReplyListAdapter);
         mReplyListAdapter.setonReplyUserNameClickLintener(userName -> ToastUtils.showToast(userName,getActivity()));
+        mReplyListAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
+            @Override
+            public void onLoadMoreRequested() {
+                Disposable subscribe = getArticleReplyLists(id, offset).subscribe(new Consumer<ArticleReplyListBean>() {
+                    @Override
+                    public void accept(ArticleReplyListBean articleReplyListBean) throws Exception {
+                        offset += 20;
+                        List<ArticleReplyListBean.DataBeanX.DataBean> data = articleReplyListBean.getData().getData();
+                        mReplyListAdapter.addData(data);
+                        int offset = articleReplyListBean.getData().getOffset();
+                        mTotalNumber = articleReplyListBean.getData().getTotal_count();
+                        if (offset % 20 != 0 || (offset == mTotalNumber) || (mReplyListAdapter.getData().size() == mTotalNumber)) {
+                            mReplyListAdapter.loadMoreEnd();
+                        }else {
+                            mReplyListAdapter.loadMoreComplete();
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        mReplyListAdapter.loadMoreFail();
+                    }
+                });
+            }
+        },recycleView);
         return dialog;
     }
 
@@ -183,8 +215,8 @@ public class ArticleReplyBottomFragment extends BottomSheetDialogFragment {
                 String text = commentBean.getText();
                 replyContent.setText(EmoJiUtils.parseEmoJi( replyContent,getContext(),text));
                 createTime.setText(String.format("%s", TyDateUtils.getFriendlytimeByTime(commentBean.getCreate_time())));
-
-                Disposable subscribe = Observable.zip(getArticleReplyLists(commentBean.getId()), getArticleReplyDiggLists(commentBean.getId()), new BiFunction<ArticleReplyListBean, ArticleReplyDiggListBean, ArticleReplyListBean>() {
+                id = commentBean.getId();
+                Disposable subscribe = Observable.zip(getArticleReplyLists(id,offset), getArticleReplyDiggLists(id), new BiFunction<ArticleReplyListBean, ArticleReplyDiggListBean, ArticleReplyListBean>() {
                     @Override
                     public ArticleReplyListBean apply(ArticleReplyListBean articleReplyListBean, ArticleReplyDiggListBean articleReplyDiggListBean) throws Exception {
                         if (articleReplyDiggListBean!=null){
@@ -222,9 +254,15 @@ public class ArticleReplyBottomFragment extends BottomSheetDialogFragment {
                                 llIvContainer.addView(imageView);
                             }
                         }
+                        offset += 20;
                         List<ArticleReplyListBean.DataBeanX.DataBean> data = articleReplyListBean.getData().getData();
-                        if (data != null && data.size() > 0) {
-                            mReplyListAdapter.replaceData(data);
+                        mTotalNumber = articleReplyListBean.getData().getTotal_count();
+                        mReplyListAdapter.setNewData(data);
+                        //  只有一页数据
+                        if (mTotalNumber<= 20){
+                            mReplyListAdapter.loadMoreEnd();
+                        }else {
+                            mReplyListAdapter.loadMoreComplete();
                         }
                     }
                 }, new Consumer<Throwable>() {
@@ -237,9 +275,9 @@ public class ArticleReplyBottomFragment extends BottomSheetDialogFragment {
         }
     }
 
-    private Observable<ArticleReplyListBean> getArticleReplyLists(long replyId) {
+    private Observable<ArticleReplyListBean> getArticleReplyLists(long replyId,int offset) {
         return YZNetClient.getInstance().get(Api.class).getArticleReplyList(
-                replyId + "", Long.valueOf((System.currentTimeMillis() + "").substring(0, 10)), System.currentTimeMillis())
+                offset,replyId+"", Long.valueOf((System.currentTimeMillis() + "").substring(0, 10)), System.currentTimeMillis())
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
     private Observable<ArticleReplyDiggListBean> getArticleReplyDiggLists(long diggId) {

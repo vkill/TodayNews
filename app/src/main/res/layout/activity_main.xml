@@ -1,39 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/refreshLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <FrameLayout
-            android:gravity="center"
-            android:id="@+id/ll_header"
-            android:orientation="vertical"
+        <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="false"
+            android:theme="@style/AppTheme.AppBarOverlay"
+            app:elevation="0dp">
 
-         <TextView
-             android:visibility="invisible"
-             android:id="@+id/tips"
-             android:textColor="@android:color/white"
-             android:background="#2C9AFC"
-             android:padding="5dp"
-             android:textSize="16sp"
-             android:gravity="center"
-             android:text="今日头条推荐引擎有19条更新"
-             android:layout_width="match_parent"
-             android:layout_height="30dp" />
-            <android.support.v7.widget.RecyclerView
-                android:paddingStart="15dp"
-                android:paddingEnd="15dp"
-                android:id="@+id/recycleView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                />
-        </FrameLayout>
-
-    </android.support.v4.widget.SwipeRefreshLayout>
-
-</android.support.constraint.ConstraintLayout>
+            <include layout="@layout/common_toolbar" />
+        </android.support.design.widget.AppBarLayout>
+        <FrameLayout
+            android:id="@+id/fl_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            />
+        <android.support.design.widget.BottomNavigationView
+            android:id="@+id/bottom_navigation"
+            style="@style/Widget.Design.BottomNavigationView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="bottom"
+            android:background="@color/viewBackground"
+            app:elevation="16dp"
+            app:itemIconTint="@drawable/nav_item_color_state"
+            app:itemTextColor="@drawable/nav_item_color_state"
+            app:layout_behavior="@string/bottom_sheet_behavior"
+            app:menu="@menu/bottom_navigation_main"/>
+</android.support.design.widget.CoordinatorLayout>

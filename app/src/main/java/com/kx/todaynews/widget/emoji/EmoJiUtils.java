@@ -47,6 +47,7 @@ public class EmoJiUtils {
         toutiaoMap.put("[坏笑]", R.drawable.atg); //  8
         toutiaoMap.put("[呲牙]", R.drawable.atg); //  8
         toutiaoMap.put("[色]", R.drawable.arm);     //  2
+        toutiaoMap.put("[爱慕]", R.drawable.arm);     //  2
         toutiaoMap.put("[流泪]", R.drawable.asv);      //  6
         toutiaoMap.put("[害羞]", R.drawable.aqy);      // 10
         toutiaoMap.put("[灵光一闪]", R.drawable.arj);  // 17

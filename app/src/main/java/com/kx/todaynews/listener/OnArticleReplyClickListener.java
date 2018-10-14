@@ -7,5 +7,5 @@ package com.kx.todaynews.listener;
     /**
      *  新闻详情页评论列表回复Listener
      */
-    void onarticlereplyclick(T t, int position);
+    void onarticlereplyclick(T t);
 }
