@@ -22,7 +22,7 @@
         <item name="android:windowIsFloating">false</item>
     </style>
 
-    <style name="ArticleReplyFragmentAnim" parent="Theme.AppCompat.Light.Dialog">
+    <style name="ArticleReplyFragmentAnim" parent="Theme.Design.Light.BottomSheetDialog">
         <item name="android:windowAnimationStyle">@style/inandoutAnimation</item>
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>

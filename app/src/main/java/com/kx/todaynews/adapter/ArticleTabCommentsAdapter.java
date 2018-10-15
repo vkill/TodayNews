@@ -35,21 +35,10 @@ public class ArticleTabCommentsAdapter extends BaseQuickAdapter<ArticleTabCommen
         mLayoutInflater = LayoutInflater.from(context);
         mContext = context ;
     }
-
-
     @Override
     public int getItemCount() {
         return super.getItemCount();
     }
-
-//    @Override
-//    public int getItemViewType(int position) {
-//        if (mComments.size() ==0 ){
-//            return 0;
-//        }else {
-//            return 1 ;
-//        }
-//    }
 
     @Override
     protected void convert(CommentsHolder holder, ArticleTabCommentsBean.DataBean itemData) {
@@ -71,40 +60,6 @@ public class ArticleTabCommentsAdapter extends BaseQuickAdapter<ArticleTabCommen
             });
         }
     }
-
-//    @Override
-//    public View getView(int position, View convertView, ViewGroup parent) {
-//        if (getItemViewType(position) ==0 ){
-//            return mLayoutInflater.inflate(R.layout.item_article_empty_comments, null);
-//        }
-//        CommentsHolder holder;
-//        if (convertView == null) {
-//            convertView = mLayoutInflater.inflate(R.layout.item_article_tab_comments, null);
-//            holder = new CommentsHolder(convertView);
-//            convertView.setTag(holder);
-//        } else {
-//            holder = (CommentsHolder) convertView.getTag();
-//        }
-//        ArticleTabCommentsBean.DataBean.CommentBean dataBean = mComments.get(position).getComment();
-//        Glide.with(mContext).load(dataBean.getUser_profile_image_url()).transform(new GlideCircleTransform(mContext)).into(holder.userAvatar);
-//        holder.userName.setText(String.format("%s",dataBean.getUser_name()));
-//        holder.userVerifiedReason.setText(String.format("%s",dataBean.getVerified_reason()));
-//        holder.diggCount.setText(String.format("%s",dataBean.getDigg_count()));
-//        String text = dataBean.getText();
-//        holder.replyContent.setText(EmoJiUtils.parseEmoJi( holder.replyContent,mContext,text));
-//        holder.createTime.setText(String.format("%s", TyDateUtils.getFriendlytimeByTime(dataBean.getCreate_time())));
-//        holder.replyCount.setText(String.format("%s回复",(dataBean.getReply_count()<=0 ? "": dataBean.getReply_count())));
-//        if (mOnArticleReplyClickListener!=null){
-//            holder.replyCount.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    mOnArticleReplyClickListener.onarticlereplyclick(dataBean);
-//                }
-//            });
-//        }
-//        return convertView;
-//    }
-
     static class CommentsHolder extends BaseViewHolder{
         @BindView(R.id.user_avatar)
         ImageView userAvatar;

@@ -13,7 +13,7 @@ import com.kx.todaynews.adapter.ArticleTabCommentsAdapter;
 import com.kx.todaynews.bean.article.ArticleTabCommentsBean;
 import com.kx.todaynews.bean.article.CommentsAndDetailBean;
 import com.kx.todaynews.bean.article.TextDetailInfo;
-import com.kx.todaynews.module.ArticleReplyBottomFragment;
+import com.kx.todaynews.module.news.ArticleReplyListBottomFragment;
 import com.kx.todaynews.net.YZNetClient;
 import com.kx.todaynews.utils.LogUtils;
 import com.kx.todaynews.utils.ToastUtils;
@@ -67,8 +67,8 @@ public class ArticleDetailActivity extends AppCompatActivity {
         String groupId = getIntent().getStringExtra(GROUPID);
         getArticleDetailData(groupId);
         mCommentsAdapter.setOnArticleReplyClickListener((commentBean) -> {
-            ArticleReplyBottomFragment bottomSheetFragment = ArticleReplyBottomFragment.getInstance(commentBean);
-            bottomSheetFragment.show(getSupportFragmentManager(), ArticleReplyBottomFragment.class.getSimpleName());
+            ArticleReplyListBottomFragment bottomSheetFragment = ArticleReplyListBottomFragment.getInstance(commentBean);
+            bottomSheetFragment.show(getSupportFragmentManager(), ArticleReplyListBottomFragment.class.getSimpleName());
         });
         mCommentsAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
             @Override
@@ -133,7 +133,6 @@ public class ArticleDetailActivity extends AppCompatActivity {
                         offset += 20;
                         TextDetailInfo textDetailInfo = commentsAndDetailBean.getTextDetailInfo();
                         ArticleTabCommentsBean articleTabCommentsBean = commentsAndDetailBean.getArticleTabCommentsBean();
-                       // mTotalNumber = articleTabCommentsBean.getTotal_number();
                         if (textDetailInfo != null) {
                             String content = textDetailInfo.getData().getContent();
                             int size = textDetailInfo.getData().getImage_detail().size();

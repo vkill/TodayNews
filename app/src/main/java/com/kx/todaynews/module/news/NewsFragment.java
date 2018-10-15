@@ -110,6 +110,10 @@ public class NewsFragment extends Fragment {
                             for (HotBean.DataBean dataBean : data) {
                                 String content = dataBean.getContent();
                                 hotContent = mGson.fromJson(content, HotContent.class);
+                                // 去掉广告数据
+                                if ("广告".equals(hotContent.getLabel())){
+                                    continue;
+                                }
                                 hotContents.add(hotContent);
                             }
                             mHotDataAdapter.setHotDatas(hotContents);

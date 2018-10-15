@@ -1,14 +1,9 @@
-package com.kx.todaynews.module;
+package com.kx.todaynews.module.news;
 
-import android.app.Dialog;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.BottomSheetDialog;
-import android.support.design.widget.BottomSheetDialogFragment;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -25,6 +20,7 @@ import com.kx.todaynews.R;
 import com.kx.todaynews.bean.article.ArticleReplyDiggListBean;
 import com.kx.todaynews.bean.article.ArticleReplyListBean;
 import com.kx.todaynews.bean.article.ArticleTabCommentsBean;
+import com.kx.todaynews.module.BaseFullBottomSheetFragment;
 import com.kx.todaynews.module.adapter.ArticleReplyListFragmentAdapter;
 import com.kx.todaynews.net.YZNetClient;
 import com.kx.todaynews.utils.GlideCircleTransform;
@@ -46,35 +42,8 @@ import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
-/**
- * @author Administrator
- */
-public class ArticleReplyBottomFragment extends BottomSheetDialogFragment {
+public class ArticleReplyListBottomFragment extends BaseFullBottomSheetFragment{
     private static final String COMMENTBEAN = "COMMENTBEAN";
-    /**
-     * The bottom sheet is dragging.
-     */
-    public static final int STATE_DRAGGING = 1;
-
-    /**
-     * The bottom sheet is settling.
-     */
-    public static final int STATE_SETTLING = 2;
-
-    /**
-     * The bottom sheet is expanded.
-     */
-    public static final int STATE_EXPANDED = 3;
-
-    /**
-     * The bottom sheet is collapsed.
-     */
-    public static final int STATE_COLLAPSED = 4;
-
-    /**
-     * The bottom sheet is hidden.
-     */
-    public static final int STATE_HIDDEN = 5;
     @BindView(R.id.title_reply_count)
     TextView titleReplyCount;
     @BindView(R.id.iv_finish)
@@ -114,37 +83,18 @@ public class ArticleReplyBottomFragment extends BottomSheetDialogFragment {
             }
         }
     };
-
-    public static ArticleReplyBottomFragment getInstance(ArticleTabCommentsBean.DataBean.CommentBean commentBean) {
+    public static ArticleReplyListBottomFragment getInstance(ArticleTabCommentsBean.DataBean.CommentBean commentBean) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(COMMENTBEAN, commentBean);
-        ArticleReplyBottomFragment articleReplyBottomFragment = new ArticleReplyBottomFragment();
-        articleReplyBottomFragment.setArguments(bundle);
-        return articleReplyBottomFragment;
+        ArticleReplyListBottomFragment articleReplyListBottomFragment = new ArticleReplyListBottomFragment();
+        articleReplyListBottomFragment.setArguments(bundle);
+        return articleReplyListBottomFragment;
     }
-
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return super.onCreateView(inflater, container, savedInstanceState);
-    }
-
-    @NonNull
-    @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        BottomSheetDialog dialog = new BottomSheetDialog(getContext(), R.style.ArticleReplyFragmentAnim);
-        View view = View.inflate(getContext(), R.layout.bottom_dialog_article_reply, null);
-        ButterKnife.bind(this, view);
-        CoordinatorLayout.LayoutParams layoutParams = new CoordinatorLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        layoutParams.width=UiUtils.getScreenWidth(getContext());
-        layoutParams.height=UiUtils.getScreenHeight(getContext());
-        view.setLayoutParams(layoutParams);
-        mBehavior = BottomSheetBehavior.from(view);
-        mBehavior.setBottomSheetCallback(mBottomSheetBehaviorCallback);
-        dialog.setContentView(view);
-        dialog.getDelegate().findViewById(android.support.design.R.id.design_bottom_sheet)
-                .setBackgroundColor(getResources().getColor(android.R.color.transparent));
-
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View dialogView = inflater.inflate(R.layout.bottom_dialog_article_reply, container, false);
+        ButterKnife.bind(this, dialogView);
         mReplyListAdapter = new ArticleReplyListFragmentAdapter(getActivity(), R.layout.item_article_reply_list);
         View headerView = View.inflate(getContext(), R.layout.header_view_article_reply_list, null);
         userAvatar = headerView.findViewById(R.id.user_avatar);
@@ -185,22 +135,20 @@ public class ArticleReplyBottomFragment extends BottomSheetDialogFragment {
                 });
             }
         },recycleView);
-        return dialog;
+        getData();
+        return dialogView;
     }
-
 
     @Override
     public void onStart() {
         super.onStart();
-        //默认全屏展开
-        mBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-        //mBehavior.setSkipCollapsed(true);
-        // mBehavior.setPeekHeight(0);
     }
-
     @Override
     public void onResume() {
         super.onResume();
+
+    }
+    private void getData(){
         Bundle arguments = getArguments();
         if (arguments != null) {
             if (commentBean != null) {
@@ -274,8 +222,11 @@ public class ArticleReplyBottomFragment extends BottomSheetDialogFragment {
             }
         }
     }
-
-    private Observable<ArticleReplyListBean> getArticleReplyLists(long replyId,int offset) {
+    @OnClick(R.id.iv_finish)
+    public void onFinishClick() {
+        dismiss();
+    }
+    private Observable<ArticleReplyListBean> getArticleReplyLists(long replyId, int offset) {
         return YZNetClient.getInstance().get(Api.class).getArticleReplyList(
                 offset,replyId+"", Long.valueOf((System.currentTimeMillis() + "").substring(0, 10)), System.currentTimeMillis())
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
@@ -286,31 +237,8 @@ public class ArticleReplyBottomFragment extends BottomSheetDialogFragment {
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 
-    public void doclick(View v) {
-        //点击任意布局关闭
-        mBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-    }
-
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        //去掉父布局的背景
-        View view = getView();
-        if (view != null) {
-            View parent = (View) view.getParent();
-            if (parent != null) {
-                parent.setBackgroundColor(Color.TRANSPARENT);
-            }
-        }
-    }
-
-    @OnClick(R.id.iv_finish)
-    public void onFinishClick() {
-        dismiss();
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
+    public void onDestroy() {
+        super.onDestroy();
     }
 }
