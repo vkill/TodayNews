@@ -5,6 +5,7 @@
     android:layout_height="match_parent">
 
 <TextView
+    android:id="@+id/changeNightMode"
     android:textColor="@color/black"
     android:textSize="18sp"
     android:gravity="center"

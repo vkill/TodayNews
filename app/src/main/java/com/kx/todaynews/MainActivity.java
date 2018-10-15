@@ -71,9 +71,10 @@ public class MainActivity extends AppCompatActivity {
         });
         if (savedInstanceState != null) {
             mNewsFragment = (NewsFragment) getSupportFragmentManager().findFragmentByTag(NewsFragment.class.getName());
-            mUserFragment = (UserFragment) getSupportFragmentManager().findFragmentByTag(UserFragment.class.getName());
+            showFragment(0);
+           // mUserFragment = (UserFragment) getSupportFragmentManager().findFragmentByTag(UserFragment.class.getName());
             // 恢复 recreate 前的位置
-            showFragment(savedInstanceState.getInt(POSITION));
+           // showFragment(savedInstanceState.getInt(POSITION));
             bottomNavigation.setSelectedItemId(savedInstanceState.getInt(SELECT_ITEM));
         } else {
             showFragment(FRAGMENT_NEWS);
