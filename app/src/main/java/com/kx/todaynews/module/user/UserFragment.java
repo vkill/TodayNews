@@ -1,18 +1,14 @@
 package com.kx.todaynews.module.user;
 
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatDelegate;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.kx.todaynews.R;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
@@ -22,8 +18,6 @@ import butterknife.Unbinder;
 public class UserFragment extends Fragment {
 
     private static UserFragment instance = null;
-    @BindView(R.id.changeNightMode)
-    TextView changeNightMode;
     Unbinder unbinder;
 
     public static UserFragment getInstance() {

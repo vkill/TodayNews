@@ -6,5 +6,9 @@
     <string name="main_photo">图片</string>
     <string name="main_video">视频</string>
 
+    <string name="text_empty">还没有数据呢！</string>
+    <string name="text_retry">获取数据失败，点击重试！</string>
+    <string name="net_error_msg">网络不给力</string>
+    <string name="no_comment">暂无评论，点击抢沙发</string>
     <string name="main_bottom_sheet_behavior">com.kx.todaynews.widget.behavior.BottomNavigationBehavior</string>
 </resources>

@@ -7,11 +7,14 @@ import android.graphics.LinearGradient;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Shader;
+import android.graphics.Typeface;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.View;
 
-
+/**
+ * 文字闪动效果
+ */
 public class ShimmerTextView extends android.support.v7.widget.AppCompatTextView {
     private Paint mPaint;
     private int mDx;
@@ -20,6 +23,7 @@ public class ShimmerTextView extends android.support.v7.widget.AppCompatTextView
     Matrix matrix = new Matrix();
     private LinearGradient mLinearGradient;
     private ValueAnimator mAnimator;
+    Typeface mTypeFace ;
     private Handler mHandler = new Handler();
     Runnable mRunnable = new Runnable() {
         @Override
@@ -69,6 +73,8 @@ public class ShimmerTextView extends android.support.v7.widget.AppCompatTextView
 
     private void init(){
         mPaint =getPaint();
+        mTypeFace =Typeface.createFromAsset(getContext().getAssets(),"fonts/DINCondensedBold.ttf");
+        mPaint.setTypeface(mTypeFace);
         this.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
