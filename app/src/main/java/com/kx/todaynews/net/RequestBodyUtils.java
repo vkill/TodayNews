@@ -1,12 +1,9 @@
 package com.kx.todaynews.net;
 
-import android.content.Context;
-import android.graphics.Bitmap;
 import android.text.TextUtils;
 import android.util.Pair;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonSerializer;
 
 import java.io.File;
 import java.lang.reflect.Type;
@@ -19,9 +16,6 @@ import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 
-/**
- * Created by hdk on 2017/1/11.
- */
 
 public class RequestBodyUtils {
 

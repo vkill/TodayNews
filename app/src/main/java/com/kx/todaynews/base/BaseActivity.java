@@ -13,7 +13,7 @@ import butterknife.ButterKnife;
  * MVP模式的Base Activity
  */
 
-public abstract class BaseActivity<P extends IBasePresenter> extends AppCompatActivity implements IBaseView {
+public abstract class BaseActivity<P extends BasePresenter> extends AppCompatActivity implements IBaseView {
     protected P mPresenter;
 
     @Override
@@ -22,10 +22,9 @@ public abstract class BaseActivity<P extends IBasePresenter> extends AppCompatAc
         setContentView(getLayoutId());
         ButterKnife.bind(this);
         mPresenter = createPresenter();
-        if (mPresenter == null){
-            throw new NullPointerException("mPresenter 不能为空");
+        if (mPresenter!=null){
+            mPresenter.attachView(this);
         }
-        mPresenter.attachView(this);
     }
 //    @Override
 //    protected void onViewCreated() {
@@ -79,11 +78,11 @@ public abstract class BaseActivity<P extends IBasePresenter> extends AppCompatAc
 
     @Override
     public void showToast(String message) {
-        ToastUtils.showToast(message);
+        ToastUtils.showToast(message,this);
     }
     @Override
     public void showErrorMsg(String errorMsg) {
-        ToastUtils.showToast(errorMsg);
+        ToastUtils.showToast(errorMsg,this);
     }
 
     /**

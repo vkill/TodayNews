@@ -28,11 +28,9 @@ import butterknife.ButterKnife;
  */
 public class ArticleTabCommentsAdapter extends BaseQuickAdapter<ArticleTabCommentsBean.DataBean,ArticleTabCommentsAdapter.CommentsHolder> {
 
-    private LayoutInflater mLayoutInflater;
     private Context mContext ;
     public ArticleTabCommentsAdapter(Context context, @LayoutRes int LayoutRes) {
         super(LayoutRes);
-        mLayoutInflater = LayoutInflater.from(context);
         mContext = context ;
     }
     @Override
@@ -52,7 +50,7 @@ public class ArticleTabCommentsAdapter extends BaseQuickAdapter<ArticleTabCommen
         holder.createTime.setText(String.format("%s", TyDateUtils.getFriendlytimeByTime(dataBean.getCreate_time())));
         holder.replyCount.setText(String.format("%s回复",(dataBean.getReply_count()<=0 ? "": dataBean.getReply_count())));
         if (mOnArticleReplyClickListener!=null){
-            holder.replyCount.setOnClickListener(new View.OnClickListener() {
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     mOnArticleReplyClickListener.onarticlereplyclick(dataBean);

@@ -38,19 +38,19 @@ public class UserFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main_user, container, false);
         unbinder = ButterKnife.bind(this, view);
-        changeNightMode.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int mode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-                if (mode == Configuration.UI_MODE_NIGHT_YES) {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                } else {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                }
+      //  changeNightMode.setOnClickListener(new View.OnClickListener() {
+        //    @Override
+       //     public void onClick(View v) {
+//                int mode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+//                if (mode == Configuration.UI_MODE_NIGHT_YES) {
+//                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+//                } else {
+//                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+//                }
                 //  getWindow().setWindowAnimations(R.style.WindowAnimationFadeInOut);
-                getActivity().recreate();
-            }
-        });
+               // getActivity().recreate();
+    //        }
+      //  });
         return view;
     }
     @Override

@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
-import com.kx.todaynews.ArticleDetailActivity;
+import com.kx.todaynews.module.news.activity.ArticleDetailActivity;
 import com.kx.todaynews.R;
 
 

@@ -1,19 +1,23 @@
-package com.kx.todaynews;
+package com.kx.todaynews.module.news.activity;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.kx.todaynews.Api;
+import com.kx.todaynews.ImageBrowserActivity;
+import com.kx.todaynews.R;
 import com.kx.todaynews.adapter.ArticleTabCommentsAdapter;
 import com.kx.todaynews.bean.article.ArticleTabCommentsBean;
 import com.kx.todaynews.bean.article.CommentsAndDetailBean;
 import com.kx.todaynews.bean.article.TextDetailInfo;
-import com.kx.todaynews.module.news.ArticleReplyListBottomFragment;
+import com.kx.todaynews.module.news.fragment.ArticleReplyListBottomFragment;
 import com.kx.todaynews.net.YZNetClient;
 import com.kx.todaynews.utils.LogUtils;
 import com.kx.todaynews.utils.ToastUtils;

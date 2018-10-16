@@ -17,9 +17,17 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import com.kx.todaynews.R;
+import com.kx.todaynews.base.IBasePresenter;
+import com.kx.todaynews.base.IBaseView;
 import com.kx.todaynews.utils.UiUtils;
 
-public class BaseFullBottomSheetFragment extends BottomSheetDialogFragment {
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
+public abstract class BaseFullBottomSheetFragment <P extends IBasePresenter>extends BottomSheetDialogFragment implements IBaseView{
+    protected P mPresenter;
+    private Unbinder unBinder;
+
     /**
      * 顶部向下偏移量
      */
@@ -37,8 +45,23 @@ public class BaseFullBottomSheetFragment extends BottomSheetDialogFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return super.onCreateView(inflater, container, savedInstanceState);
+        View rootView = inflater.inflate(getLayoutId(), container, false);
+        unBinder = ButterKnife.bind(this, rootView);
+        initView();
+        return rootView;
     }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mPresenter = createPresenter();
+        if (mPresenter!=null){
+            mPresenter.attachView(this);
+        }
+        initListener();
+        initEventAndData();
+    }
+
     @Override
     public void onStart() {
         super.onStart();
@@ -81,5 +104,69 @@ public class BaseFullBottomSheetFragment extends BottomSheetDialogFragment {
     }
     public BottomSheetBehavior<FrameLayout> getBehavior() {
         return behavior;
+    }
+    /**
+     * 创建Presenter
+     * @return T Presenter
+     */
+    protected abstract P createPresenter();
+    /**
+     * 初始化Listener
+     */
+    protected abstract void initListener();
+    /**
+     * 初始化数据
+     */
+    protected abstract void initEventAndData();
+    /**
+     * 初始化View
+     */
+    protected abstract void initView();
+    /**
+     * @return 布局id
+     */
+    protected abstract int getLayoutId();
+
+    @Override
+    public void useNightMode(boolean isNightMode) {
+
+    }
+
+    @Override
+    public void showNormal() {
+
+    }
+
+    @Override
+    public void showError() {
+
+    }
+
+    @Override
+    public void showLoading() {
+
+    }
+
+    @Override
+    public void reload() {
+
+    }
+
+    @Override
+    public void showToast(String message) {
+
+    }
+
+    @Override
+    public void showErrorMsg(String errorMsg) {
+
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (unBinder!=null){
+            unBinder.unbind();
+        }
     }
 }

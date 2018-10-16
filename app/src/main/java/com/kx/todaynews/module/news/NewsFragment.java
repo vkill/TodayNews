@@ -19,7 +19,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.kx.todaynews.Api;
-import com.kx.todaynews.ArticleDetailActivity;
+import com.kx.todaynews.module.news.activity.ArticleDetailActivity;
 import com.kx.todaynews.R;
 import com.kx.todaynews.adapter.HotDataAdapter;
 import com.kx.todaynews.bean.HotBean;
