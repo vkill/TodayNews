@@ -16,7 +16,8 @@
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
-    <FrameLayout
+    <com.kx.todaynews.widget.loadinglayout.LoadingLayout
+        android:id="@+id/loadingLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -26,15 +27,7 @@
             android:layout_height="match_parent"
             android:id="@+id/articleDetailRecyclerView"
             />
-        <LinearLayout
-            android:id="@+id/loadingView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <com.kx.todaynews.widget.loadinglayout.LoadingFlashView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-    </FrameLayout>
+    </com.kx.todaynews.widget.loadinglayout.LoadingLayout>
     <LinearLayout
         android:id="@+id/ll_emoji"
         android:layout_width="match_parent"

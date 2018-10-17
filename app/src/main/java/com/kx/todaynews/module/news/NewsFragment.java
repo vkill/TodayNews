@@ -45,13 +45,13 @@ import io.reactivex.schedulers.Schedulers;
 public class NewsFragment extends Fragment {
     @BindView(R.id.recycleView)
     RecyclerView recycleView;
-    @BindView(R.id.content_view)
+    @BindView(R.id.refreshLayout)
     SwipeRefreshLayout refreshLayout;
     @BindView(R.id.tips)
     TextView tips;
     Unbinder unbinder;
-//    @BindView(R.id.loadingLayout)
-//    LoadingLayout loadingLayout;
+    @BindView(R.id.loadingLayout)
+    LoadingLayout loadingLayout;
     private long lastTime = Long.valueOf((System.currentTimeMillis() + "").substring(0, 10));
     private long locTime = System.currentTimeMillis();
     private int session_refresh_idx = 1;
@@ -86,8 +86,14 @@ public class NewsFragment extends Fragment {
                 getHotData();
             }
         });
+        loadingLayout.setOnRetryClickListener(new LoadingLayout.OnRetryClickListener() {
+            @Override
+            public void onRetryClick() {
+                getHotData();
+            }
+        });
         mHotDataAdapter.setOnItemClickListener(groupId -> {
-            Intent intent = new Intent(getActivity(), TestActivity.class);
+            Intent intent = new Intent(getActivity(), ArticleDetailActivity.class);
             intent.putExtra(ArticleDetailActivity.GROUPID, groupId);
             startActivity(intent);
         });
@@ -122,13 +128,14 @@ public class NewsFragment extends Fragment {
                             }
                             mHotDataAdapter.setHotDatas(hotContents);
                         }
+                        loadingLayout.showContentView();
                         showTipsAnimation();
-                       // loadingLayout.showDataError();
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
                         refreshLayout.setRefreshing(false);
+                        loadingLayout.showDataError();
                     }
                 });
     }

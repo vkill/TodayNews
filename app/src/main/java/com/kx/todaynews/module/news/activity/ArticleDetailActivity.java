@@ -4,9 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
 import android.view.WindowManager;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +23,7 @@ import com.kx.todaynews.utils.LogUtils;
 import com.kx.todaynews.utils.ToastUtils;
 import com.kx.todaynews.widget.SoftKeyBoardListener;
 import com.kx.todaynews.widget.emoji.CommentDialog;
+import com.kx.todaynews.widget.loadinglayout.LoadingLayout;
 
 import java.util.ArrayList;
 
@@ -50,8 +49,8 @@ public class ArticleDetailActivity extends AppCompatActivity {
     TextView title;
     @BindView(R.id.articleDetailRecyclerView)
     RecyclerView articleDetailRecyclerView;
-    @BindView(R.id.loadingView)
-    LinearLayout loadingView;
+    @BindView(R.id.loadingLayout)
+    LoadingLayout loadingLayout;
     private ArticleTabCommentsAdapter mCommentsAdapter;
     private int offset = 0;
     private int mTotalNumber;
@@ -163,8 +162,7 @@ public class ArticleDetailActivity extends AppCompatActivity {
                             }
                             mHeaderView.setDetail(content, () -> {
                                 ToastUtils.showToast("隐藏刷新界面");
-                                loadingView.setVisibility(View.GONE);
-                                articleDetailRecyclerView.setVisibility(View.VISIBLE);
+                                loadingLayout.showContentView();
                             });
                         }
                     }
@@ -172,6 +170,7 @@ public class ArticleDetailActivity extends AppCompatActivity {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
                         ToastUtils.showToast("请求出错 = " + throwable.toString());
+                        loadingLayout.showDataError();
                     }
                 });
     }

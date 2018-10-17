@@ -5,8 +5,6 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,14 +16,13 @@ import com.kx.todaynews.utils.LogUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.EventListener;
 import java.util.List;
 
 /**
  * Created by Administrator on 2017/4/19 0019.
  */
 
-public class LoadingFlashView extends FrameLayout {
+public class LoadingView extends FrameLayout {
 
     private View mFlashView;
     private ImageView mLoad1;
@@ -34,15 +31,15 @@ public class LoadingFlashView extends FrameLayout {
     private ImageView mLoad4;
     private AnimatorSet mAnimatorSet;
 
-    public LoadingFlashView(Context context) {
+    public LoadingView(Context context) {
         this(context, null);
     }
 
-    public LoadingFlashView(Context context, AttributeSet attrs) {
+    public LoadingView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public LoadingFlashView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public LoadingView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initView(context, attrs, defStyleAttr);
     }

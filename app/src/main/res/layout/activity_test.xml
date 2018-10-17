@@ -6,18 +6,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".module.news.TestActivity">
-    <com.kx.todaynews.module.news.LoadingFlashView
-        android:visibility="gone"
-        android:id="@+id/loadingView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        />
-    <Button
-        android:visibility="gone"
-        android:onClick="xx"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
 
     <com.kx.todaynews.widget.loadinglayout.LoadingLayout
         android:id="@+id/loadingLayout"
@@ -25,10 +13,11 @@
         android:layout_weight="1"
         android:layout_height="0dp">
         <TextView
+            android:gravity="center"
             android:id="@id/content_view"
             android:text="我是内容"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
     </com.kx.todaynews.widget.loadinglayout.LoadingLayout>
 
     <LinearLayout

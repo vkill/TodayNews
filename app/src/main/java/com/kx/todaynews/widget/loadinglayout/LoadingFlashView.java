@@ -20,7 +20,6 @@ import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
-import android.widget.ImageView;
 
 import com.kx.todaynews.R;
 import com.kx.todaynews.utils.LogUtils;
@@ -49,11 +48,12 @@ public class LoadingFlashView extends View implements View.OnFocusChangeListener
     private ObjectAnimator mAnimator;
     private boolean mPlaying = false;
     private int mFlashDuration;
+    private float percent ;
     private Handler mHandler = new Handler();
     private Runnable mRunnable = new Runnable() {
         @Override
         public void run() {
-
+                stop();
         }
     };
 
@@ -129,11 +129,13 @@ public class LoadingFlashView extends View implements View.OnFocusChangeListener
 
     private void setPercent(float percent) {
         System.out.println("LoadingFlashView  刷新中...   " + percent );
-        if (getVisibility() == GONE){
-            return;
-        }
+        this.percent = percent;
         mHorMoveDistance = this.mMaskWidth * (percent - 1.5f);
         invalidate();
+    }
+
+    public float getPercent() {
+        return percent;
     }
 
     public void setImage(int resId) {
@@ -189,6 +191,7 @@ public class LoadingFlashView extends View implements View.OnFocusChangeListener
             mAnimator.setRepeatCount(-1);
         }
         mAnimator.start();
+        mHandler.postDelayed(mRunnable,4 *mFlashDuration );
     }
 
     public void setDuration(int duration) {
@@ -208,7 +211,6 @@ public class LoadingFlashView extends View implements View.OnFocusChangeListener
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        start();
     }
     @Override
     public void setVisibility(int visibility) {
@@ -226,12 +228,14 @@ public class LoadingFlashView extends View implements View.OnFocusChangeListener
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         LogUtils.e("onAttachedToWindow   ");
+        start();
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         LogUtils.e("onDetachedFromWindow   ");
+        stop();
     }
 
     @Override

@@ -4,9 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+<com.kx.todaynews.widget.loadinglayout.LoadingLayout
+    android:id="@+id/loadingLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
         <android.support.v4.widget.SwipeRefreshLayout
-            android:id="@id/content_view"
+            android:id="@+id/refreshLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <FrameLayout
@@ -38,6 +42,6 @@
 
         </android.support.v4.widget.SwipeRefreshLayout>
 
-
+</com.kx.todaynews.widget.loadinglayout.LoadingLayout>
 
 </android.support.constraint.ConstraintLayout>

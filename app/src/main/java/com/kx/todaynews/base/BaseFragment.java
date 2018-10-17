@@ -1,6 +1,7 @@
 package com.kx.todaynews.base;
 
-import android.app.Fragment;
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -10,17 +11,34 @@ import android.view.ViewGroup;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public abstract class BaseFragment<P extends IBasePresenter> extends Fragment implements IBaseView  {
+public abstract class BaseFragment<P extends IBasePresenter> extends LazyLoadFragment implements IBaseView  {
     protected P mPresenter;
     private Unbinder unBinder;
+    private View rootView;
+    protected Activity mActivity;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mActivity = (Activity) context;
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(getLayoutId(), container, false);
-        unBinder = ButterKnife.bind(this, view);
-        initView();
-        return view;
+        if (rootView == null) {
+            rootView = inflater.inflate(getLayoutId(),container,false);
+            unBinder = ButterKnife.bind(this, rootView);
+            initView(rootView);
+            initEventAndData();
+            initListener();
+        } else {
+            ViewGroup parent = (ViewGroup) rootView.getParent();
+            if (parent != null) {
+                parent.removeView(rootView);
+            }
+        }
+        return rootView;
     }
 
     @Override
@@ -30,11 +48,16 @@ public abstract class BaseFragment<P extends IBasePresenter> extends Fragment im
             mPresenter.attachView(this);
         }
     }
+    @Override
+    protected void onFragmentFirstVisible() {
+        //当第一次可见的时候，加载数据
+        loadData();
+    }
     /**
      * 有些初始化必须在onCreateView中，例如setAdapter,
      * 否则，会弹出 No adapter attached; skipping layout
      */
-    protected void initView() {
+    protected void initView(View rootView) {
 
     }
 
@@ -48,6 +71,14 @@ public abstract class BaseFragment<P extends IBasePresenter> extends Fragment im
      */
     protected abstract void initEventAndData();
 
+    /**
+     *  设置监听
+     */
+    protected abstract void initListener();
+    /**
+     * 加载数据
+     */
+    protected abstract void loadData();
 
     @Override
     public void useNightMode(boolean isNightMode) {

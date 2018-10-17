@@ -25,8 +25,6 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
     TextView tv4;
     @BindView(R.id.tv5)
     TextView tv5;
-    @BindView(R.id.loadingView)
-    View loadingView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +36,12 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
         tv3.setOnClickListener(this);
         tv4.setOnClickListener(this);
         tv5.setOnClickListener(this);
+        loadingLayout.setOnRetryClickListener(new LoadingLayout.OnRetryClickListener() {
+            @Override
+            public void onRetryClick() {
+
+            }
+        });
     }
 
     @Override
@@ -59,9 +63,5 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
                 loadingLayout.showContentView();
                 break;
         }
-    }
-
-    public void xx(View view) {
-        loadingView.setVisibility(loadingView.getVisibility() == View.VISIBLE ? View.GONE :View.VISIBLE);
     }
 }

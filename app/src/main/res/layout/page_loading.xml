@@ -6,7 +6,7 @@
     android:background="@color/white"
     >
 
-    <com.kx.todaynews.widget.loadinglayout.LoadingFlashView
+    <com.kx.todaynews.widget.loadinglayout.LoadingView
         android:id="@+id/loading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

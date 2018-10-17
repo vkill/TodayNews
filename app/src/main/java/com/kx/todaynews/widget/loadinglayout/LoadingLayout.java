@@ -3,7 +3,6 @@ package com.kx.todaynews.widget.loadinglayout;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.annotation.IntDef;
-import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -19,10 +18,6 @@ import java.lang.annotation.RetentionPolicy;
 
 public class LoadingLayout extends FrameLayout {
 
-    /**
-     * 内容视图
-     */
-    private View mContentView;
     /**
      * 空数据视图
      */
@@ -56,10 +51,6 @@ public class LoadingLayout extends FrameLayout {
      * 加载中视图布局id
      */
     private int mLoadingResource;
-    /**
-     * 内容视图布局id
-     */
-    private int mContentViewResource;
 
     private OnRetryClickListener mRetryClickListener;
     // 加载中...
@@ -94,7 +85,6 @@ public class LoadingLayout extends FrameLayout {
         mRetryResource = a.getResourceId(R.styleable.LoadingLayout_retryResource, 0);
         mLoadingResource = a.getResourceId(R.styleable.LoadingLayout_loadingResource, 0);
         mNetErrorResource = a.getResourceId(R.styleable.LoadingLayout_netErrorResource, 0);
-        mContentViewResource = a.getResourceId(R.styleable.LoadingLayout_contentViewResource, 0);
         a.recycle();
         mLayoutInflater = LayoutInflater.from(getContext());
         if (mEmptyResource == 0){
@@ -124,7 +114,6 @@ public class LoadingLayout extends FrameLayout {
                 setVisibility(mNetErrorView,GONE);
                 setVisibility(mEmptyView,GONE);
                 setVisibility(mRetryView,GONE);
-                setVisibility(mContentView,GONE);
                 break;
             case STATUS_NET_ERROR:
                 if (mCurrentStatus == STATUS_NET_ERROR){
@@ -135,7 +124,6 @@ public class LoadingLayout extends FrameLayout {
                 setVisibility(mNetErrorView,VISIBLE);
                 setVisibility(mEmptyView,GONE);
                 setVisibility(mRetryView,GONE);
-                setVisibility(mContentView,GONE);
                 break;
             case STATUS_NO_DATA:
                 if (mCurrentStatus == STATUS_NO_DATA){
@@ -146,7 +134,6 @@ public class LoadingLayout extends FrameLayout {
                 setVisibility(mNetErrorView,GONE);
                 setVisibility(mEmptyView,VISIBLE);
                 setVisibility(mRetryView,GONE);
-                setVisibility(mContentView,GONE);
                 break;
             case STATUS_DATA_ERROR:
                 if (mCurrentStatus == STATUS_DATA_ERROR){
@@ -157,18 +144,6 @@ public class LoadingLayout extends FrameLayout {
                 setVisibility(mNetErrorView,GONE);
                 setVisibility(mEmptyView,GONE);
                 setVisibility(mRetryView,VISIBLE);
-                setVisibility(mContentView,GONE);
-                break;
-            case STATUS_CONTENT:
-                if (mCurrentStatus == STATUS_CONTENT){
-                    return;
-                }
-                mCurrentStatus = STATUS_CONTENT;
-                setVisibility(mLoadingView,GONE);
-                setVisibility(mNetErrorView,GONE);
-                setVisibility(mEmptyView,GONE);
-                setVisibility(mRetryView,GONE);
-                setVisibility(mContentView,VISIBLE);
                 break;
         }
     }
@@ -226,11 +201,7 @@ public class LoadingLayout extends FrameLayout {
      * 显示内容界面
      */
     public void showContentView() {
-        if (mContentView==null){
-            mContentView =mLayoutInflater.inflate(mContentViewResource,null,false);
-            addView(mContentView);
-        }
-        changeStatus(STATUS_CONTENT);
+        setAllViewGone();
     }
     private void setVisibility(View view, int visibility){
         if (view != null) {
@@ -241,20 +212,12 @@ public class LoadingLayout extends FrameLayout {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        mContentView = findViewById(R.id.content_view);
-        if (mContentView ==null){
-            throw new NullPointerException("ContentView can not be null !");
-        }
-        LogUtils.e("onFinishInflate");
         showLoading();
     }
 
     private void setAllViewGone(){
         if (mLoadingView != null) {
             mLoadingView.setVisibility(GONE);
-        }
-        if (mContentView != null) {
-            mContentView.setVisibility(GONE);
         }
         if (mNetErrorView != null) {
             mNetErrorView.setVisibility(GONE);
@@ -264,9 +227,6 @@ public class LoadingLayout extends FrameLayout {
         }
         if (mEmptyView != null) {
             mEmptyView.setVisibility(GONE);
-        }
-        if (mContentView != null) {
-            mContentView.setVisibility(GONE);
         }
     }
     /**
