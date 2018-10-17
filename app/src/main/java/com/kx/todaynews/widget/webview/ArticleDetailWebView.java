@@ -122,6 +122,9 @@ public class ArticleDetailWebView extends WebView {
             imgReset();//重置webview中img标签的图片大小
             // html加载完成之后，添加监听图片的点击js函数
             addImageClickListner();
+            if (mOnPageFinishedListener!=null){
+                mOnPageFinishedListener.onPageLoadedFinish();
+            }
         }
 
         @Override

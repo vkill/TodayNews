@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -59,10 +60,12 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigation.setOnNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 case R.id.tab_main_news:
+                    mToolbar.setVisibility(View.VISIBLE);
                     mTitleTv.setText(getString(R.string.main_news));
                     showFragment(FRAGMENT_NEWS);
                     break;
                 case R.id.tab_main_user:
+                    mToolbar.setVisibility(View.GONE);
                     mTitleTv.setText(getString(R.string.main_user));
                     showFragment(FRAGMENT_USER);
                     break;
@@ -102,7 +105,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private Fragment getTabFragmentByPosition(int tabPosition){
-        LogUtils.e("tabPosition = " + tabPosition);
         Fragment fragment = null ;
         switch (tabPosition) {
             case FRAGMENT_NEWS:

@@ -18,6 +18,8 @@ import com.kx.todaynews.utils.GlideCircleTransform;
 import com.kx.todaynews.utils.TyDateUtils;
 import com.kx.todaynews.widget.emoji.EmoJiUtils;
 
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -35,8 +37,13 @@ public class ArticleTabCommentsAdapter extends BaseQuickAdapter<ArticleTabCommen
     }
     @Override
     public int getItemCount() {
+        List<ArticleTabCommentsBean.DataBean> data = getData();
+        if (data==null || data.size() == 0){
+            return 1 ;
+        }
         return super.getItemCount();
     }
+
 
     @Override
     protected void convert(CommentsHolder holder, ArticleTabCommentsBean.DataBean itemData) {

@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,13 +18,13 @@ import com.kx.todaynews.adapter.ArticleTabCommentsAdapter;
 import com.kx.todaynews.bean.article.ArticleTabCommentsBean;
 import com.kx.todaynews.bean.article.CommentsAndDetailBean;
 import com.kx.todaynews.bean.article.TextDetailInfo;
+import com.kx.todaynews.module.news.NewsDetailHeaderView;
 import com.kx.todaynews.module.news.fragment.ArticleReplyListBottomFragment;
 import com.kx.todaynews.net.YZNetClient;
 import com.kx.todaynews.utils.LogUtils;
 import com.kx.todaynews.utils.ToastUtils;
 import com.kx.todaynews.widget.SoftKeyBoardListener;
 import com.kx.todaynews.widget.emoji.CommentDialog;
-import com.kx.todaynews.widget.webview.ArticleDetailWebView;
 
 import java.util.ArrayList;
 
@@ -44,14 +45,17 @@ import me.jessyan.retrofiturlmanager.RetrofitUrlManager;
 public class ArticleDetailActivity extends AppCompatActivity {
     public static final String GROUPID = "GROUPID";
 
-    ArticleDetailWebView webView;
+  //  ArticleDetailWebView webView;
     @BindView(R.id.title)
     TextView title;
     @BindView(R.id.articleDetailRecyclerView)
     RecyclerView articleDetailRecyclerView;
+    @BindView(R.id.loadingView)
+    LinearLayout loadingView;
     private ArticleTabCommentsAdapter mCommentsAdapter;
     private int offset = 0;
     private int mTotalNumber;
+    protected NewsDetailHeaderView mHeaderView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,13 +63,16 @@ public class ArticleDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_article_detail);
         ButterKnife.bind(this);
-        webView = new ArticleDetailWebView(this);
-        mCommentsAdapter = new ArticleTabCommentsAdapter(ArticleDetailActivity.this,R.layout.item_article_tab_comments);
-        articleDetailRecyclerView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
-        mCommentsAdapter.addHeaderView(webView);
+      //  webView = new ArticleDetailWebView(this);
+        mHeaderView = new NewsDetailHeaderView(this);
+        mCommentsAdapter = new ArticleTabCommentsAdapter(ArticleDetailActivity.this, R.layout.item_article_tab_comments);
+        articleDetailRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         articleDetailRecyclerView.setAdapter(mCommentsAdapter);
+        mCommentsAdapter.addHeaderView(mHeaderView);
+        mCommentsAdapter.setEmptyView(R.layout.pager_no_comment, articleDetailRecyclerView);
+        mCommentsAdapter.setHeaderAndEmpty(true);
         RetrofitUrlManager.getInstance().putDomain("a3", YZNetClient.HOST_A3);
-        webView.setOnWebViewImageClickListener((imageUrl, imageLists) -> {
+        mHeaderView.setOnWebViewImageClickListener((imageUrl, imageLists) -> {
             ImageBrowserActivity.start(this, imageUrl, imageLists);
         });
         String groupId = getIntent().getStringExtra(GROUPID);
@@ -77,7 +84,7 @@ public class ArticleDetailActivity extends AppCompatActivity {
         mCommentsAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
             @Override
             public void onLoadMoreRequested() {
-                Disposable subscribe = getTabComments(groupId,offset).subscribe(new Consumer<ArticleTabCommentsBean>() {
+                Disposable subscribe = getTabComments(groupId, offset).subscribe(new Consumer<ArticleTabCommentsBean>() {
                     @Override
                     public void accept(ArticleTabCommentsBean articleTabCommentsBean) throws Exception {
                         offset += 20;
@@ -86,7 +93,7 @@ public class ArticleDetailActivity extends AppCompatActivity {
                         mTotalNumber = articleTabCommentsBean.getTotal_number();
                         if (mCommentsAdapter.getData().size() == mTotalNumber) {
                             mCommentsAdapter.loadMoreEnd();
-                        }else {
+                        } else {
                             mCommentsAdapter.loadMoreComplete();
                         }
                     }
@@ -97,8 +104,7 @@ public class ArticleDetailActivity extends AppCompatActivity {
                     }
                 });
             }
-        },articleDetailRecyclerView);
-
+        }, articleDetailRecyclerView);
 
 
         SoftKeyBoardListener.setListener(this, new SoftKeyBoardListener.OnSoftKeyBoardChangeListener() {
@@ -122,7 +128,7 @@ public class ArticleDetailActivity extends AppCompatActivity {
 
     private void getArticleDetailData(String groupId) {
 
-        Disposable subscribe2 = Observable.zip(getArticleDetail(groupId), getTabComments(groupId,offset), new BiFunction<TextDetailInfo, ArticleTabCommentsBean, CommentsAndDetailBean>() {
+        Disposable subscribe2 = Observable.zip(getArticleDetail(groupId), getTabComments(groupId, offset), new BiFunction<TextDetailInfo, ArticleTabCommentsBean, CommentsAndDetailBean>() {
             @Override
             public CommentsAndDetailBean apply(TextDetailInfo textDetailInfo, ArticleTabCommentsBean articleTabCommentsBean) throws Exception {
                 CommentsAndDetailBean commentsAndDetailBean = new CommentsAndDetailBean();
@@ -144,26 +150,28 @@ public class ArticleDetailActivity extends AppCompatActivity {
                                 String xx = "&index=" + i;
                                 content = content.replace(xx, " ");
                             }
-                            webView.loadHtmlStringData(content);
-                            webView.setOnPageFinishedListener(() -> {
-                                if (articleTabCommentsBean != null) {
-                                    ArrayList<ArticleTabCommentsBean.DataBean> data = articleTabCommentsBean.getData();
-                                    mCommentsAdapter.setNewData(data);
-                                    mTotalNumber = articleTabCommentsBean.getTotal_number();
-                                    //  只有一页数据
-                                    if (mCommentsAdapter.getData().size()== mTotalNumber){
-                                        mCommentsAdapter.loadMoreEnd();
-                                    }else {
-                                        mCommentsAdapter.loadMoreComplete();
-                                    }
+                            if (articleTabCommentsBean != null) {
+                                ArrayList<ArticleTabCommentsBean.DataBean> data = articleTabCommentsBean.getData();
+                                mCommentsAdapter.setNewData(data);
+                                mTotalNumber = articleTabCommentsBean.getTotal_number();
+                                //  只有一页数据
+                                if (mCommentsAdapter.getData().size() == mTotalNumber) {
+                                    mCommentsAdapter.loadMoreEnd();
+                                } else {
+                                    mCommentsAdapter.loadMoreComplete();
                                 }
+                            }
+                            mHeaderView.setDetail(content, () -> {
+                                ToastUtils.showToast("隐藏刷新界面");
+                                loadingView.setVisibility(View.GONE);
+                                articleDetailRecyclerView.setVisibility(View.VISIBLE);
                             });
                         }
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
-                        ToastUtils.showToast("请求出错 = " +  throwable.toString());
+                        ToastUtils.showToast("请求出错 = " + throwable.toString());
                     }
                 });
     }
@@ -173,8 +181,8 @@ public class ArticleDetailActivity extends AppCompatActivity {
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 
-    private Observable<ArticleTabCommentsBean> getTabComments(String groupId,int offset) {
-        return YZNetClient.getInstance().get(Api.class).getTabComments(offset,groupId, groupId, Long.valueOf((System.currentTimeMillis() + "").substring(0, 10)), System.currentTimeMillis())
+    private Observable<ArticleTabCommentsBean> getTabComments(String groupId, int offset) {
+        return YZNetClient.getInstance().get(Api.class).getTabComments(offset, groupId, groupId, Long.valueOf((System.currentTimeMillis() + "").substring(0, 10)), System.currentTimeMillis())
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 

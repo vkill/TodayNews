@@ -19,12 +19,13 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.kx.todaynews.Api;
-import com.kx.todaynews.module.news.activity.ArticleDetailActivity;
 import com.kx.todaynews.R;
 import com.kx.todaynews.adapter.HotDataAdapter;
 import com.kx.todaynews.bean.HotBean;
 import com.kx.todaynews.bean.HotContent;
+import com.kx.todaynews.module.news.activity.ArticleDetailActivity;
 import com.kx.todaynews.net.YZNetClient;
+import com.kx.todaynews.widget.loadinglayout.LoadingLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,11 +45,13 @@ import io.reactivex.schedulers.Schedulers;
 public class NewsFragment extends Fragment {
     @BindView(R.id.recycleView)
     RecyclerView recycleView;
-    @BindView(R.id.refreshLayout)
+    @BindView(R.id.content_view)
     SwipeRefreshLayout refreshLayout;
     @BindView(R.id.tips)
     TextView tips;
     Unbinder unbinder;
+//    @BindView(R.id.loadingLayout)
+//    LoadingLayout loadingLayout;
     private long lastTime = Long.valueOf((System.currentTimeMillis() + "").substring(0, 10));
     private long locTime = System.currentTimeMillis();
     private int session_refresh_idx = 1;
@@ -66,6 +69,7 @@ public class NewsFragment extends Fragment {
         unbinder = ButterKnife.bind(this, view);
         return view;
     }
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -83,7 +87,7 @@ public class NewsFragment extends Fragment {
             }
         });
         mHotDataAdapter.setOnItemClickListener(groupId -> {
-            Intent intent = new Intent(getActivity(), ArticleDetailActivity.class);
+            Intent intent = new Intent(getActivity(), TestActivity.class);
             intent.putExtra(ArticleDetailActivity.GROUPID, groupId);
             startActivity(intent);
         });
@@ -111,7 +115,7 @@ public class NewsFragment extends Fragment {
                                 String content = dataBean.getContent();
                                 hotContent = mGson.fromJson(content, HotContent.class);
                                 // 去掉广告数据
-                                if ("广告".equals(hotContent.getLabel())){
+                                if ("广告".equals(hotContent.getLabel())) {
                                     continue;
                                 }
                                 hotContents.add(hotContent);
@@ -119,6 +123,7 @@ public class NewsFragment extends Fragment {
                             mHotDataAdapter.setHotDatas(hotContents);
                         }
                         showTipsAnimation();
+                       // loadingLayout.showDataError();
                     }
                 }, new Consumer<Throwable>() {
                     @Override
@@ -153,6 +158,7 @@ public class NewsFragment extends Fragment {
             }
         }, 1500);
     }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".module.news.TestActivity">
+    <com.kx.todaynews.module.news.LoadingFlashView
+        android:visibility="gone"
+        android:id="@+id/loadingView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        />
+    <Button
+        android:visibility="gone"
+        android:onClick="xx"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <com.kx.todaynews.widget.loadinglayout.LoadingLayout
+        android:id="@+id/loadingLayout"
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:layout_height="0dp">
+        <TextView
+            android:id="@id/content_view"
+            android:text="我是内容"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </com.kx.todaynews.widget.loadinglayout.LoadingLayout>
+
+    <LinearLayout
+        android:layout_marginBottom="40dp"
+        android:layout_width="match_parent"
+        android:layout_height="40dp">
+
+        <Button
+            android:id="@+id/tv1"
+            android:gravity="center"
+            android:text="刷新"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+        <Button
+            android:id="@+id/tv2"
+            android:gravity="center"
+            android:text="数据错误"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+        <Button
+            android:id="@+id/tv3"
+            android:gravity="center"
+            android:text="无网络"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+        <Button
+            android:id="@+id/tv4"
+            android:gravity="center"
+            android:text="无数据"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+        <Button
+            android:id="@+id/tv5"
+            android:gravity="center"
+            android:text="内容界面"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+
+</LinearLayout>

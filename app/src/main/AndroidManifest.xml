@@ -26,13 +26,14 @@
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".widget.emoji.EmojiActivity"
-            android:windowSoftInputMode="stateHidden|adjustResize"
+        <activity
+            android:name=".widget.emoji.EmojiActivity"
             android:theme="@style/MyDialogStyleBottom"
-            />
+            android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
             android:name=".ImageBrowserActivity"
             android:screenOrientation="portrait" />
+        <activity android:name=".module.news.TestActivity"></activity>
     </application>
 
 </manifest>

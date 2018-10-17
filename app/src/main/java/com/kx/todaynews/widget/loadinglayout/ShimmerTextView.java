@@ -1,4 +1,4 @@
-package com.kx.todaynews.widget;
+package com.kx.todaynews.widget.loadinglayout;
 
 import android.animation.ValueAnimator;
 import android.content.Context;

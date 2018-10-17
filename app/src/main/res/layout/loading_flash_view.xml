@@ -5,13 +5,12 @@
       android:layout_height="wrap_content"
       android:background="@android:color/transparent">
 
-        <TextView
+        <ImageView
             android:id="@+id/load1"
             android:layout_width="30dp"
             android:layout_height="32dp"
             android:layout_gravity="center"
             android:scaleType="fitXY"
-            android:background="@drawable/load_text_1"
             android:src="@drawable/load_text_1"/>
 
         <ImageView

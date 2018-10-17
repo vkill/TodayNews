@@ -1,4 +1,4 @@
-package com.kx.todaynews.widget;
+package com.kx.todaynews.widget.loadinglayout;
 
 import android.animation.ObjectAnimator;
 import android.content.Context;
@@ -11,6 +11,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Shader;
 import android.graphics.Xfermode;
+import android.os.Handler;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -19,13 +20,15 @@ import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
+import android.widget.ImageView;
 
 import com.kx.todaynews.R;
+import com.kx.todaynews.utils.LogUtils;
 
 /**
  * 高仿今日头条loading flash效果
  */
-public class LoadingFlashView extends View {
+public class LoadingFlashView extends View implements View.OnFocusChangeListener{
 
     private static final int DEFAULT_MASK_WIDTH = 160;
     private static final int DEFAULT_MASK_HEIGHT = 80;
@@ -46,6 +49,13 @@ public class LoadingFlashView extends View {
     private ObjectAnimator mAnimator;
     private boolean mPlaying = false;
     private int mFlashDuration;
+    private Handler mHandler = new Handler();
+    private Runnable mRunnable = new Runnable() {
+        @Override
+        public void run() {
+
+        }
+    };
 
     public LoadingFlashView(@NonNull Context context) {
         this(context, null);
@@ -118,6 +128,10 @@ public class LoadingFlashView extends View {
     }
 
     private void setPercent(float percent) {
+        System.out.println("LoadingFlashView  刷新中...   " + percent );
+        if (getVisibility() == GONE){
+            return;
+        }
         mHorMoveDistance = this.mMaskWidth * (percent - 1.5f);
         invalidate();
     }
@@ -151,7 +165,6 @@ public class LoadingFlashView extends View {
             canvas.drawRect(0.0f, 0.0f, horMoveArea, verMoveArea, paint);
         }
     }
-
     public void start() {
         if (mPlaying) {
             return;
@@ -163,6 +176,7 @@ public class LoadingFlashView extends View {
     public void stop() {
         if (mAnimator != null) {
             mAnimator.cancel();
+            mAnimator = null;
         }
         mPlaying = false;
     }
@@ -191,16 +205,43 @@ public class LoadingFlashView extends View {
     public boolean isPlaying() {
         return mPlaying;
     }
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        start();
+    }
+    @Override
+    public void setVisibility(int visibility) {
+        if (visibility == VISIBLE){
+            LogUtils.e("setVisibility   VISIBLE");
+            start();
+        }else {
+            LogUtils.e("setVisibility   GONE");
+            stop();
+        }
+        super.setVisibility(visibility);
+    }
 
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        start();
+        LogUtils.e("onAttachedToWindow   ");
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        stop();
+        LogUtils.e("onDetachedFromWindow   ");
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        LogUtils.e("onSizeChanged   ");
+    }
+
+    @Override
+    public void onFocusChange(View v, boolean hasFocus) {
+        LogUtils.e("onFocusChange   " + (hasFocus));
     }
 }
