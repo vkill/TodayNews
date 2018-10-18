@@ -5,7 +5,7 @@
     android:orientation="vertical"
     android:gravity="center">
     <com.kx.todaynews.widget.loadinglayout.LoadingFlashView
-        android:visibility="gone"
+        android:id="@+id/loadingLayout"
         android:layout_marginBottom="45dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>

@@ -1,25 +1,24 @@
 package com.kx.todaynews.module.user;
 
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
+
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.kx.todaynews.R;
+import com.kx.todaynews.base.BaseFragment;
+import com.kx.todaynews.base.IBasePresenter;
+import com.kx.todaynews.widget.loadinglayout.LoadingFlashView;
 
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
+import butterknife.BindView;
+
 
 /**
  * Created by admin on 2018/10/14.
  */
-public class UserFragment extends Fragment {
+public class UserFragment extends BaseFragment {
 
     private static UserFragment instance = null;
-    Unbinder unbinder;
+    @BindView(R.id.loadingLayout)
+    LoadingFlashView loadingLayout;
 
     public static UserFragment getInstance() {
         if (instance == null) {
@@ -28,11 +27,19 @@ public class UserFragment extends Fragment {
         return instance;
     }
 
-    @Nullable
+
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_main_user, container, false);
-        unbinder = ButterKnife.bind(this, view);
+    protected IBasePresenter createPresenter() {
+        return null;
+    }
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.fragment_main_user;
+    }
+
+    @Override
+    protected void initEventAndData() {
         //  changeNightMode.setOnClickListener(new View.OnClickListener() {
         //    @Override
         //     public void onClick(View v) {
@@ -46,17 +53,19 @@ public class UserFragment extends Fragment {
         // getActivity().recreate();
         //        }
         //  });
-        return view;
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    protected void initListener() {
+
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
+    protected void loadData() {
+
+    }
+    @Override
+    protected void initView(View rootView) {
+
     }
 }

@@ -20,7 +20,7 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.kx.todaynews.Api;
 import com.kx.todaynews.R;
-import com.kx.todaynews.adapter.HotDataAdapter;
+import com.kx.todaynews.adapter.NewsListAdapter;
 import com.kx.todaynews.bean.HotBean;
 import com.kx.todaynews.bean.HotContent;
 import com.kx.todaynews.module.news.activity.ArticleDetailActivity;
@@ -56,7 +56,7 @@ public class NewsFragment extends Fragment {
     private long locTime = System.currentTimeMillis();
     private int session_refresh_idx = 1;
     private Gson mGson = new Gson();
-    private HotDataAdapter mHotDataAdapter;
+    private NewsListAdapter mNewsListAdapter;
 
     public static NewsFragment getInstance() {
         return new NewsFragment();
@@ -73,12 +73,12 @@ public class NewsFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mHotDataAdapter = new HotDataAdapter(getActivity());
+        mNewsListAdapter = new NewsListAdapter(getActivity());
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recycleView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
         recycleView.setLayoutManager(linearLayoutManager);
-        recycleView.setAdapter(mHotDataAdapter);
+        recycleView.setAdapter(mNewsListAdapter);
         getHotData();
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -92,7 +92,7 @@ public class NewsFragment extends Fragment {
                 getHotData();
             }
         });
-        mHotDataAdapter.setOnItemClickListener(groupId -> {
+        mNewsListAdapter.setOnItemClickListener(groupId -> {
             Intent intent = new Intent(getActivity(), ArticleDetailActivity.class);
             intent.putExtra(ArticleDetailActivity.GROUPID, groupId);
             startActivity(intent);
@@ -100,7 +100,7 @@ public class NewsFragment extends Fragment {
     }
 
     private void getHotData() {
-        Disposable subscribe = YZNetClient.getInstance().get(Api.class).getHotData("news_hot", session_refresh_idx, mHotDataAdapter.getListCount() + 17,
+        Disposable subscribe = YZNetClient.getInstance().get(Api.class).getHotData("news_hot", session_refresh_idx, mNewsListAdapter.getListCount() + 17,
                 lastTime, Long.valueOf((System.currentTimeMillis() + "").substring(0, 10)), System.currentTimeMillis(), Long.valueOf((System.currentTimeMillis() + "").substring(0, 10))
                 //  , System.currentTimeMillis()
                 , "720*1344", "320")                                                           // 6603220675295445512    6603478830382318094
@@ -126,7 +126,7 @@ public class NewsFragment extends Fragment {
                                 }
                                 hotContents.add(hotContent);
                             }
-                            mHotDataAdapter.setHotDatas(hotContents);
+                            mNewsListAdapter.setHotDatas(hotContents);
                         }
                         loadingLayout.showContentView();
                         showTipsAnimation();

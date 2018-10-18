@@ -21,7 +21,7 @@ import com.kx.todaynews.utils.TyDateUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HotDataAdapter  extends RecyclerView.Adapter<HotDataAdapter.AbstractHolder>{
+public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.AbstractHolder>{
     //  纯文本,没图片的 item
     public static final int TYPE_TEXT =  0 ;
     //  一张图片，位于右边
@@ -42,7 +42,7 @@ public class HotDataAdapter  extends RecyclerView.Adapter<HotDataAdapter.Abstrac
     private LayoutInflater mLayoutInflater ;
     private List<HotContent> mContents  = new ArrayList<>();
     private  Context mContext ;
-    public HotDataAdapter(Context  context) {
+    public NewsListAdapter(Context  context) {
         mLayoutInflater = LayoutInflater.from(context);
         mContext = context;
     }

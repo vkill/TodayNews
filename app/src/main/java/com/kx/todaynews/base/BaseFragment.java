@@ -44,6 +44,7 @@ public abstract class BaseFragment<P extends IBasePresenter> extends LazyLoadFra
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        mPresenter = createPresenter();
         if (mPresenter != null) {
             mPresenter.attachView(this);
         }
@@ -57,9 +58,13 @@ public abstract class BaseFragment<P extends IBasePresenter> extends LazyLoadFra
      * 有些初始化必须在onCreateView中，例如setAdapter,
      * 否则，会弹出 No adapter attached; skipping layout
      */
-    protected void initView(View rootView) {
+    protected abstract void initView(View rootView);
 
-    }
+    /**
+     * 创建Presenter
+     * @return P Presenter
+     */
+    protected abstract P createPresenter();
 
     /**
      * @return 布局id
@@ -113,5 +118,15 @@ public abstract class BaseFragment<P extends IBasePresenter> extends LazyLoadFra
     @Override
     public void showErrorMsg(String errorMsg) {
 
+    }
+    @Override
+    public void onDestroyView() {
+        if (mPresenter != null) {
+            mPresenter.detachView();
+        }
+        if (unBinder != null) {
+            unBinder.unbind();
+        }
+        super.onDestroyView();
     }
 }

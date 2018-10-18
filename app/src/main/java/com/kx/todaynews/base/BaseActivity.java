@@ -87,7 +87,7 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
 
     /**
      * 创建Presenter
-     * @return T Presenter
+     * @return P Presenter
      */
     protected abstract P createPresenter();
 
