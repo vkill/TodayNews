@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public abstract class BaseFragment<P extends IBasePresenter> extends LazyLoadFragment implements IBaseView  {
+public abstract class BaseFragment<P extends BasePresenter> extends LazyLoadFragment implements IBaseView  {
     protected P mPresenter;
     private Unbinder unBinder;
     private View rootView;
@@ -29,9 +29,6 @@ public abstract class BaseFragment<P extends IBasePresenter> extends LazyLoadFra
         if (rootView == null) {
             rootView = inflater.inflate(getLayoutId(),container,false);
             unBinder = ButterKnife.bind(this, rootView);
-            initView(rootView);
-            initEventAndData();
-            initListener();
         } else {
             ViewGroup parent = (ViewGroup) rootView.getParent();
             if (parent != null) {
@@ -44,6 +41,9 @@ public abstract class BaseFragment<P extends IBasePresenter> extends LazyLoadFra
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        initView(rootView);
+        initEventAndData();
+        initListener();
         mPresenter = createPresenter();
         if (mPresenter != null) {
             mPresenter.attachView(this);

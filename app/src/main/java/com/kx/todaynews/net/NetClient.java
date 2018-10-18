@@ -28,7 +28,7 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 
-public class YZNetClient {
+public class NetClient {
 
     private static final int TIMEOUT_VALUE = 30*1000;
 
@@ -37,7 +37,7 @@ public class YZNetClient {
 
     private static WeakReference<Context> contextRef;
 
-    private static YZNetClient instance;
+    private static NetClient instance;
     private HttpLoggingInterceptor.Level logLevel = HttpLoggingInterceptor.Level.BODY;
     private Retrofit retrofit;
     private Map<Class,Object> apiMap;
@@ -47,7 +47,7 @@ public class YZNetClient {
     public static String HOST_1F = "http://lf.snssdk.com";
     public static  String HOST_A3 = "http://a3.pstatp.com";
 
-    private YZNetClient(){
+    private NetClient(){
       //  cookies = getCookie();
         userAgent = System.getProperty("http.agent");
         createClient();
@@ -58,20 +58,20 @@ public class YZNetClient {
        // FileDownloader.setup(context);
     }
 
-    public static YZNetClient getInstance(){
+    public static NetClient getInstance(){
         if (instance==null){
-            instance = new YZNetClient();
+            instance = new NetClient();
         }
         return instance;
     }
 
     private void createClient(){
         if (contextRef==null){
-            throw new IllegalArgumentException("YZNetClient not init");
+            throw new IllegalArgumentException("NetClient not init");
         }
         Context context = contextRef.get();
         if (context==null){
-            throw new IllegalArgumentException("YZNetClient was release");
+            throw new IllegalArgumentException("NetClient was release");
         }
         if (cookieJar == null){
             cookieJar = new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(context));

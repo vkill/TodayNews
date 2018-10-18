@@ -6,7 +6,7 @@ import com.kx.todaynews.base.BasePresenter;
 import com.kx.todaynews.bean.article.ArticleReplyDiggListBean;
 import com.kx.todaynews.bean.article.ArticleReplyListBean;
 import com.kx.todaynews.contract.IArticleReplyListContract;
-import com.kx.todaynews.net.YZNetClient;
+import com.kx.todaynews.net.NetClient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,12 +69,12 @@ public class ArticleReplyListPresenter extends BasePresenter<IArticleReplyListCo
     }
 
     private Observable<ArticleReplyListBean> getArticleReplyList(long replyId, int offset) {
-        return YZNetClient.getInstance().get(Api.class).getArticleReplyList(
+        return NetClient.getInstance().get(Api.class).getArticleReplyList(
                 offset,replyId+"", Long.valueOf((System.currentTimeMillis() + "").substring(0, 10)), System.currentTimeMillis())
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
     private Observable<ArticleReplyDiggListBean> getArticleReplyDiggLists(long diggId) {
-        return YZNetClient.getInstance().get(Api.class).getArticleReplyDiggList(
+        return NetClient.getInstance().get(Api.class).getArticleReplyDiggList(
                 diggId + "", Long.valueOf((System.currentTimeMillis() + "").substring(0, 10)), System.currentTimeMillis())
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }

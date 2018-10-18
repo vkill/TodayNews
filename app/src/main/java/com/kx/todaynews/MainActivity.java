@@ -11,9 +11,8 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.kx.todaynews.module.news.NewsFragment;
+import com.kx.todaynews.module.news.HomeFragment;
 import com.kx.todaynews.module.user.UserFragment;
-import com.kx.todaynews.utils.LogUtils;
 import com.kx.todaynews.widget.helper.BottomNavigationViewHelper;
 
 import butterknife.BindView;
@@ -40,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.fl_container)
     FrameLayout flContainer;
     private int mLastFgIndex = 0;
-    NewsFragment mNewsFragment;
+    HomeFragment mNewsFragment;
     UserFragment mUserFragment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
             return true;
         });
         if (savedInstanceState != null) {
-            mNewsFragment = (NewsFragment) getSupportFragmentManager().findFragmentByTag(NewsFragment.class.getName());
+            mNewsFragment = (HomeFragment) getSupportFragmentManager().findFragmentByTag(HomeFragment.class.getName());
             showFragment(0);
            // mUserFragment = (UserFragment) getSupportFragmentManager().findFragmentByTag(UserFragment.class.getName());
             // 恢复 recreate 前的位置
@@ -112,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
                  * 如果Fragment为空，就新建一个实例
                  */
                 if (mNewsFragment == null) {
-                    mNewsFragment = NewsFragment.getInstance();
+                    mNewsFragment = HomeFragment.getInstance();
                 }
                 fragment = mNewsFragment;
                 break;

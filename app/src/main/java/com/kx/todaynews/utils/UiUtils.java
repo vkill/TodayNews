@@ -2,6 +2,8 @@ package com.kx.todaynews.utils;
 
 import android.content.Context;
 
+import com.kx.todaynews.AndroidApplication;
+
 /**
  * @author Administrator
  */
@@ -22,5 +24,9 @@ public class UiUtils {
     public static float sp2px(Context context, float sp) {
         final float scale = context.getResources().getDisplayMetrics().scaledDensity;
         return sp * scale;
+    }
+
+    public static Context getContext() {
+        return AndroidApplication.getContext();
     }
 }

@@ -18,7 +18,7 @@ import com.kx.todaynews.bean.article.CommentsAndDetailBean;
 import com.kx.todaynews.bean.article.TextDetailInfo;
 import com.kx.todaynews.module.news.NewsDetailHeaderView;
 import com.kx.todaynews.module.news.fragment.ArticleReplyListBottomFragment;
-import com.kx.todaynews.net.YZNetClient;
+import com.kx.todaynews.net.NetClient;
 import com.kx.todaynews.utils.LogUtils;
 import com.kx.todaynews.utils.ToastUtils;
 import com.kx.todaynews.widget.SoftKeyBoardListener;
@@ -70,7 +70,7 @@ public class ArticleDetailActivity extends AppCompatActivity {
         mCommentsAdapter.addHeaderView(mHeaderView);
         mCommentsAdapter.setEmptyView(R.layout.pager_no_comment, articleDetailRecyclerView);
         mCommentsAdapter.setHeaderAndEmpty(true);
-        RetrofitUrlManager.getInstance().putDomain("a3", YZNetClient.HOST_A3);
+        RetrofitUrlManager.getInstance().putDomain("a3", NetClient.HOST_A3);
         mHeaderView.setOnWebViewImageClickListener((imageUrl, imageLists) -> {
             ImageBrowserActivity.start(this, imageUrl, imageLists);
         });
@@ -176,12 +176,12 @@ public class ArticleDetailActivity extends AppCompatActivity {
     }
 
     private Observable<TextDetailInfo> getArticleDetail(String groupId) {
-        return YZNetClient.getInstance().get(Api.class).getArticleDetail(groupId, groupId, Long.valueOf((System.currentTimeMillis() + "").substring(0, 10)), System.currentTimeMillis())
+        return NetClient.getInstance().get(Api.class).getArticleDetail(groupId, groupId, Long.valueOf((System.currentTimeMillis() + "").substring(0, 10)), System.currentTimeMillis())
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 
     private Observable<ArticleTabCommentsBean> getTabComments(String groupId, int offset) {
-        return YZNetClient.getInstance().get(Api.class).getTabComments(offset, groupId, groupId, Long.valueOf((System.currentTimeMillis() + "").substring(0, 10)), System.currentTimeMillis())
+        return NetClient.getInstance().get(Api.class).getTabComments(offset, groupId, groupId, Long.valueOf((System.currentTimeMillis() + "").substring(0, 10)), System.currentTimeMillis())
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 

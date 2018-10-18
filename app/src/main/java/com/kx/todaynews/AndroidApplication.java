@@ -3,7 +3,7 @@ package com.kx.todaynews;
 import android.app.Application;
 import android.content.Context;
 
-import com.kx.todaynews.net.YZNetClient;
+import com.kx.todaynews.net.NetClient;
 import com.kx.todaynews.utils.BaseConstants;
 import com.kx.todaynews.utils.LogUtils;
 
@@ -15,7 +15,7 @@ public class AndroidApplication extends Application {
         mContext = getApplicationContext();
         LogUtils.init();
         BaseConstants.init(this);
-        YZNetClient.init(mContext);
+        NetClient.init(mContext);
     }
     public static Context getContext(){
         return mContext;
