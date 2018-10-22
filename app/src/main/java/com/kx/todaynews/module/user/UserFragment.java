@@ -5,6 +5,7 @@ import android.view.View;
 
 import com.kx.todaynews.R;
 import com.kx.todaynews.base.BaseFragment;
+import com.kx.todaynews.base.BasePresenter;
 import com.kx.todaynews.base.IBasePresenter;
 import com.kx.todaynews.widget.loadinglayout.LoadingFlashView;
 
@@ -29,7 +30,7 @@ public class UserFragment extends BaseFragment {
 
 
     @Override
-    protected IBasePresenter createPresenter() {
+    protected BasePresenter createPresenter() {
         return null;
     }
 

@@ -30,7 +30,7 @@ public class NewsListPresenter extends BasePresenter<INewsListContract.INewsList
             lastTime = System.currentTimeMillis() / 1000;
         }
         addRxSubscribe(NetClient.getInstance().get(Api.class)
-            .getNewsList("news_hot", session_refresh_idx, 0,
+            .getNewsList(channelCode, session_refresh_idx, 0,
                     lastTime, Long.valueOf((System.currentTimeMillis() + "").substring(0, 10)), System.currentTimeMillis(), Long.valueOf((System.currentTimeMillis() + "").substring(0, 10))
                     //  , System.currentTimeMillis()
                     , "720*1344", "320")

@@ -23,12 +23,21 @@ public abstract class BaseFragment<P extends BasePresenter> extends LazyLoadFrag
         mActivity = (Activity) context;
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mPresenter = createPresenter();
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (rootView == null) {
             rootView = inflater.inflate(getLayoutId(),container,false);
             unBinder = ButterKnife.bind(this, rootView);
+            initView(rootView);
+            initEventAndData();
+            initListener();
         } else {
             ViewGroup parent = (ViewGroup) rootView.getParent();
             if (parent != null) {
@@ -41,10 +50,6 @@ public abstract class BaseFragment<P extends BasePresenter> extends LazyLoadFrag
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initView(rootView);
-        initEventAndData();
-        initListener();
-        mPresenter = createPresenter();
         if (mPresenter != null) {
             mPresenter.attachView(this);
         }

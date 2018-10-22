@@ -1,6 +1,7 @@
 package com.kx.todaynews.utils;
 
 import android.content.Context;
+import android.content.res.Resources;
 
 import com.kx.todaynews.AndroidApplication;
 
@@ -16,9 +17,9 @@ public class UiUtils {
         return context.getResources().getDisplayMetrics().heightPixels;
     }
 
-    public static float dp2px(Context context, float dp) {
+    public static int dp2px(Context context, float dp) {
         final float scale = context.getResources().getDisplayMetrics().density;
-        return dp * scale + 0.5f;
+        return (int) (dp * scale + 0.5f);
     }
 
     public static float sp2px(Context context, float sp) {
@@ -28,5 +29,17 @@ public class UiUtils {
 
     public static Context getContext() {
         return AndroidApplication.getContext();
+    }
+    /**
+     * 得到string.xml中的字符串
+     */
+    public static String getString(int resId) {
+        return getResource().getString(resId);
+    }
+    /**
+     * 得到resources对象
+     */
+    public static Resources getResource() {
+        return getContext().getResources();
     }
 }

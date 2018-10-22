@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.kx.todaynews.R;
 import com.kx.todaynews.adapter.NewsListAdapter;
+import com.kx.todaynews.adapter.VideoListAdapter;
 import com.kx.todaynews.base.BaseFragment;
 import com.kx.todaynews.bean.HotBean;
 import com.kx.todaynews.bean.HotContent;
@@ -41,8 +42,11 @@ public class NewsListFragment extends BaseFragment<NewsListPresenter> implements
     SwipeRefreshLayout refreshLayout;
     @BindView(R.id.loadingLayout)
     LoadingLayout loadingLayout;
-    private NewsListAdapter mNewsListAdapter;
+   // private NewsListAdapter mNewsListAdapter;
+   private List<HotContent> mNewsList = new ArrayList<>();
+    private VideoListAdapter mVideoListAdapter;
     private String mChannelCode;
+    private boolean isVideoList;
     private Gson mGson = new Gson();
     @Override
     protected NewsListPresenter createPresenter() {
@@ -56,17 +60,25 @@ public class NewsListFragment extends BaseFragment<NewsListPresenter> implements
 
     @Override
     protected void initView(View rootView) {
-        mNewsListAdapter = new NewsListAdapter(getActivity());
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recycleView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
         recycleView.setLayoutManager(linearLayoutManager);
-        recycleView.setAdapter(mNewsListAdapter);
     }
 
     @Override
     protected void initEventAndData() {
-        mChannelCode = getArguments().getString(Constant.CHANNEL_CODE);
+        if (getArguments()!=null){
+            mChannelCode = getArguments().getString(Constant.CHANNEL_CODE);
+            isVideoList = getArguments().getBoolean(Constant.IS_VIDEO_LIST, false);
+        }
+        if (isVideoList){
+            mVideoListAdapter = new VideoListAdapter(R.layout.item_video_list,mNewsList);
+            recycleView.setAdapter(mVideoListAdapter);
+        }else {
+          //  mNewsListAdapter = new NewsListAdapter(getActivity());
+          //  recycleView.setAdapter(mNewsListAdapter);
+        }
     }
 
     @Override
@@ -83,11 +95,11 @@ public class NewsListFragment extends BaseFragment<NewsListPresenter> implements
                 loadData();
             }
         });
-        mNewsListAdapter.setOnItemClickListener(groupId -> {
-            Intent intent = new Intent(getActivity(), ArticleDetailActivity.class);
-            intent.putExtra(ArticleDetailActivity.GROUPID, groupId);
-            startActivity(intent);
-        });
+//        mNewsListAdapter.setOnItemClickListener(groupId -> {
+//            Intent intent = new Intent(getActivity(), ArticleDetailActivity.class);
+//            intent.putExtra(ArticleDetailActivity.GROUPID, groupId);
+//            startActivity(intent);
+//        });
     }
 
     @Override
@@ -114,7 +126,8 @@ public class NewsListFragment extends BaseFragment<NewsListPresenter> implements
                 }
                 hotContents.add(hotContent);
             }
-            mNewsListAdapter.setHotDatas(hotContents);
+            mNewsList.addAll(0,hotContents);
+            mVideoListAdapter.notifyDataSetChanged();
             loadingLayout.showContentView();
         }else {
             loadingLayout.showEmpty();

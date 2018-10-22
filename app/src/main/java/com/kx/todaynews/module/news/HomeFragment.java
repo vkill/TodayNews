@@ -3,6 +3,7 @@ package com.kx.todaynews.module.news;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.kx.todaynews.R;
+import com.kx.todaynews.constants.Constant;
+import com.kx.todaynews.utils.UiUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -25,11 +31,12 @@ public class HomeFragment extends Fragment {
     @BindView(R.id.tab_channel)
     ColorTrackTabLayout tabChannel;
     @BindView(R.id.iv_operation)
-    ImageView ivOperation;
+    ImageView ivAddChannel;
     @BindView(R.id.vp_content)
     ViewPager vpContent;
     Unbinder unbinder;
-
+    private List<NewsListFragment> mChannelFragments = new ArrayList<>();
+    private String[] mChannelCodes;
     public static HomeFragment getInstance() {
         return new HomeFragment();
     }
@@ -49,7 +56,51 @@ public class HomeFragment extends Fragment {
     }
 
     private void initChannelFragments() {
+        mChannelCodes = getResources().getStringArray(R.array.channel_code);
+        String[] channels = getResources().getStringArray(R.array.channel);
+        String[] channelCodes = getResources().getStringArray(R.array.channel_code);
 
+        for (String channel: channelCodes) {
+            NewsListFragment newsListFragment = new NewsListFragment();
+            Bundle bundle = new Bundle();
+            bundle.putString(Constant.CHANNEL_CODE,channel);
+            //是否是视频列表页面,根据判断频道号是否是视频
+            bundle.putBoolean(Constant.IS_VIDEO_LIST, "video".equals(channel));
+            newsListFragment.setArguments(bundle);
+            mChannelFragments.add(newsListFragment);//添加到集合中
+        }
+        tabChannel.setTabPaddingLeftAndRight(UiUtils.dp2px(getActivity(),10), UiUtils.dp2px(getActivity(),10));
+        tabChannel.setupWithViewPager(vpContent);
+        tabChannel.post(new Runnable() {
+            @Override
+            public void run() {
+                //设置最小宽度，使其可以在滑动一部分距离
+                ViewGroup slidingTabStrip = (ViewGroup) tabChannel.getChildAt(0);
+                slidingTabStrip.setMinimumWidth(slidingTabStrip.getMeasuredWidth() + ivAddChannel.getMeasuredWidth());
+            }
+        });
+        //隐藏指示器
+        tabChannel.setSelectedTabIndicatorHeight(0);
+
+        vpContent.setAdapter(new FragmentPagerAdapter(getFragmentManager()) {
+            @Override
+            public Fragment getItem(int position) {
+                return mChannelFragments.get(position);
+            }
+
+            @Override
+            public int getCount() {
+                return mChannelFragments.size();
+            }
+
+            @Nullable
+            @Override
+            public CharSequence getPageTitle(int position) {
+                System.out.println("position = " + position  );
+                return channels[position];
+            }
+        });
+        vpContent.setOffscreenPageLimit(mChannelFragments.size());
     }
 
     @Override
