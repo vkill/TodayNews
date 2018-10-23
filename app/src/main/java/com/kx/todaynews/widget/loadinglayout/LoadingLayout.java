@@ -102,7 +102,6 @@ public class LoadingLayout extends FrameLayout {
         setWillNotDraw(true);
     }
     private void changeStatus(@LoadingStatus int loadingStatus){
-        LogUtils.e("mLoadingView = " + (mLoadingView==null));
        // setAllViewGone();
         switch (loadingStatus){
             case STATUS_LOADING:

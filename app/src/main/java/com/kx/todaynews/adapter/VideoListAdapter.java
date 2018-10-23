@@ -13,9 +13,11 @@ import com.kx.todaynews.bean.HotContent;
 import com.kx.todaynews.utils.GlideCircleTransform;
 import com.kx.todaynews.utils.TyDateUtils;
 import com.kx.todaynews.utils.UiUtils;
+import com.kx.todaynews.widget.helper.MyJZVideoPlayerStandard;
 
 import java.util.List;
 
+import cn.jzvd.JZVideoPlayerStandard;
 import fm.jiecao.jcvideoplayer_lib.JCVideoPlayerStandard;
 
 
@@ -56,16 +58,15 @@ public class VideoListAdapter extends BaseQuickAdapter<HotContent,BaseViewHolder
                 .setText(R.id.tv_comment_count, String.valueOf(news.getComment_count()));//评论数
 
 //
-        JCVideoPlayerStandard videoPlayer = helper.getView(R.id.video_player);
+        MyJZVideoPlayerStandard videoPlayer = helper.getView(R.id.video_player);
         Glide.with(mContext).load(news.getVideo_detail_info().getDetail_video_large_image().getUrl())
                .into(videoPlayer.thumbImageView);
 
-        videoPlayer.setAllControlsVisible(View.GONE, View.GONE, View.VISIBLE, View.GONE, View.VISIBLE, View.VISIBLE, View.GONE);
-        videoPlayer.tinyBackImageView.setVisibility(View.GONE);
-        videoPlayer.setPosition(helper.getAdapterPosition());//绑定Position
+//        videoPlayer.setAllControlsVisible(View.GONE, View.GONE, View.VISIBLE, View.GONE, View.VISIBLE, View.VISIBLE, View.GONE);
+//        videoPlayer.tinyBackImageView.setVisibility(View.GONE);
+//        videoPlayer.setPosition(helper.getAdapterPosition());//绑定Position
 
         videoPlayer.titleTextView.setText("");//清除标题,防止复用的时候出现
-
 //        videoPlayer.setOnVideoClickListener(new OnVideoClickListener() {
 //            @Override
 //            public void onVideoClickToStart() {

@@ -2,6 +2,7 @@ package com.kx.todaynews.module.news;
 
 import android.animation.ValueAnimator;
 import android.content.Intent;
+import android.provider.MediaStore;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,16 +13,16 @@ import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.google.gson.Gson;
 import com.kx.todaynews.R;
-import com.kx.todaynews.adapter.NewsListAdapter;
 import com.kx.todaynews.adapter.VideoListAdapter;
 import com.kx.todaynews.base.BaseFragment;
 import com.kx.todaynews.bean.HotBean;
 import com.kx.todaynews.bean.HotContent;
 import com.kx.todaynews.constants.Constant;
 import com.kx.todaynews.contract.INewsListContract;
-import com.kx.todaynews.module.news.activity.ArticleDetailActivity;
+import com.kx.todaynews.module.video.VideoActivity;
 import com.kx.todaynews.presenter.NewsListPresenter;
 import com.kx.todaynews.widget.loadinglayout.LoadingLayout;
 
@@ -75,10 +76,23 @@ public class NewsListFragment extends BaseFragment<NewsListPresenter> implements
         if (isVideoList){
             mVideoListAdapter = new VideoListAdapter(R.layout.item_video_list,mNewsList);
             recycleView.setAdapter(mVideoListAdapter);
+            mVideoListAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                    HotContent hotContent = mNewsList.get(position);
+                    Intent intent = new Intent(getActivity(), VideoActivity.class);
+                    intent.putExtra(VideoActivity.ITEM_ID,hotContent.getItem_id()+"");
+                    intent.putExtra(VideoActivity.VIDEO_ID,hotContent.getVideo_id());
+                    intent.putExtra(VideoActivity.THUMBIMAGEVIEW,hotContent.getVideo_detail_info().getDetail_video_large_image().getUrl());
+                    intent.putExtra(VideoActivity.TITLETEXTVIEW,hotContent.getTitle());
+                    startActivity(intent);
+                }
+            });
         }else {
           //  mNewsListAdapter = new NewsListAdapter(getActivity());
           //  recycleView.setAdapter(mNewsListAdapter);
         }
+
     }
 
     @Override
