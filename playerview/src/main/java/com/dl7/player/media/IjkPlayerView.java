@@ -199,7 +199,7 @@ public class IjkPlayerView extends FrameLayout implements View.OnClickListener {
     // 锁屏
     private boolean mIsForbidTouch = false;
     // 是否显示控制栏
-    private boolean mIsShowBar = true;
+    private boolean mIsShowBar = false;
     // 是否全屏
     private boolean mIsFullscreen;
     // 是否播放结束
@@ -401,7 +401,7 @@ public class IjkPlayerView extends FrameLayout implements View.OnClickListener {
         Log.i("TTAG", "onPause");
         mCurPosition = mVideoView.getCurrentPosition();
         mVideoView.pause();
-        mIvPlay.setSelected(false);
+        mIvPlay.setImageResource(R.drawable.ic_video_play);
         mOrientationListener.disable();
         _pauseDanmaku();
     }
@@ -577,7 +577,7 @@ public class IjkPlayerView extends FrameLayout implements View.OnClickListener {
             mIsPlayComplete = false;
         }
         if (!mVideoView.isPlaying()) {
-            mIvPlay.setSelected(true);
+            mIvPlay.setImageResource(R.drawable.ic_video_pause);
 //            if (mInterruptPosition > 0) {
 //                mLoadingView.setVisibility(VISIBLE);
 //                mHandler.sendEmptyMessage(MSG_TRY_RELOAD);
@@ -641,6 +641,7 @@ public class IjkPlayerView extends FrameLayout implements View.OnClickListener {
      */
     public void pause() {
         mIvPlay.setSelected(false);
+        mIvPlay.setImageResource(R.drawable.ic_video_pause);
         if (mVideoView.isPlaying()) {
             mVideoView.pause();
         }
@@ -1011,6 +1012,11 @@ public class IjkPlayerView extends FrameLayout implements View.OnClickListener {
         _toggleDanmakuView(isFullscreen);
         _handleActionBar(isFullscreen);
         _changeHeight(isFullscreen);
+        if (isFullscreen){
+            mIvFullscreen.setImageResource(R.drawable.ic_fullscreen_exit);
+        }else {
+            mIvFullscreen.setImageResource(R.drawable.ic_fullscreen);
+        }
         mIvFullscreen.setSelected(isFullscreen);
         mHandler.post(mHideBarRunnable);
         mIvMediaQuality.setVisibility(isFullscreen ? VISIBLE : GONE);
@@ -1628,7 +1634,7 @@ public class IjkPlayerView extends FrameLayout implements View.OnClickListener {
                     if (!mIvPlay.isSelected()) {
                         // 这里处理断网重连后不会播放情况
                         mVideoView.start();
-                        mIvPlay.setSelected(true);
+                        mIvPlay.setImageResource(R.drawable.ic_video_pause);
                     }
                 }
                 break;

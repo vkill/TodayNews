@@ -9,6 +9,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.dl7.player.media.IjkPlayerView;
+import com.jzvd.jiaozivideoplayer.JZVideoPlayer;
+import com.jzvd.jiaozivideoplayer.JZVideoPlayerStandard;
 import com.kx.todaynews.Api;
 import com.kx.todaynews.R;
 import com.kx.todaynews.net.NetClient;
@@ -19,8 +21,6 @@ import java.util.zip.CRC32;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import cn.jzvd.JZVideoPlayer;
-import cn.jzvd.JZVideoPlayerStandard;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
@@ -46,40 +46,46 @@ public class VideoActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         mItemId = getIntent().getStringExtra(ITEM_ID);
         mVideoId = getIntent().getStringExtra(VIDEO_ID);
-        Glide.with(this).load(getIntent().getStringArrayExtra(THUMBIMAGEVIEW))
+        Glide.with(this).load(getIntent().getStringExtra(THUMBIMAGEVIEW))
+                .into(ijkPlayerView.mPlayerThumb);
+        Glide.with(this).load(getIntent().getStringExtra(THUMBIMAGEVIEW))
                 .into(videoPlayer.thumbImageView);
         StringBuilder stringBuilder = new StringBuilder();
         NetClient.getInstance().get(Api.class)
                 .getVideoInfo(getVideoContentApi(mVideoId))
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<VideoContentBean>() {
+                    private String mMediaSmooth;
+                    private String mMediaMedium;
+                    private String mMediaHigh;
+                    private String mMediaSuper;
                     @Override
                     public void accept(VideoContentBean videoInfo) throws Exception {
                         VideoContentBean.DataBean.VideoListBean videoList = videoInfo.getData().getVideo_list();
                         if (videoList.getVideo_1() != null) {
                             String base64 = videoList.getVideo_1().getMain_url();
-                            String url1 = (new String(Base64.decode(base64.getBytes(), Base64.DEFAULT)));
-                            videoPlayer.setUp(url1, JZVideoPlayerStandard.SCREEN_WINDOW_NORMAL, getIntent().getStringExtra(TITLETEXTVIEW));
-                            ijkPlayerView.init()
-                                    .setTitle( getIntent().getStringExtra(TITLETEXTVIEW))
-                                    .setVideoSource(null, url1, null, null, null);
-                            stringBuilder.append("url1=" + url1 + "\n");
+                            mMediaSmooth = (new String(Base64.decode(base64.getBytes(), Base64.DEFAULT)));
+                            videoPlayer.setUp(mMediaSmooth, JZVideoPlayerStandard.SCREEN_WINDOW_NORMAL, getIntent().getStringExtra(TITLETEXTVIEW));
+                            stringBuilder.append("url1=" + mMediaSmooth + "\n");
                         }
                         if (videoList.getVideo_2() != null) {
                             String base64 = videoList.getVideo_2().getMain_url();
-                            String url1 = (new String(Base64.decode(base64.getBytes(), Base64.DEFAULT)));
-                            stringBuilder.append("url2=" + url1 + "\n");
+                            mMediaMedium = (new String(Base64.decode(base64.getBytes(), Base64.DEFAULT)));
+                            stringBuilder.append("url2=" + mMediaMedium + "\n");
                         }
                         if (videoList.getVideo_3() != null) {
                             String base64 = videoList.getVideo_3().getMain_url();
-                            String url1 = (new String(Base64.decode(base64.getBytes(), Base64.DEFAULT)));
-                            stringBuilder.append("url3=" + url1 + "\n");
+                            mMediaHigh = (new String(Base64.decode(base64.getBytes(), Base64.DEFAULT)));
+                            stringBuilder.append("url3=" + mMediaHigh + "\n");
                         }
                         if (videoList.getVideo_4() != null) {
                             String base64 = videoList.getVideo_4().getMain_url();
-                            String url1 = (new String(Base64.decode(base64.getBytes(), Base64.DEFAULT)));
-                            stringBuilder.append("url4=" + url1 + "\n");
+                            mMediaSuper = (new String(Base64.decode(base64.getBytes(), Base64.DEFAULT)));
+                            stringBuilder.append("url4=" + mMediaSuper + "\n");
                         }
+                        ijkPlayerView.init()
+                                .setTitle( getIntent().getStringExtra(TITLETEXTVIEW))
+                                .setVideoSource(mMediaSmooth, mMediaMedium, mMediaHigh, mMediaSuper, null);
                         tvUrl.setText(stringBuilder.toString());
                     }
                 }, new Consumer<Throwable>() {

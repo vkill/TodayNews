@@ -4,10 +4,9 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 
-
+import com.jzvd.jiaozivideoplayer.JZVideoPlayerStandard;
 import com.kx.todaynews.R;
 
-import cn.jzvd.JZVideoPlayerStandard;
 
 /**
  * Created by Meiji on 2017/5/15.

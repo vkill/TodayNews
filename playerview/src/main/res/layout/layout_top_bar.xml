@@ -16,7 +16,6 @@
             android:id="@+id/iv_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/sel_item_background"
             android:padding="10dp"
             android:src="@drawable/ic_return_back"/>
 
@@ -83,7 +82,6 @@
             android:id="@+id/iv_back_window"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/sel_item_background"
             android:padding="10dp"
             android:src="@drawable/ic_return_back"/>
     </FrameLayout>

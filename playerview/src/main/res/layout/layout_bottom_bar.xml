@@ -40,16 +40,17 @@
         android:layout_height="@dimen/control_bar_height"
         android:layout_gravity="bottom"
         android:orientation="horizontal"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <ImageView
             android:id="@+id/iv_play"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:scaleType="centerInside"
             android:layout_gravity="center"
-            android:background="@drawable/sel_item_background"
-            android:padding="10dp"
-            android:src="@drawable/sel_btn_play"/>
+            android:src="@drawable/ic_video_play"/>
 
         <TextView
             android:id="@+id/tv_cur_time"
@@ -58,18 +59,19 @@
             android:layout_gravity="center"
             android:text="00:00"
             android:textColor="@android:color/white"
-            android:textSize="16sp"/>
+            android:textSize="14sp"/>
 
         <SeekBar
+            android:max="100"
+            android:maxHeight="2dp"
+            android:minHeight="2dp"
             android:id="@+id/player_seek"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
-            android:maxHeight="4dp"
-            android:minHeight="4dp"
-            android:progressDrawable="@drawable/layer_seek_progress"
-            android:thumb="@drawable/shape_seek_ball"/>
+            android:progressDrawable="@drawable/bottom_seek_progress"
+            android:thumb="@drawable/bottom_seek_thumb" />
 
         <TextView
             android:id="@+id/tv_separator"
@@ -91,7 +93,7 @@
             android:layout_marginRight="5dp"
             android:text="00:00"
             android:textColor="@android:color/white"
-            android:textSize="16sp"/>
+            android:textSize="14sp"/>
 
         <TextView
             android:id="@+id/tv_open_edit_danmaku"
@@ -140,12 +142,12 @@
 
         <ImageView
             android:id="@+id/iv_fullscreen"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:scaleType="centerInside"
             android:layout_gravity="center"
-            android:layout_marginRight="5dp"
-            android:background="@drawable/sel_item_background"
-            android:padding="5dp"
-            android:src="@drawable/sel_btn_fullscreen"/>
+            android:src="@drawable/ic_fullscreen"/>
     </LinearLayout>
 </merge>

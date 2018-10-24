@@ -2,23 +2,20 @@ package com.kx.todaynews.adapter;
 
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.jzvd.jiaozivideoplayer.JZVideoPlayerStandard;
 import com.kx.todaynews.R;
 import com.kx.todaynews.bean.HotContent;
 import com.kx.todaynews.utils.GlideCircleTransform;
 import com.kx.todaynews.utils.TyDateUtils;
 import com.kx.todaynews.utils.UiUtils;
-import com.kx.todaynews.widget.helper.MyJZVideoPlayerStandard;
 
 import java.util.List;
 
-import cn.jzvd.JZVideoPlayerStandard;
-import fm.jiecao.jcvideoplayer_lib.JCVideoPlayerStandard;
 
 
 /**
@@ -58,7 +55,7 @@ public class VideoListAdapter extends BaseQuickAdapter<HotContent,BaseViewHolder
                 .setText(R.id.tv_comment_count, String.valueOf(news.getComment_count()));//评论数
 
 //
-        MyJZVideoPlayerStandard videoPlayer = helper.getView(R.id.video_player);
+        JZVideoPlayerStandard videoPlayer = helper.getView(R.id.video_player);
         Glide.with(mContext).load(news.getVideo_detail_info().getDetail_video_large_image().getUrl())
                .into(videoPlayer.thumbImageView);
 

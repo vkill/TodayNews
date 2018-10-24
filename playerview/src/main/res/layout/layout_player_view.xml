@@ -12,14 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
-    <ImageView
-        android:id="@+id/iv_thumb"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="fitXY"
-        android:src="@android:color/black"/>
-
     <master.flame.danmaku.ui.widget.DanmakuView
+        android:visibility="gone"
         android:id="@+id/sv_danmaku"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
@@ -60,8 +54,13 @@
     <include layout="@layout/layout_skip_tip"/>
 
     <ImageView
+        android:id="@+id/iv_thumb"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY" />
+    <ImageView
         android:id="@+id/iv_play_circle"
-        android:src="@drawable/ic_play_circle"
+        android:src="@drawable/sel_click_play"
         android:layout_gravity="center"
         android:layout_width="56dp"
         android:layout_height="56dp"/>
