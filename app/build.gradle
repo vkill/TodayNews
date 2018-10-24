@@ -110,4 +110,5 @@ dependencies {
     implementation project(':jcvideoplayer-lib')
     // 饺子视频播放器
     implementation 'cn.jzvd:jiaozivideoplayer:6.2.9'
+    implementation project(':playerview')
 }
