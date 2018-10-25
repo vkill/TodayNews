@@ -1,5 +1,6 @@
 package com.kx.todaynews.module.video;
 
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -9,8 +10,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.dl7.player.media.IjkPlayerView;
-import com.jzvd.jiaozivideoplayer.JZVideoPlayer;
-import com.jzvd.jiaozivideoplayer.JZVideoPlayerStandard;
 import com.kx.todaynews.Api;
 import com.kx.todaynews.R;
 import com.kx.todaynews.net.NetClient;
@@ -21,6 +20,8 @@ import java.util.zip.CRC32;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cn.jzvd.Jzvd;
+import cn.jzvd.JzvdStd;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
@@ -33,7 +34,7 @@ public class VideoActivity extends AppCompatActivity {
     @BindView(R.id.tv_url)
     TextView tvUrl;
     @BindView(R.id.videoplayer)
-    JZVideoPlayerStandard videoPlayer;
+    JzvdStd videoPlayer;
     @BindView(R.id.video_player)
     IjkPlayerView ijkPlayerView;
     private String mItemId;
@@ -50,6 +51,8 @@ public class VideoActivity extends AppCompatActivity {
                 .into(ijkPlayerView.mPlayerThumb);
         Glide.with(this).load(getIntent().getStringExtra(THUMBIMAGEVIEW))
                 .into(videoPlayer.thumbImageView);
+        Jzvd.FULLSCREEN_ORIENTATION = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
+        Jzvd.NORMAL_ORIENTATION = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
         StringBuilder stringBuilder = new StringBuilder();
         NetClient.getInstance().get(Api.class)
                 .getVideoInfo(getVideoContentApi(mVideoId))
@@ -65,7 +68,7 @@ public class VideoActivity extends AppCompatActivity {
                         if (videoList.getVideo_1() != null) {
                             String base64 = videoList.getVideo_1().getMain_url();
                             mMediaSmooth = (new String(Base64.decode(base64.getBytes(), Base64.DEFAULT)));
-                            videoPlayer.setUp(mMediaSmooth, JZVideoPlayerStandard.SCREEN_WINDOW_NORMAL, getIntent().getStringExtra(TITLETEXTVIEW));
+                            videoPlayer.setUp(mMediaSmooth, getIntent().getStringExtra(TITLETEXTVIEW),JzvdStd.SCREEN_WINDOW_NORMAL);
                             stringBuilder.append("url1=" + mMediaSmooth + "\n");
                         }
                         if (videoList.getVideo_2() != null) {
@@ -120,7 +123,7 @@ public class VideoActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (JZVideoPlayer.backPress()) {
+        if (Jzvd.backPress()) {
             return;
         }
         if (ijkPlayerView.onBackPressed()) {
@@ -132,8 +135,11 @@ public class VideoActivity extends AppCompatActivity {
     @Override
     protected void onPause() { //选择适当的声明周期释放
         super.onPause();
-        JZVideoPlayer.releaseAllVideos();
         ijkPlayerView.onPause();
+        Jzvd.releaseAllVideos();
+        //Change these two variables back
+        Jzvd.FULLSCREEN_ORIENTATION = ActivityInfo.SCREEN_ORIENTATION_SENSOR;
+        Jzvd.NORMAL_ORIENTATION = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
     }
 
     @Override

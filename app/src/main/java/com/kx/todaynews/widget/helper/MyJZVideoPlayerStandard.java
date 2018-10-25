@@ -4,15 +4,16 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.jzvd.jiaozivideoplayer.JZVideoPlayerStandard;
 import com.kx.todaynews.R;
+
+import cn.jzvd.JzvdStd;
 
 
 /**
  * Created by Meiji on 2017/5/15.
  */
 
-public class MyJZVideoPlayerStandard extends JZVideoPlayerStandard {
+public class MyJZVideoPlayerStandard extends JzvdStd {
 
     public static onClickFullScreenListener onClickFullScreenListener;
 

@@ -1,2 +1,2 @@
-include ':app',  ':jiaozivideoplayer','playerview'
-//':jcvideoplayer-lib',
+include ':app','playerview'
+//':jcvideoplayer-lib', ':jiaozivideoplayer'

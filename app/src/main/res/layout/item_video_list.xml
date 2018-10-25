@@ -8,10 +8,10 @@
         android:layout_width="match_parent"
         android:layout_height="200dp"
         >
-        <com.jzvd.jiaozivideoplayer.JZVideoPlayerStandard
+        <cn.jzvd.JzvdStd
             android:id="@+id/video_player"
             android:layout_width="match_parent"
-            android:layout_height="220dp"
+            android:layout_height="match_parent"
             android:fitsSystemWindows="true"/>
         <!--<com.meiji.toutiao.widget.helper.MyJZVideoPlayerStandard-->
             <!--android:id="@+id/video_player"-->

@@ -7,13 +7,13 @@
     android:orientation="vertical"
     tools:context=".module.video.VideoActivity">
 
-    <com.jzvd.jiaozivideoplayer.JZVideoPlayerStandard
-        android:visibility="gone"
+    <cn.jzvd.JzvdStd
         android:id="@+id/videoplayer"
         android:layout_width="match_parent"
         android:layout_height="200dp"/>
 
     <com.dl7.player.media.IjkPlayerView
+        android:visibility="gone"
         android:id="@+id/video_player"
         android:layout_width="match_parent"
         android:layout_height="200dp"/>

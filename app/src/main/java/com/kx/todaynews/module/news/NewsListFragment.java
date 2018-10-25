@@ -2,7 +2,6 @@ package com.kx.todaynews.module.news;
 
 import android.animation.ValueAnimator;
 import android.content.Intent;
-import android.provider.MediaStore;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,12 +15,14 @@ import android.widget.TextView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.google.gson.Gson;
 import com.kx.todaynews.R;
+import com.kx.todaynews.adapter.NewsListAdapter;
 import com.kx.todaynews.adapter.VideoListAdapter;
 import com.kx.todaynews.base.BaseFragment;
 import com.kx.todaynews.bean.HotBean;
 import com.kx.todaynews.bean.HotContent;
 import com.kx.todaynews.constants.Constant;
 import com.kx.todaynews.contract.INewsListContract;
+import com.kx.todaynews.module.news.activity.ArticleDetailActivity;
 import com.kx.todaynews.module.video.VideoActivity;
 import com.kx.todaynews.presenter.NewsListPresenter;
 import com.kx.todaynews.widget.loadinglayout.LoadingLayout;
@@ -30,6 +31,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import cn.jzvd.JZMediaManager;
+import cn.jzvd.Jzvd;
+import cn.jzvd.JzvdMgr;
 
 /**
  * Created by admin on 2018/10/18.
@@ -43,9 +47,9 @@ public class NewsListFragment extends BaseFragment<NewsListPresenter> implements
     SwipeRefreshLayout refreshLayout;
     @BindView(R.id.loadingLayout)
     LoadingLayout loadingLayout;
-   // private NewsListAdapter mNewsListAdapter;
-   private List<HotContent> mNewsList = new ArrayList<>();
-    private VideoListAdapter mVideoListAdapter;
+    private BaseQuickAdapter mNewsListAdapter;
+    private List<HotContent> mNewsList = new ArrayList<>();
+   // private VideoListAdapter mVideoListAdapter;
     private String mChannelCode;
     private boolean isVideoList;
     private Gson mGson = new Gson();
@@ -74,25 +78,45 @@ public class NewsListFragment extends BaseFragment<NewsListPresenter> implements
             isVideoList = getArguments().getBoolean(Constant.IS_VIDEO_LIST, false);
         }
         if (isVideoList){
-            mVideoListAdapter = new VideoListAdapter(R.layout.item_video_list,mNewsList);
-            recycleView.setAdapter(mVideoListAdapter);
-            mVideoListAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+            mNewsListAdapter = new VideoListAdapter(R.layout.item_video_list,mNewsList);
+            recycleView.addOnChildAttachStateChangeListener(new RecyclerView.OnChildAttachStateChangeListener() {
                 @Override
-                public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                    HotContent hotContent = mNewsList.get(position);
-                    Intent intent = new Intent(getActivity(), VideoActivity.class);
+                public void onChildViewAttachedToWindow(View view) {
+
+                }
+                @Override
+                public void onChildViewDetachedFromWindow(View view) {
+                    Jzvd jzvd = view.findViewById(R.id.videoplayer);
+                    if (jzvd != null && jzvd.jzDataSource.containsTheUrl(JZMediaManager.getCurrentUrl())) {
+                        Jzvd currentJzvd = JzvdMgr.getCurrentJzvd();
+                        if (currentJzvd != null && currentJzvd.currentScreen != Jzvd.SCREEN_WINDOW_FULLSCREEN) {
+                            Jzvd.releaseAllVideos();
+                        }
+                    }
+                }
+            });
+        }else {
+            mNewsListAdapter = new NewsListAdapter(mNewsList);
+        }
+        recycleView.setAdapter(mNewsListAdapter);
+        mNewsListAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                HotContent hotContent = mNewsList.get(position);
+                Intent intent = new Intent();
+                if (isVideoList){
+                    intent.setClass(mActivity, VideoActivity.class);
                     intent.putExtra(VideoActivity.ITEM_ID,hotContent.getItem_id()+"");
                     intent.putExtra(VideoActivity.VIDEO_ID,hotContent.getVideo_id());
                     intent.putExtra(VideoActivity.THUMBIMAGEVIEW,hotContent.getVideo_detail_info().getDetail_video_large_image().getUrl());
                     intent.putExtra(VideoActivity.TITLETEXTVIEW,hotContent.getTitle());
-                    startActivity(intent);
+                }else {
+                    intent.setClass(mActivity, ArticleDetailActivity.class);
+                    intent.putExtra(ArticleDetailActivity.GROUPID, hotContent.getGroup_id()+"");
                 }
-            });
-        }else {
-          //  mNewsListAdapter = new NewsListAdapter(getActivity());
-          //  recycleView.setAdapter(mNewsListAdapter);
-        }
-
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -109,11 +133,6 @@ public class NewsListFragment extends BaseFragment<NewsListPresenter> implements
                 loadData();
             }
         });
-//        mNewsListAdapter.setOnItemClickListener(groupId -> {
-//            Intent intent = new Intent(getActivity(), ArticleDetailActivity.class);
-//            intent.putExtra(ArticleDetailActivity.GROUPID, groupId);
-//            startActivity(intent);
-//        });
     }
 
     @Override
@@ -141,7 +160,7 @@ public class NewsListFragment extends BaseFragment<NewsListPresenter> implements
                 hotContents.add(hotContent);
             }
             mNewsList.addAll(0,hotContents);
-            mVideoListAdapter.notifyDataSetChanged();
+            mNewsListAdapter.notifyDataSetChanged();
             loadingLayout.showContentView();
         }else {
             loadingLayout.showEmpty();
