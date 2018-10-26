@@ -18,24 +18,10 @@
         android:layout_width="match_parent"
         android:layout_height="200dp"/>
 
-    <TextView
-        android:layout_margin="20dp"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        android:text="视频地址:"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <TextView
-        android:layout_marginStart="20dp"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        android:id="@+id/tv_url"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-
-
+    <FrameLayout
+        android:id="@+id/fl_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
 
 </LinearLayout>

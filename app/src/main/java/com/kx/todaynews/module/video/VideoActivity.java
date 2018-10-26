@@ -3,15 +3,17 @@ package com.kx.todaynews.module.video;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.view.KeyEvent;
-import android.widget.TextView;
+import android.widget.FrameLayout;
 
 import com.bumptech.glide.Glide;
 import com.dl7.player.media.IjkPlayerView;
 import com.kx.todaynews.Api;
 import com.kx.todaynews.R;
+import com.kx.todaynews.module.CommentsFragment;
 import com.kx.todaynews.net.NetClient;
 import com.kx.todaynews.utils.LogUtils;
 
@@ -31,12 +33,12 @@ public class VideoActivity extends AppCompatActivity {
     public static final String VIDEO_ID = "video_id";
     public static final String THUMBIMAGEVIEW = "thumbImageView";
     public static final String TITLETEXTVIEW = "titleTextView";
-    @BindView(R.id.tv_url)
-    TextView tvUrl;
     @BindView(R.id.videoplayer)
     JzvdStd videoPlayer;
     @BindView(R.id.video_player)
     IjkPlayerView ijkPlayerView;
+    @BindView(R.id.fl_container)
+    FrameLayout flContainer;
     private String mItemId;
     private String mVideoId;
 
@@ -47,6 +49,9 @@ public class VideoActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         mItemId = getIntent().getStringExtra(ITEM_ID);
         mVideoId = getIntent().getStringExtra(VIDEO_ID);
+        CommentsFragment instance = CommentsFragment.getInstance(mItemId);
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.add(R.id.fl_container,instance,CommentsFragment.class.getSimpleName()).commit();
         Glide.with(this).load(getIntent().getStringExtra(THUMBIMAGEVIEW))
                 .into(ijkPlayerView.mPlayerThumb);
         Glide.with(this).load(getIntent().getStringExtra(THUMBIMAGEVIEW))
@@ -62,13 +67,14 @@ public class VideoActivity extends AppCompatActivity {
                     private String mMediaMedium;
                     private String mMediaHigh;
                     private String mMediaSuper;
+
                     @Override
                     public void accept(VideoContentBean videoInfo) throws Exception {
                         VideoContentBean.DataBean.VideoListBean videoList = videoInfo.getData().getVideo_list();
                         if (videoList.getVideo_1() != null) {
                             String base64 = videoList.getVideo_1().getMain_url();
                             mMediaSmooth = (new String(Base64.decode(base64.getBytes(), Base64.DEFAULT)));
-                            videoPlayer.setUp(mMediaSmooth, getIntent().getStringExtra(TITLETEXTVIEW),JzvdStd.SCREEN_WINDOW_NORMAL);
+                            videoPlayer.setUp(mMediaSmooth, getIntent().getStringExtra(TITLETEXTVIEW), JzvdStd.SCREEN_WINDOW_NORMAL);
                             stringBuilder.append("url1=" + mMediaSmooth + "\n");
                         }
                         if (videoList.getVideo_2() != null) {
@@ -87,9 +93,8 @@ public class VideoActivity extends AppCompatActivity {
                             stringBuilder.append("url4=" + mMediaSuper + "\n");
                         }
                         ijkPlayerView.init()
-                                .setTitle( getIntent().getStringExtra(TITLETEXTVIEW))
+                                .setTitle(getIntent().getStringExtra(TITLETEXTVIEW))
                                 .setVideoSource(mMediaSmooth, mMediaMedium, mMediaHigh, mMediaSuper, null);
-                        tvUrl.setText(stringBuilder.toString());
                     }
                 }, new Consumer<Throwable>() {
                     @Override

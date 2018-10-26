@@ -27,4 +27,11 @@ public class ToastUtils {
         toast.setText(message);
         toast.show();
     }
+    public static  void showLong(@NonNull String message){
+        if (toast ==null){
+            toast = Toast.makeText(AndroidApplication.getContext(),message, Toast.LENGTH_LONG);
+        }
+        toast.setText(message);
+        toast.show();
+    }
 }
