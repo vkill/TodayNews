@@ -1,13 +1,9 @@
 package com.kx.todaynews.adapter;
 
 import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
-import android.view.View;
-import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.chad.library.adapter.base.MultipleItemRvAdapter;
-import com.kx.todaynews.R;
 import com.kx.todaynews.adapter.provider.LiveItemProvider;
 import com.kx.todaynews.adapter.provider.ManyPicItemProvider;
 import com.kx.todaynews.adapter.provider.OnePicItemProvider;
@@ -74,27 +70,5 @@ public class NewsListAdapter extends MultipleItemRvAdapter<HotContent,BaseViewHo
         mProviderDelegate.registerProvider(new ManyPicItemProvider());
         mProviderDelegate.registerProvider(new VideoItemProvider());
         mProviderDelegate.registerProvider(new LiveItemProvider());
-    }
-
-     static  class AbstractHolder extends RecyclerView.ViewHolder{
-        /**
-         * 每个item布局公有的控件
-         */
-        TextView title ,media_name,comment_count,tv_time;
-        private AbstractHolder(View itemView) {
-            super(itemView);
-            title = itemView.findViewById(R.id.title);
-            media_name = itemView.findViewById(R.id.media_name);
-            comment_count = itemView.findViewById(R.id.comment_count);
-            tv_time = itemView.findViewById(R.id.tv_time);
-        }
-    }
-    public interface onItemClickListener {
-        void onItemClick(String groupId);
-    }
-    onItemClickListener mListener;
-
-    public void setOnItemClickListener(onItemClickListener listener) {
-        mListener = listener;
     }
 }

@@ -33,7 +33,7 @@
             />
 
         <ImageView
-            android:id="@+id/iv_operation"
+            android:id="@+id/iv_add_category"
             android:layout_width="50dp"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"

@@ -1,5 +1,6 @@
 package com.kx.todaynews.module.news;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,6 +13,7 @@ import android.widget.ImageView;
 
 import com.kx.todaynews.R;
 import com.kx.todaynews.constants.Constant;
+import com.kx.todaynews.module.news.activity.CategoryExpandActivity;
 import com.kx.todaynews.utils.UiUtils;
 
 import java.util.ArrayList;
@@ -19,6 +21,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 import me.weyye.library.colortrackview.ColorTrackTabLayout;
 
@@ -30,7 +33,7 @@ public class HomeFragment extends Fragment {
 
     @BindView(R.id.tab_channel)
     ColorTrackTabLayout tabChannel;
-    @BindView(R.id.iv_operation)
+    @BindView(R.id.iv_add_category)
     ImageView ivAddChannel;
     @BindView(R.id.vp_content)
     ViewPager vpContent;
@@ -102,7 +105,10 @@ public class HomeFragment extends Fragment {
         });
         vpContent.setOffscreenPageLimit(mChannelFragments.size());
     }
-
+    @OnClick(R.id.iv_add_category)
+    public void addCategory(){
+        startActivity(new Intent(getActivity(), CategoryExpandActivity.class));
+    }
     @Override
     public void onDestroyView() {
         super.onDestroyView();

@@ -34,10 +34,11 @@
             android:name=".ImageBrowserActivity"
             android:screenOrientation="portrait" />
         <activity android:name=".module.news.TestActivity" />
-        <activity android:name=".module.video.VideoActivity"
+        <activity
+            android:name=".module.video.VideoActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
-            android:screenOrientation="portrait"
-            />
+            android:screenOrientation="portrait" />
+        <activity android:name=".module.news.activity.CategoryExpandActivity"></activity>
     </application>
 
 </manifest>

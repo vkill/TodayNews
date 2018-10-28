@@ -25,6 +25,8 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
         if (mPresenter!=null){
             mPresenter.attachView(this);
         }
+        initToolbar();
+        initEventAndData();
     }
 //    @Override
 //    protected void onViewCreated() {

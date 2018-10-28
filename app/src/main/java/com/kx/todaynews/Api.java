@@ -1,13 +1,13 @@
 package com.kx.todaynews;
 
 
+import com.kx.todaynews.bean.ArticleCategory;
 import com.kx.todaynews.bean.HotBean;
 import com.kx.todaynews.bean.article.ArticleReplyDiggListBean;
 import com.kx.todaynews.bean.article.ArticleReplyListBean;
 import com.kx.todaynews.bean.article.ArticleTabCommentsBean;
 import com.kx.todaynews.bean.article.TextDetailInfo;
 import com.kx.todaynews.module.video.VideoContentBean;
-import com.kx.todaynews.module.video.VideoInfo;
 
 import io.reactivex.Observable;
 import retrofit2.http.GET;
@@ -103,24 +103,14 @@ public interface Api {
      * 查询Video播放数据
      * @return
      */
-    @Headers({"Domain-Name: 1f"}) // Add the Domain-Name header
-    @GET("video/play/1/toutiao/{ts}/" +
-            "9d1efe0030614a4536f9f9ecf51bba84" +
-            "/mp4/{video_id}?play_type=1&category=video&cdn_type=0&wifi_identify=dc9d3737475943154a034e04cf784270" +
-            "&player_version=2.8.1.226&codec_type=1&device_type=OPPO+A83&iid=46465323319&device_id=57557651831&ac=wifi&channel=oppo-cpa&aid=13&app_name=news_article&version_code=694" +
-            "&version_name=6.9.4&device_platform=android" +
-            "&ab_version=556463%2C537643%2C546065%2C554836%2C493304%2C549647%2C424176%2C472442%2C214069%2C549709%2C558013%2C442255%2C559059%2C546701%2C280448%2C549493%2C281300%2C325612%2C547364%2C526720%2C552098%2C558247%2C558114%2C498375%2C467513%2C554003%2C444464%2C425530%2C552454%2C486951%2C536107%2C542980%2C239098%2C545060%2C170988%2C493249%2C398175%2C552516%2C442123%2C374119%2C552086%2C478529%2C516057%2C517715%2C489317%2C501960%2C554454%2C553435%2C554012%2C550042%2C435214%2C459650%2C459993%2C545895%2C551606%2C546091%2C377093%2C502086%2C522766%2C517535%2C416055%2C557912%2C392485%2C558139%2C555254%2C378450%2C471406%2C557509%2C522522%2C550819%2C509307%2C550518%2C271178%2C326524%2C326532%2C545079%2C559797%2C496389%2C556780%2C548430%2C551515%2C552973%2C293033%2C457481%2C548841%2C557370&ab_client=a1%2Cc4%2Ce1%2Cf1%2Cg2%2Cf7&ab_group=100168%2C94563%2C102756%2C181428&ab_feature=94563%2C102756&abflag=3&ssmix=a&device_brand=OPPO&language=zh&os_api=25&os_version=7.1.1&uuid=869322038192058&openudid=a7e11d80096ec1b5&manifest_version_code=694&resolution=720*1344&dpi=320" +
-            "&update_version_code=69411&fp=DlT_c2UuFYFIFlwOPlU1F2Kecrcb&tma_jssdk_version=1.3.0.3&" +
-            "pos=5r_-9Onkv6e_ezA7eywUeCUfv7G_8fLz-vTp6Pn4v6esrKmzqayspK2lq6Wsrqmkq6Sxv_H86fTp6Pn4v6eurbOppa2opa2lqKmpqq6rqaqxv_zw_O3e9Onkv6e_ezA7eywUeCUfv7G__PD87dHy8_r06ej5-L-nrKyps6mtqK-qrLG__PD87dH86fTp6Pn4v6eurbOpqqmlraXg" +
-            "&rom_version=coloros_v3.2_a83_11_a.23_180718&plugin=26958&ts=1540277482&as=a2258c4c0a0eebf4fe1300" +
-            "&mas=00b49b0a143aeb3bc6e5c281099a730ef442acc8ee0cc8c48a")
-    Observable<VideoInfo> getVideoInfo(
-            @Path("ts") long ts,
-            @Path("video_id") String video_id,
-            @Query("_rticket") long rTicket,
-            @Query("item_id") String item_id
-    );
-
     @GET
     Observable<VideoContentBean> getVideoInfo(@Url String url);
+    @Headers({"Domain-Name: 1f"}) // Add the Domain-Name header
+    @GET("article/category/get_extra/v1/?iid=44267707161&device_id=57548705831&ac=wifi&channel=tengxun2&aid=13&app_name=news_article&version_code=691&version_name=6.9.1&device_platform=android&ab_version=271178%2C562988%2C326524%2C326532%2C566722%2C496389%2C556782%2C565739%2C561194%2C554836%2C549647%2C424177%2C214069%2C549709%2C442255%2C564081%2C546701%2C280449%2C566179%2C281299%2C567689%2C325618%2C547364%2C552098%2C564765%2C567874%2C498375%2C566663%2C563849%2C467514%2C554005%2C566175%2C444464%2C425530%2C559756%2C486952%2C562955%2C564779%2C494121%2C554257%2C239097%2C562987%2C566840%2C170988%2C493249%2C552524%2C374117%2C558414%2C478532%2C516058%2C566908%2C489312%2C562415%2C553435%2C562844%2C550042%2C435216%2C566874%2C459650%2C545899%2C565888%2C551604%2C546094%2C522765%2C416055%2C392484%2C470731%2C566114%2C558139%2C555255%2C378451%2C471406%2C557509%2C550820%2C564029%2C552972%2C293032%2C457481%2C562442%2C560258%2C560011&ab_client=a1%2Cc4%2Ce1%2Cf1%2Cg2%2Cf7&ab_feature=94563%2C102749&abflag=3" +
+            "&ssmix=a&device_type=Redmi+Note+4X&device_brand=xiaomi&language=zh&os_api=24&os_version=7.0&openudid=30f2074ddcee24da&manifest_version_code=691&resolution=1080*1920" +
+            "&dpi=480&update_version_code=69111&fp=irT_JzPqFlKtFlD_PlU1F2mIFSF1&tma_jssdk_version=1.2.2.4&rom_version=miui_v9_v9.6.2.0.ncfcnfd" +
+            "&plugin=26958&as=a2d577bd3615bb9ac48314&mas=006e442484d7d0ed32d2ef4b69aab49b0647a648d60548ec28")
+    Observable<ArticleCategory> getArticleCategory(
+            @Query("_rticket") long rTicket,
+            @Query("ts") long ts);
 }
