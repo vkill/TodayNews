@@ -64,8 +64,8 @@ public class CategoryExpandActivity extends BaseActivity<ArticleCategoryPresente
         List<ArticleCategory.DataBeanX.DataBean> myData = new ArrayList<>();
         myData.add(new ArticleCategory.DataBeanX.DataBean("热点"));
         myData.add(new ArticleCategory.DataBeanX.DataBean("武汉"));
-        myData.add(new ArticleCategory.DataBeanX.DataBean("视频"));
-        myData.add(new ArticleCategory.DataBeanX.DataBean("视频"));
+        myData.add(new ArticleCategory.DataBeanX.DataBean("视频1"));
+        myData.add(new ArticleCategory.DataBeanX.DataBean("视频2"));
         mCategoryExpandAdapter.setCategoryData(myData,otherData);
         categoryRecyclerView.setAdapter(mCategoryExpandAdapter);
     }
@@ -162,7 +162,7 @@ public class CategoryExpandActivity extends BaseActivity<ArticleCategoryPresente
         public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
             if (viewHolder.getItemViewType() == CategoryExpandAdapter.TYPE_MY) {
                 TextView tv = viewHolder.itemView.findViewById(R.id.tv);
-                tv.setBackgroundResource(R.drawable.bg_channel);
+                tv.setBackgroundResource(R.drawable.bg_channel_n);
             }
             super.clearView(recyclerView, viewHolder);
         }
