@@ -19,6 +19,7 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import com.kx.todaynews.R;
 import com.kx.todaynews.bean.ArticleCategory;
 
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -135,26 +136,30 @@ public class CategoryExpandAdapter extends RecyclerView.Adapter<BaseViewHolder> 
                     if (i == 0) {
                         toX = view.getWidth();
                         toY = view.getHeight();
+                        System.out.println("i==0");
                     // 我的频道数据为4的整数，就移动到下一行。
                     } else if (i % 4 == 0) {
                         endView = manager.findViewByPosition(i-3);
                         endView.getLocationInWindow(endLoc);
-                        toX = endLoc[0] ;
+                        toX = endLoc[0] + (startLoc[0] - parentLoc[0]);
                         toY = endLoc[1] + view.getHeight();
+                        System.out.println("i % 4 == 0");
                     } else {
                         // 添加在后面
                         endView = manager.findViewByPosition(i);
                         endView.getLocationInWindow(endLoc);
-                        toX = endLoc[0] + view.getWidth() - parentLoc[0];
-                        toY = endLoc[1] ;
+                        toX = endLoc[0] + endView.getWidth() + (startLoc[0] - parentLoc[0]);
+                        toY = endLoc[1] -  (startLoc[1] - parentLoc[1]) / 2;
+                        System.out.println("添加在后面");
                     }
 
-                    float startX = startLoc[0] - parentLoc[0];
+                    float startX = startLoc[0];
                     float startY = startLoc[1];
 
                     Path path = new Path();
                     path.moveTo(startX, startY);
                     path.lineTo(toX, toY);
+                    System.out.println("startX= " + startX + " startY= " + startY + " toX=" +toX  +" toY=" + toY);
                     mPathMeasure = new PathMeasure(path, false);
                     //属性动画实现
                     ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, mPathMeasure.getLength());
@@ -178,15 +183,8 @@ public class CategoryExpandAdapter extends RecyclerView.Adapter<BaseViewHolder> 
                         }
                         @Override
                         public void onAnimationEnd(Animator animation) {
+                         //   notifyItemRemoved(position);
                             viewParent.removeView(startView);
-                            int position = finalBaseViewHolder.getAdapterPosition();
-
-                            int startPosition = position - mMyChannelItems.size() - 2;
-
-                            ArticleCategory.DataBeanX.DataBean item = mOtherChannelItems.get(startPosition);
-                            mOtherChannelItems.remove(startPosition);
-                            mMyChannelItems.add(item);
-                            notifyItemMoved(position, mMyChannelItems.size() - 1 + 1);
                         }
 
                         @Override
@@ -197,6 +195,15 @@ public class CategoryExpandAdapter extends RecyclerView.Adapter<BaseViewHolder> 
                         public void onAnimationRepeat(Animator animation) {
                         }
                     });
+                    int position = finalBaseViewHolder.getAdapterPosition();
+
+                    int startPosition = position - mMyChannelItems.size() - 2;
+
+                    ArticleCategory.DataBeanX.DataBean item = mOtherChannelItems.get(startPosition);
+
+                    mOtherChannelItems.remove(startPosition);
+                    mMyChannelItems.add(item);
+                    notifyItemMoved(position, mMyChannelItems.size() - 1 + 1);
                     valueAnimator.start();
                 }
             });
@@ -223,6 +230,12 @@ public class CategoryExpandAdapter extends RecyclerView.Adapter<BaseViewHolder> 
         }else if (holder.getItemViewType()== TYPE_MY  ) {
              ArticleCategory.DataBeanX.DataBean dataBean = mMyChannelItems.get(position-1);
              holder.setText(R.id.tv,dataBean.getName());
+             holder.setOnClickListener(R.id.tv, new View.OnClickListener() {
+                 @Override
+                 public void onClick(View v) {
+                     System.out.println(dataBean.getName());
+                 }
+             });
          }else if (holder.getItemViewType()== TYPE_OTHER  ) {
              ArticleCategory.DataBeanX.DataBean dataBean = mOtherChannelItems.get(position-(mMyChannelItems.size()+2));
              holder.setText(R.id.tv,dataBean.getName());

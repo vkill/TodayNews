@@ -65,15 +65,7 @@ public class CategoryExpandActivity extends BaseActivity<ArticleCategoryPresente
         myData.add(new ArticleCategory.DataBeanX.DataBean("热点"));
         myData.add(new ArticleCategory.DataBeanX.DataBean("武汉"));
         myData.add(new ArticleCategory.DataBeanX.DataBean("视频"));
-        myData.add(new ArticleCategory.DataBeanX.DataBean("直播"));
-        myData.add(new ArticleCategory.DataBeanX.DataBean("问答"));
-        myData.add(new ArticleCategory.DataBeanX.DataBean("娱乐"));
-        myData.add(new ArticleCategory.DataBeanX.DataBean("科技"));
-        myData.add(new ArticleCategory.DataBeanX.DataBean("军事"));
-        myData.add(new ArticleCategory.DataBeanX.DataBean("国际"));
-        myData.add(new ArticleCategory.DataBeanX.DataBean("健康"));
-        myData.add(new ArticleCategory.DataBeanX.DataBean("房产"));
-        myData.add(new ArticleCategory.DataBeanX.DataBean("xx"));
+        myData.add(new ArticleCategory.DataBeanX.DataBean("视频"));
         mCategoryExpandAdapter.setCategoryData(myData,otherData);
         categoryRecyclerView.setAdapter(mCategoryExpandAdapter);
     }

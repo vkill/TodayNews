@@ -99,7 +99,6 @@ public class HomeFragment extends Fragment {
             @Nullable
             @Override
             public CharSequence getPageTitle(int position) {
-                System.out.println("position = " + position  );
                 return channels[position];
             }
         });
