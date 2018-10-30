@@ -9,12 +9,10 @@ import android.graphics.Path;
 import android.graphics.PathMeasure;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.v4.view.MotionEventCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
@@ -133,14 +131,31 @@ public class CategoryExpandAdapter extends RecyclerView.Adapter<BaseViewHolder> 
                 @Override
                 public void onClick(View v) {
                     if (isEditMode){
+                        RecyclerView recyclerView = ((RecyclerView) parent);
                         // 获取点击item在adapter中的position
-                        int position = finalBaseViewHolder1.getAdapterPosition();
-                        // 获取点击item在我的频道中的position
-                        int clickPosition = position - 1;
-                        ArticleCategory.DataBeanX.DataBean item = mMyChannelItems.get(clickPosition);
-                        mMyChannelItems.remove(clickPosition);
-                        mOtherChannelItems.add(0,item);
-                        notifyItemMoved(position, mMyChannelItems.size()+ 2);
+                        int currentPosition = finalBaseViewHolder1.getAdapterPosition();
+                        GridLayoutManager manager = (GridLayoutManager) recyclerView.getLayoutManager();
+                        int spanCount = manager.getSpanCount();
+                        // 获取 我的频道 点击的itemView;
+                        View currentView = manager.findViewByPosition(currentPosition);
+                        // 获取 其他频道 第一个itemView;
+                        View targetView  = manager.findViewByPosition(mMyChannelItems.size() + COUNT_PRE_OTHER_HEADER );
+                        // 如果targetView不在屏幕内,则indexOfChild为-1 , 此时我的频道数据填充屏幕，其他频道数据未显示。
+                        if (recyclerView.indexOfChild(targetView) >= 0) {
+                            int toX, toY;
+                            // 说明当前我的频道最后一行为一个,在移动时需要减去一个itemView的高度
+                            if ((mMyChannelItems.size() - 1)% spanCount == 0){
+                                toX = targetView.getLeft();
+                                toY = targetView.getTop() -  currentView.getHeight();
+                            }else {
+                                toX = targetView.getLeft();
+                                toY = targetView.getTop();
+                            }
+                            moveMyToOther(finalBaseViewHolder1);
+                            startAnimation(recyclerView,currentView,toX,toY);
+                        }else {
+                            moveMyToOther(finalBaseViewHolder1);
+                        }
 
                     }else {
                         ToastUtils.showToast(tv.getText().toString());
@@ -196,36 +211,33 @@ public class CategoryExpandAdapter extends RecyclerView.Adapter<BaseViewHolder> 
                 @Override
                 public void onClick(View view) {
                     RecyclerView recyclerView = ((RecyclerView) parent);
-                    ViewGroup rootParent = (ViewGroup) recyclerView.getParent();
+
                     GridLayoutManager manager = (GridLayoutManager) recyclerView.getLayoutManager();
                     int currentPosition = finalBaseViewHolder.getAdapterPosition();
-                    // 如果RecyclerView滑动到底部,移动的目标位置的y轴 - height
+                    //当前点击的itemView
                     View currentView = manager.findViewByPosition(currentPosition);
 
-                    float startX = currentView.getLeft();
-                    float startY = currentView.getTop();
 
-                    final View endView;
+                    final View targetView;
                     float toX, toY;
-                   // int endLoc[] = new int[2];
                     //进行判断
                     int i = mMyChannelItems.size();
-                    //  我的频道暂无数据
+                    //  我的频道暂无数据,以我的频道标题栏左下角计算 toX,toY
                     if (i == 0) {
-                        toX = view.getWidth();
-                        toY = view.getHeight();
+                        targetView = manager.findViewByPosition(0);
+                        toX = targetView.getLeft();
+                        toY = targetView.getBottom();
                     // 我的频道数据为4的整数，就移动到下一行。
                     } else if (i % 4 == 0) {
-                        endView = manager.findViewByPosition(i-3);
-                       // endView.getLocationInWindow(endLoc);
-                        toX = endView.getLeft() ;
-                        toY = endView.getTop() + endView.getHeight();
+                        // 得到当前行的第一个view,此View位于下一行第一个View的正上方
+                        targetView = manager.findViewByPosition(i-3);
+                        toX = targetView.getLeft() ;
+                        toY = targetView.getTop() + targetView.getHeight();
                     } else {
                         // 添加在后面
-                        endView = manager.findViewByPosition(i);
-                       // endView.getLocationInWindow(endLoc);
-                        toX = endView.getLeft()+ endView.getWidth();
-                        toY = endView.getTop();
+                        targetView = manager.findViewByPosition(i);
+                        toX = targetView.getLeft()+ targetView.getWidth();
+                        toY = targetView.getTop();
                         // 最后一个item可见   recyclerView 滑动到底部了,
                         if (manager.findLastVisibleItemPosition() == getItemCount() - 1) {
                             int spanCount= manager.getSpanCount();
@@ -248,7 +260,6 @@ public class CategoryExpandAdapter extends RecyclerView.Adapter<BaseViewHolder> 
                             }
                         }
                     }
-                  //  startAnimation(rootParent,currentView, startX, startY, toX, toY);
                     int targetPosition = mMyChannelItems.size() - 1 + COUNT_PRE_OTHER_HEADER;
                     // 则 需要延迟250秒 notifyItemMove , 这是因为这种情况 , 并不触发ItemAnimator , 会直接刷新界面
                     // 导致我们的位移动画刚开始,就已经notify完毕,引起不同步问题
@@ -259,6 +270,7 @@ public class CategoryExpandAdapter extends RecyclerView.Adapter<BaseViewHolder> 
                     } else {
                         moveOtherToMy(finalBaseViewHolder);
                     }
+                    startAnimation(recyclerView,currentView,toX, toY);
                 }
             });
 
@@ -266,37 +278,53 @@ public class CategoryExpandAdapter extends RecyclerView.Adapter<BaseViewHolder> 
         return baseViewHolder;
     }
 
-//    private void startAnimation(ViewGroup viewParent, float startX, float startY, float toX, float toY) {
-//        PathMeasure mPathMeasure;
-//        ImageView mirrorImageView = addMirrorView(rootParent, recyclerView, currentView);
-//        final float[] mCurrentPosition = new float[2];
-//        Path path = new Path();
-//        path.moveTo(startX, startY);
-//        path.lineTo(toX, toY);
-//        mPathMeasure = new PathMeasure(path, false);
-//        //属性动画实现
-//        ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, mPathMeasure.getLength());
-//        valueAnimator.setDuration(330);
-//        // 匀速插值器
-//        valueAnimator.setInterpolator(new LinearInterpolator());
-//        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-//            @Override
-//            public void onAnimationUpdate(ValueAnimator animation) {
-//                float value = (Float) animation.getAnimatedValue();
-//                // 获取当前点坐标封装到mCurrentPosition
-//                mPathMeasure.getPosTan(value, mCurrentPosition, null);
-//                mirrorImageView.setTranslationX(mCurrentPosition[0]);
-//                mirrorImageView.setTranslationY(mCurrentPosition[1]);
-//            }
-//        });
-//        valueAnimator.addListener(new AnimatorListenerAdapter() {
-//            @Override
-//            public void onAnimationEnd(Animator animation) {
-//                viewParent.removeView(mirrorImageView);
-//            }
-//        });
-//        valueAnimator.start();
-//    }
+    /**
+     * 我的频道移动至其他频道
+     */
+    private void moveMyToOther(BaseViewHolder viewHolder) {
+        int currentPosition = viewHolder.getAdapterPosition();
+        // 获取点击item在我的频道中的position
+        int clickPosition = currentPosition - 1;
+        ArticleCategory.DataBeanX.DataBean item = mMyChannelItems.get(clickPosition);
+        mMyChannelItems.remove(clickPosition);
+        mOtherChannelItems.add(0,item);
+        notifyItemMoved(currentPosition, mMyChannelItems.size()+ 2);
+    }
+
+    private void startAnimation(RecyclerView recyclerView,View currentView, float toX, float toY) {
+        ViewGroup viewParent = (ViewGroup) recyclerView.getParent();
+        float startX = currentView.getLeft();
+        float startY = currentView.getTop();
+
+        ImageView mirrorImageView = addMirrorView(viewParent, currentView);
+        final float[] mCurrentPosition = new float[2];
+        Path path = new Path();
+        path.moveTo(startX, startY);
+        path.lineTo(toX, toY);
+        PathMeasure mPathMeasure = new PathMeasure(path, false);
+        //属性动画实现
+        ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, mPathMeasure.getLength());
+        valueAnimator.setDuration(330);
+        // 匀速插值器
+        valueAnimator.setInterpolator(new LinearInterpolator());
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float value = (Float) animation.getAnimatedValue();
+                // 获取当前点坐标封装到mCurrentPosition
+                mPathMeasure.getPosTan(value, mCurrentPosition, null);
+                mirrorImageView.setTranslationX(mCurrentPosition[0]);
+                mirrorImageView.setTranslationY(mCurrentPosition[1]);
+            }
+        });
+        valueAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                viewParent.removeView(mirrorImageView);
+            }
+        });
+        valueAnimator.start();
+    }
 
     private void moveOtherToMyWithDelay(BaseViewHolder finalBaseViewHolder) {
 
@@ -361,22 +389,22 @@ public class CategoryExpandAdapter extends RecyclerView.Adapter<BaseViewHolder> 
     /**
      * 添加需要移动的 镜像View
      */
-    private ImageView addMirrorView(ViewGroup parent, View view) {
+    private ImageView addMirrorView(ViewGroup parent, View currentView) {
         /**
          * 我们要获取cache首先要通过setDrawingCacheEnable方法开启cache，然后再调用getDrawingCache方法就可以获得view的cache图片了。
          buildDrawingCache方法可以不用调用，因为调用getDrawingCache方法时，若果cache没有建立，系统会自动调用buildDrawingCache方法生成cache。
          若想更新cache, 必须要调用destoryDrawingCache方法把旧的cache销毁，才能建立新的。
          当调用setDrawingCacheEnabled方法设置为false, 系统也会自动把原来的cache销毁。
          */
-        view.destroyDrawingCache();
-        view.setDrawingCacheEnabled(true);
-        final ImageView mirrorView = new ImageView(view.getContext());
-        Bitmap bitmap = Bitmap.createBitmap(view.getDrawingCache());
+        currentView.destroyDrawingCache();
+        currentView.setDrawingCacheEnabled(true);
+        final ImageView mirrorView = new ImageView(currentView.getContext());
+        Bitmap bitmap = Bitmap.createBitmap(currentView.getDrawingCache());
         mirrorView.setImageBitmap(bitmap);
-        view.setDrawingCacheEnabled(false);
+        currentView.setDrawingCacheEnabled(false);
 
 
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(view.getWidth(), view.getHeight());
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(currentView.getWidth(), currentView.getHeight());
         parent.addView(mirrorView, params);
         return mirrorView;
     }
