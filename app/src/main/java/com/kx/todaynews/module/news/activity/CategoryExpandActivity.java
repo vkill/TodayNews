@@ -11,6 +11,7 @@ import com.kx.todaynews.base.BaseActivity;
 import com.kx.todaynews.bean.ArticleCategory;
 import com.kx.todaynews.contract.IArticleCategoryContract;
 import com.kx.todaynews.presenter.ArticleCategoryPresenter;
+import com.kx.todaynews.widget.helper.ItemDragHelperCallback;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,7 +43,11 @@ public class CategoryExpandActivity extends BaseActivity<ArticleCategoryPresente
     protected void initEventAndData() {
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 4);
         categoryRecyclerView.setLayoutManager(gridLayoutManager);
-        mCategoryExpandAdapter = new CategoryExpandAdapter(this);
+        ItemDragHelperCallback touchHelper =  new ItemDragHelperCallback();
+        //通过ItemTouchHelper将rv和callback关联起来
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(touchHelper);
+        itemTouchHelper.attachToRecyclerView(categoryRecyclerView);
+        mCategoryExpandAdapter = new CategoryExpandAdapter(this,itemTouchHelper);
         gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
@@ -50,11 +55,7 @@ public class CategoryExpandActivity extends BaseActivity<ArticleCategoryPresente
                 return viewType == CategoryExpandAdapter.TYPE_MY || viewType == CategoryExpandAdapter.TYPE_OTHER ? 1 : 4;
             }
         });
-       // ItemDragAndSwipeCallback dragAndSwipeCallback = new ItemDragAndSwipeCallback(mCategoryExpandAdapter);
-        MyItemTouchHelper touchHelper =  new MyItemTouchHelper(mCategoryExpandAdapter);
-        //通过ItemTouchHelper将rv和callback关联起来
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(touchHelper);
-        itemTouchHelper.attachToRecyclerView(categoryRecyclerView);
+
         mPresenter.getArticleCategory();
     }
 
@@ -63,9 +64,6 @@ public class CategoryExpandActivity extends BaseActivity<ArticleCategoryPresente
         List<ArticleCategory.DataBeanX.DataBean> otherData = articleCategory.getData().getData();
         List<ArticleCategory.DataBeanX.DataBean> myData = new ArrayList<>();
         myData.add(new ArticleCategory.DataBeanX.DataBean("热点"));
-        myData.add(new ArticleCategory.DataBeanX.DataBean("武汉"));
-        myData.add(new ArticleCategory.DataBeanX.DataBean("视频1"));
-        myData.add(new ArticleCategory.DataBeanX.DataBean("视频2"));
         mCategoryExpandAdapter.setCategoryData(myData,otherData);
         categoryRecyclerView.setAdapter(mCategoryExpandAdapter);
     }

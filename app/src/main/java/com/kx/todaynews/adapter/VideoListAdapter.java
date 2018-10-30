@@ -11,6 +11,7 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import com.kx.todaynews.Api;
 import com.kx.todaynews.R;
 import com.kx.todaynews.bean.HotContent;
+import com.kx.todaynews.bean.VideoDetailInfo;
 import com.kx.todaynews.module.video.VideoContentBean;
 import com.kx.todaynews.net.NetClient;
 import com.kx.todaynews.utils.GlideCircleTransform;
@@ -47,15 +48,6 @@ public class VideoListAdapter extends BaseQuickAdapter<HotContent,BaseViewHolder
         helper.setVisible(R.id.ll_title,true);//显示标题栏
         helper.setText(R.id.tv_title, news.getTitle());//设置标题
 //
-        String format = UiUtils.getString(R.string.video_play_count);
-        int watchCount = news.getVideo_detail_info().getVideo_watch_count();
-        String countUnit = "";
-        if (watchCount> 10000){
-            watchCount = watchCount / 10000;
-            countUnit = "万";
-        }
-//
-        helper.setText(R.id.tv_watch_count, String.format(format, watchCount + countUnit));//播放次数
         Glide.with(mContext).load(news.getUser_info().getAvatar_url())
                 .transform(new GlideCircleTransform(mContext)).into((ImageView) helper.getView(R.id.iv_avatar));
         helper.setVisible(R.id.ll_duration, true)//显示时长
@@ -65,10 +57,24 @@ public class VideoListAdapter extends BaseQuickAdapter<HotContent,BaseViewHolder
                 .setText(R.id.tv_comment_count, String.valueOf(news.getComment_count()));//评论数
 
         JzvdStd videoPlayer = helper.getView(R.id.video_player);
+
+        String format = UiUtils.getString(R.string.video_play_count);
+        VideoDetailInfo video_detail_info = news.getVideo_detail_info();
+        if (video_detail_info!=null){
+            int watchCount = video_detail_info.getVideo_watch_count();
+            String countUnit = "";
+            if (watchCount> 10000){
+                watchCount = watchCount / 10000;
+                countUnit = "万";
+            }
+            helper.setText(R.id.tv_watch_count, String.format(format, watchCount + countUnit));//播放次数
+            Glide.with(mContext).load(video_detail_info.getDetail_video_large_image().getUrl())
+                    .into(videoPlayer.thumbImageView);
+        }
+
         //Jzvd.FULLSCREEN_ORIENTATION = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
        // Jzvd.NORMAL_ORIENTATION = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
-        Glide.with(mContext).load(news.getVideo_detail_info().getDetail_video_large_image().getUrl())
-               .into(videoPlayer.thumbImageView);
+
         videoPlayer.titleTextView.setText("");//清除标题,防止复用的时候出现
         NetClient.getInstance().get(Api.class)
                 .getVideoInfo(getVideoContentApi(news.getVideo_id()))
