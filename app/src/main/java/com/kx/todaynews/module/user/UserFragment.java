@@ -36,6 +36,10 @@ public class UserFragment extends BaseFragment {
     }
 
     @Override
+
+
+
+
     protected int getLayoutId() {
         return R.layout.fragment_main_user;
     }
