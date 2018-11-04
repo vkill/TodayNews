@@ -1,27 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".module.video.VideoActivity">
+    tools:context=".MainActivity">
 
-    <cn.jzvd.JzvdStd
-        android:id="@+id/videoplayer"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"/>
-
-    <com.dl7.player.media.IjkPlayerView
-        android:visibility="gone"
-        android:id="@+id/video_player"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"/>
-
-    <FrameLayout
-        android:id="@+id/fl_container"
+    <android.support.v7.widget.RecyclerView
+        app:layout_behavior="com.kx.todaynews.widget.behavior.ZoomVideoBehavior"
+        android:id="@+id/recyclerView"
+        android:background="#f1f1f1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
+    <com.kx.todaynews.widget.behavior.ZoomVideoHeader
+        android:orientation="vertical"
+        android:id="@+id/zoomVideoHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-</LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp150"/>
+
+        <cn.jzvd.JzvdStd
+            android:transitionName="@string/app_name"
+            android:id="@+id/videoplayer"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"/>
+
+
+    </com.kx.todaynews.widget.behavior.ZoomVideoHeader>
+
+</android.support.design.widget.CoordinatorLayout>

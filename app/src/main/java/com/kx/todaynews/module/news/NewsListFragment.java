@@ -2,6 +2,8 @@ package com.kx.todaynews.module.news;
 
 import android.animation.ValueAnimator;
 import android.content.Intent;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -105,16 +107,18 @@ public class NewsListFragment extends BaseFragment<NewsListPresenter> implements
                 HotContent hotContent = mNewsList.get(position);
                 Intent intent = new Intent();
                 if (isVideoList){
+                    ActivityOptionsCompat compat = ActivityOptionsCompat.makeSceneTransitionAnimation(mActivity, view.findViewById(R.id.video_player), getString(R.string.app_name));
                     intent.setClass(mActivity, VideoActivity.class);
                     intent.putExtra(VideoActivity.ITEM_ID,hotContent.getItem_id()+"");
                     intent.putExtra(VideoActivity.VIDEO_ID,hotContent.getVideo_id());
                     intent.putExtra(VideoActivity.THUMBIMAGEVIEW,hotContent.getVideo_detail_info().getDetail_video_large_image().getUrl());
                     intent.putExtra(VideoActivity.TITLETEXTVIEW,hotContent.getTitle());
+                    ActivityCompat.startActivity(mActivity, intent, compat.toBundle());
                 }else {
                     intent.setClass(mActivity, ArticleDetailActivity.class);
                     intent.putExtra(ArticleDetailActivity.GROUPID, hotContent.getGroup_id()+"");
+                    startActivity(intent);
                 }
-                startActivity(intent);
             }
         });
     }

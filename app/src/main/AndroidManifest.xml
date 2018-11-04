@@ -20,10 +20,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+
         <activity
             android:name=".module.news.activity.ArticleDetailActivity"
             android:screenOrientation="portrait" />
         <activity
+            android:configChanges="orientation|screenSize"
             android:name=".MainActivity"
             android:screenOrientation="portrait" />
         <activity
@@ -35,6 +38,7 @@
             android:screenOrientation="portrait" />
         <activity android:name=".module.news.TestActivity" />
         <activity
+            android:theme="@style/translucent"
             android:name=".module.video.VideoActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:screenOrientation="portrait" />

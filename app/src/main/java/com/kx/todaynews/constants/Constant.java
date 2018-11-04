@@ -1,9 +1,7 @@
 package com.kx.todaynews.constants;
 
 /**
- * @author ChayChan
  * @description: 记录常量的类
- * @date 2017/6/16  20:22
  */
 
 public class Constant {
@@ -28,5 +26,7 @@ public class Constant {
 
     public static final String DATA_SELECTED = "dataSelected";
     public static final String DATA_UNSELECTED = "dataUnselected";
+
+    public static final float VIDEO_SCALE_X = 0.95f ;
 
 }

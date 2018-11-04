@@ -27,6 +27,13 @@ public class UiUtils {
         return sp * scale;
     }
 
+    public static int getStatusBarHeight() {
+        //获取status_bar_height资源的ID
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        //根据资源ID获取响应的尺寸值
+        return getResources().getDimensionPixelSize(resourceId);
+    }
+
     public static Context getContext() {
         return AndroidApplication.getContext();
     }
@@ -34,12 +41,12 @@ public class UiUtils {
      * 得到string.xml中的字符串
      */
     public static String getString(int resId) {
-        return getResource().getString(resId);
+        return getResources().getString(resId);
     }
     /**
      * 得到resources对象
      */
-    public static Resources getResource() {
+    public static Resources getResources() {
         return getContext().getResources();
     }
 }

@@ -63,6 +63,9 @@ public class HomeFragment extends Fragment {
         String[] channels = getResources().getStringArray(R.array.channel);
         String[] channelCodes = getResources().getStringArray(R.array.channel_code);
 
+        if (mChannelFragments.size()>0){
+            mChannelFragments.clear();
+        }
         for (String channel: channelCodes) {
             NewsListFragment newsListFragment = new NewsListFragment();
             Bundle bundle = new Bundle();

@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
         <android.support.design.widget.AppBarLayout
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fitsSystemWindows="false"
@@ -30,6 +31,6 @@
             app:elevation="16dp"
             app:itemIconTint="@drawable/nav_item_color_state"
             app:itemTextColor="@drawable/nav_item_color_state"
-            app:layout_behavior="@string/main_bottom_sheet_behavior"
+
             app:menu="@menu/bottom_navigation_main"/>
 </android.support.design.widget.CoordinatorLayout>

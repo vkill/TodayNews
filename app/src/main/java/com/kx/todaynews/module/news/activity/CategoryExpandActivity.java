@@ -40,6 +40,11 @@ public class CategoryExpandActivity extends BaseActivity<ArticleCategoryPresente
     }
 
     @Override
+    protected void initListener() {
+
+    }
+
+    @Override
     protected void initEventAndData() {
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 4);
         categoryRecyclerView.setLayoutManager(gridLayoutManager);

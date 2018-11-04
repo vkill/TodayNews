@@ -27,6 +27,8 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
         }
         initToolbar();
         initEventAndData();
+        initListener();
+
     }
 //    @Override
 //    protected void onViewCreated() {
@@ -99,7 +101,10 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
      * @return 布局id
      */
     protected abstract int getLayoutId();
-
+    /**
+     *  设置监听
+     */
+    protected abstract void initListener();
     /**
      * 初始化ToolBar
      */

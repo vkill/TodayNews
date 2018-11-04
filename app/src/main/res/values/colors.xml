@@ -22,6 +22,8 @@
     <color name="Grey800">#424242</color>
     <color name="Grey900">#212121</color>
 
+    <color name="translucent_background">#55000000</color>
+
     <color name="tip">#9c9c9c</color>
     <color name="bg_focus">#DDDDDD</color>
     <color name="red_500">#ef4836</color>
