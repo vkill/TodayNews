@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.google.gson.Gson;
 import com.kx.todaynews.R;
+import com.kx.todaynews.adapter.ImageListAdapter;
 import com.kx.todaynews.adapter.NewsListAdapter;
 import com.kx.todaynews.adapter.VideoListAdapter;
 import com.kx.todaynews.base.BaseFragment;
@@ -54,6 +55,7 @@ public class NewsListFragment extends BaseFragment<NewsListPresenter> implements
    // private VideoListAdapter mVideoListAdapter;
     private String mChannelCode;
     private boolean isVideoList;
+    private boolean isImageList;
     private Gson mGson = new Gson();
     @Override
     protected NewsListPresenter createPresenter() {
@@ -78,6 +80,7 @@ public class NewsListFragment extends BaseFragment<NewsListPresenter> implements
         if (getArguments()!=null){
             mChannelCode = getArguments().getString(Constant.CHANNEL_CODE);
             isVideoList = getArguments().getBoolean(Constant.IS_VIDEO_LIST, false);
+            isImageList = getArguments().getBoolean(Constant.IS_IMAGE_LIST, false);
         }
         if (isVideoList){
             mNewsListAdapter = new VideoListAdapter(R.layout.item_video_list,mNewsList);
@@ -97,7 +100,9 @@ public class NewsListFragment extends BaseFragment<NewsListPresenter> implements
                     }
                 }
             });
-        }else {
+        }else if (isImageList){
+            mNewsListAdapter = new ImageListAdapter(R.layout.item_main_image_list,mNewsList);
+        } else {
             mNewsListAdapter = new NewsListAdapter(mNewsList);
         }
         recycleView.setAdapter(mNewsListAdapter);
@@ -114,6 +119,8 @@ public class NewsListFragment extends BaseFragment<NewsListPresenter> implements
                     intent.putExtra(VideoActivity.THUMBIMAGEVIEW,hotContent.getVideo_detail_info().getDetail_video_large_image().getUrl());
                     intent.putExtra(VideoActivity.TITLETEXTVIEW,hotContent.getTitle());
                     ActivityCompat.startActivity(mActivity, intent, compat.toBundle());
+                }else if (isImageList){
+                   showToast("图片浏览");
                 }else {
                     intent.setClass(mActivity, ArticleDetailActivity.class);
                     intent.putExtra(ArticleDetailActivity.GROUPID, hotContent.getGroup_id()+"");

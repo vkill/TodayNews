@@ -1,6 +1,5 @@
 package com.kx.todaynews.base;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,6 +7,8 @@ import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.kx.todaynews.utils.ToastUtils;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -118,7 +119,7 @@ public abstract class BaseFragment<P extends BasePresenter> extends LazyLoadFrag
 
     @Override
     public void showToast(String message) {
-
+        ToastUtils.showToast(message);
     }
 
     @Override

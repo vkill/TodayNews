@@ -72,6 +72,7 @@ public class HomeFragment extends Fragment {
             bundle.putString(Constant.CHANNEL_CODE,channel);
             //是否是视频列表页面,根据判断频道号是否是视频
             bundle.putBoolean(Constant.IS_VIDEO_LIST, "video".equals(channel));
+            bundle.putBoolean(Constant.IS_IMAGE_LIST, "组图".equals(channel));
             newsListFragment.setArguments(bundle);
             mChannelFragments.add(newsListFragment);//添加到集合中
         }

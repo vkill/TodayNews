@@ -13,6 +13,7 @@ public class Constant {
     /**频道对应的请求参数*/
     public static final String CHANNEL_CODE = "channelCode";
     public static final String IS_VIDEO_LIST = "isVideoList";
+    public static final String IS_IMAGE_LIST = "isImageList";
 
     public static final String ARTICLE_GENRE_VIDEO = "video";
     public static final String  ARTICLE_GENRE_AD = "ad";
