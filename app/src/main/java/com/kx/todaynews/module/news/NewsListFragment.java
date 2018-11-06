@@ -26,6 +26,7 @@ import com.kx.todaynews.bean.HotContent;
 import com.kx.todaynews.constants.Constant;
 import com.kx.todaynews.contract.INewsListContract;
 import com.kx.todaynews.module.news.activity.ArticleDetailActivity;
+import com.kx.todaynews.module.news.activity.ImageListDetailActivity;
 import com.kx.todaynews.module.video.VideoActivity;
 import com.kx.todaynews.presenter.NewsListPresenter;
 import com.kx.todaynews.widget.loadinglayout.LoadingLayout;
@@ -112,6 +113,7 @@ public class NewsListFragment extends BaseFragment<NewsListPresenter> implements
                 HotContent hotContent = mNewsList.get(position);
                 Intent intent = new Intent();
                 if (isVideoList){
+                    // 视频播放界面
                     ActivityOptionsCompat compat = ActivityOptionsCompat.makeSceneTransitionAnimation(mActivity, view.findViewById(R.id.video_player), getString(R.string.app_name));
                     intent.setClass(mActivity, VideoActivity.class);
                     intent.putExtra(VideoActivity.ITEM_ID,hotContent.getItem_id()+"");
@@ -120,8 +122,12 @@ public class NewsListFragment extends BaseFragment<NewsListPresenter> implements
                     intent.putExtra(VideoActivity.TITLETEXTVIEW,hotContent.getTitle());
                     ActivityCompat.startActivity(mActivity, intent, compat.toBundle());
                 }else if (isImageList){
-                   showToast("图片浏览");
+                    //组图浏览界面
+                    intent.setClass(mActivity, ImageListDetailActivity.class);
+                    intent.putExtra(ImageListDetailActivity.GROUPID, hotContent.getGroup_id()+"");
+                    startActivity(intent);
                 }else {
+                    // 新闻详情界面
                     intent.setClass(mActivity, ArticleDetailActivity.class);
                     intent.putExtra(ArticleDetailActivity.GROUPID, hotContent.getGroup_id()+"");
                     startActivity(intent);

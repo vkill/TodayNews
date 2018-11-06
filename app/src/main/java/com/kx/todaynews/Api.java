@@ -3,6 +3,7 @@ package com.kx.todaynews;
 
 import com.kx.todaynews.bean.ArticleCategory;
 import com.kx.todaynews.bean.HotBean;
+import com.kx.todaynews.bean.ImageListDetailBean;
 import com.kx.todaynews.bean.article.ArticleReplyDiggListBean;
 import com.kx.todaynews.bean.article.ArticleReplyListBean;
 import com.kx.todaynews.bean.article.ArticleTabCommentsBean;
@@ -113,4 +114,21 @@ public interface Api {
     Observable<ArticleCategory> getArticleCategory(
             @Query("_rticket") long rTicket,
             @Query("ts") long ts);
+
+    @Headers({"Domain-Name: a3"}) // Add the Domain-Name header
+    @GET("article/content/21/1/{group_id}/{group_id}/1/0?iid=44267707161&device_id=57548705831&ac=wifi&channel=tengxun2&aid=13&" +
+            "app_name=news_article&version_code=691&version_name=6.9.1&device_platform=android&" +
+            "ab_version=425530%2C511489%2C486952%2C442428%2C500130%2C504794%2C494121%2C511895%2C499728%2C478963%2C496464%2C239097%2C500092%2C170988%2C493249%2C480607%2C374117%2C495946%2C478532%2C265169%2C489312%2C501963%2C509852%2C508959%2C276206%2C453560%2C435216%2C459650%2C459993%2C511225%2C502846%2C500386%2C416055%2C510641%2C512161%2C392484%2C511164%2C488347%2C496452%2C495897%2C378451%2C471406%2C510754%2C512054%2C512070%2C508932%2C509307%2C468954%2C271178%2C424178%2C326524%2C326532%2C476036%2C511779%2C509819%2C496389%2C345191%2C504889%2C512336%2C512047%2C504723%2C424606%2C512074%2C455643%2C511272%2C424177%2C214069%2C507002%2C442255%2C511870%2C489509%2C280449%2C281299%2C511104%2C325618%2C508560%2C510116%2C511146%2C498551%2C509887%2C508594%2C386889%2C498375%2C511556%2C397995%2C467514%2C512007%2C444464%2C506751%2C509800%2C261578%2C403270%2C502709%2C491728%2C491265%2C293032%2C457481%2C502679%2C510535%2C491255%2C507368&ab_client=a1%2Cc4%2Ce1%2Cf1%2Cg2%2Cf7&" +
+            "ab_feature=94563%2C102749&abflag=3&ssmix=a&device_type=Redmi+Note+4X&device_brand=xiaomi&language=zh&os_api=24&os_version=7.0" +
+            "&openudid=30f2074ddcee24da&manifest_version_code=691&resolution=1080*1920&dpi=480&update_version_code=69111&" +
+            "fp=irT_JzPqFlKtFlD_PlU1F2mIFSF1&tma_jssdk_version=1.1.0.9&rom_version=miui_v9_v9.6.2.0.ncfcnfd&plugin=26958&" +
+            "as=a2855ada5ae82b51f39825&mas=000ebce37e555de37d0a275deae30fef724ea6a258dd8560b0"
+    )
+    Observable<ImageListDetailBean> getImageListDetail(
+            @Path("group_id") String group_id1,
+            @Path("group_id") String group_id2,
+            @Query("_rticket") long _rticket,
+            @Query("ts") long ts
+    );
+
 }

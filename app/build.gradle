@@ -113,4 +113,6 @@ dependencies {
     //  implementation 'cn.jzvd:jiaozivideoplayer:6.2.9'
     implementation 'cn.jzvd:jiaozivideoplayer:6.3.1'
     implementation project(':playerview')
+
+    implementation 'com.github.chrisbanes:PhotoView:2.1.4'
 }
