@@ -1,11 +1,14 @@
 package com.kx.todaynews.module.news.activity;
 
+import android.animation.ObjectAnimator;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.ScrollerCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.RelativeSizeSpan;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import com.kx.todaynews.R;
@@ -31,10 +34,11 @@ public class ImageListDetailActivity extends BaseActivity<ImageListDetailPresent
     TextView tvGallery;
     @BindView(R.id.tool_bar)
     Toolbar toolbar;
-
+    boolean isShow = true;
     private ImageListDetailAdapter mImageListDetailAdapter;
     private List<ImageListDetailBean.DataBean.GalleryBean> mGallery;
-
+    // 回升滚动辅助类
+    private ScrollerCompat mDecelerateScroller;
     @Override
     protected ImageListDetailPresenter createPresenter() {
         return new ImageListDetailPresenter();
@@ -47,32 +51,55 @@ public class ImageListDetailActivity extends BaseActivity<ImageListDetailPresent
 
     @Override
     protected void initListener() {
-        imageListViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
+        imageListViewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener(){
             @Override
             public void onPageSelected(int position) {
                 ImageListDetailBean.DataBean.GalleryBean galleryBean = mGallery.get(position);
-
-
                 SpannableString spannableString = new SpannableString((position+1)+"/"+mGallery.size()+galleryBean.getSub_abstract());
                 RelativeSizeSpan sizeSpan = new RelativeSizeSpan(0.7f);
+                int start = 1;
                 int end = 3;
                 if (mGallery.size()>=10){
                     end = 4 ;
                 }
-                spannableString.setSpan(sizeSpan,1,end, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                if (position>=9){
+                    start = 3 ;
+                    end = 6 ;
+                }
+                spannableString.setSpan(sizeSpan,start,end, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
                 tvGallery.setText(spannableString);
             }
-
+        });
+        mImageListDetailAdapter.setOnPhotoClickListener(new ImageListDetailAdapter.OnPhotoClickListener() {
             @Override
-            public void onPageScrollStateChanged(int state) {
-
+            public void onPhotoClick() {
+                if (isShow){
+                    scrollOutScreen(tvGallery,500);
+                    ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(toolbar, "translationY", 0, - toolbar.getHeight());
+                    objectAnimator.setDuration(500);
+                    objectAnimator.start();
+                }else {
+                    scrollInScreen(tvGallery,500);
+                    ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(toolbar, "translationY", - toolbar.getHeight(),0);
+                    objectAnimator.setDuration(500);
+                    objectAnimator.start();
+                }
+                isShow = !isShow;
             }
         });
+    }
+
+    // TODO: 2018/11/7  bug  对  tvGallery  做位移动画后滑动ViewPager,如果其他位置的文字高度比动画前的文字高度高一些，tvGallery就会显示一部分在手机上
+   //  alpha
+    private void scrollOutScreen(View target,int duration) {
+        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(target, "translationY", 0, target.getHeight());
+        objectAnimator.setDuration(duration);
+        objectAnimator.start();
+    }
+    private void scrollInScreen(View target,int duration) {
+        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(target, "translationY", target.getHeight(), 0);
+        objectAnimator.setDuration(duration);
+        objectAnimator.start();
     }
 
     @Override

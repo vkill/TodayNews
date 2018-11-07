@@ -5,8 +5,10 @@ import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.github.chrisbanes.photoview.OnPhotoTapListener;
 import com.github.chrisbanes.photoview.PhotoView;
 import com.kx.todaynews.bean.ImageListDetailBean;
 
@@ -22,6 +24,8 @@ public class ImageListDetailAdapter  extends PagerAdapter {
     List<ImageListDetailBean.DataBean.ImageDetailBean> imageDetail = new ArrayList<>();
 
     private Context mContext;
+
+    private OnPhotoClickListener mListener;
 
     public ImageListDetailAdapter(Context context) {
         mContext = context;
@@ -48,12 +52,25 @@ public class ImageListDetailAdapter  extends PagerAdapter {
         PhotoView photoView = new PhotoView(mContext);
         Glide.with(mContext).load(imageDetail.get(position).getUrl()).into(photoView);
         container.addView(photoView);
-
+        photoView.setOnPhotoTapListener(new OnPhotoTapListener() {
+            @Override
+            public void onPhotoTap(ImageView view, float x, float y) {
+                if (mListener != null) {
+                    mListener.onPhotoClick();
+                }
+            }
+        });
         return photoView;
     }
 
     @Override
     public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
         container.removeView((View) object);
+    }
+    public interface OnPhotoClickListener {
+        void onPhotoClick();
+    }
+    public void setOnPhotoClickListener(OnPhotoClickListener listener) {
+        mListener = listener;
     }
 }

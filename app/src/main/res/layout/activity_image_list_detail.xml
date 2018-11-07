@@ -23,6 +23,7 @@
         android:textSize="@dimen/sp_16"
         android:layout_gravity="bottom"
         android:layout_width="match_parent"
+        android:minHeight="50dp"
         android:layout_height="wrap_content" />
 
     <android.support.v7.widget.Toolbar
