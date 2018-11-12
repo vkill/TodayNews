@@ -44,7 +44,7 @@
             android:name=".module.news.activity.CategoryExpandActivity"
             android:screenOrientation="portrait" />
         <activity android:name=".module.news.activity.ImageListDetailActivity"
-            android:screenOrientation="portrait"
+            android:theme="@style/translucent"
             />
     </application>
 

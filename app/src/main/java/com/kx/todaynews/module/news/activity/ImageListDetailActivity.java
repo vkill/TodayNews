@@ -8,10 +8,8 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.RelativeSizeSpan;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
 
-import com.github.chrisbanes.photoview.PhotoView;
 import com.kx.todaynews.R;
 import com.kx.todaynews.adapter.ImageListDetailAdapter;
 import com.kx.todaynews.base.BaseActivity;
@@ -45,7 +43,6 @@ public class ImageListDetailActivity extends BaseActivity<ImageListDetailPresent
     private ObjectAnimator mOutAnimator;
     private ObjectAnimator mInAnimator;
 
-
     @Override
     protected ImageListDetailPresenter createPresenter() {
         return new ImageListDetailPresenter();
@@ -62,16 +59,17 @@ public class ImageListDetailActivity extends BaseActivity<ImageListDetailPresent
             @Override
             public void onPageSelected(int position) {
                 ImageListDetailBean.DataBean.GalleryBean galleryBean = mGallery.get(position);
-                SpannableString spannableString = new SpannableString((position + 1) + "/" + mGallery.size() + galleryBean.getSub_abstract());
+                SpannableString spannableString = new SpannableString((position + 1) + "/" + mGallery.size() +" "+ galleryBean.getSub_abstract());
                 RelativeSizeSpan sizeSpan = new RelativeSizeSpan(0.7f);
                 int start = 1;
                 int end = 3;
-                if (mGallery.size() >= 10) {
+                if (mGallery.size() < 10) {
+                    end = 3;
+                } else if ( position <= 8 ){
                     end = 4;
-                }
-                if (position >= 9) {
-                    start = 3;
-                    end = 6;
+                }else  {
+                    start = 2;
+                    end = 5;
                 }
                 spannableString.setSpan(sizeSpan, start, end, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
                 tvGallery.setText(spannableString);
@@ -90,17 +88,11 @@ public class ImageListDetailActivity extends BaseActivity<ImageListDetailPresent
                 isShow = !isShow ;
             }
         });
-        dragLayout.setOnSlideExitScrollListenter(new DragLayout.onSlideExitScrollListenter() {
+        //  上 / 下  滑动监听   关闭Activity
+        dragLayout.setOnSlideExitScrollListener(new DragLayout.onSlideExitScrollListener() {
             @Override
-            public void onSlideExit(float dy) {
-                float progress = dy * 2 / imageListViewPager.getHeight() ;
-                imageListViewPager.setTranslationY(dy);
-                if (Math.abs(progress)>1){
-                    progress=1;
-                }
-                // 根据 progress 改变背景的透明度
-
-
+            public void onSlideExit() {
+                finish();
             }
         });
     }
@@ -131,6 +123,7 @@ public class ImageListDetailActivity extends BaseActivity<ImageListDetailPresent
 
     @Override
     protected void initEventAndData() {
+       // getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         mImageListDetailAdapter = new ImageListDetailAdapter(this);
         imageListViewPager.setAdapter(mImageListDetailAdapter);
         RetrofitUrlManager.getInstance().putDomain("a3", NetClient.HOST_A3);

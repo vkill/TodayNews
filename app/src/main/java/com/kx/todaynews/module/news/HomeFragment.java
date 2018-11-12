@@ -89,7 +89,7 @@ public class HomeFragment extends Fragment {
         //隐藏指示器
         tabChannel.setSelectedTabIndicatorHeight(0);
 
-        vpContent.setAdapter(new FragmentPagerAdapter(getFragmentManager()) {
+        vpContent.setAdapter(new FragmentPagerAdapter(getChildFragmentManager()) {
             @Override
             public Fragment getItem(int position) {
                 return mChannelFragments.get(position);

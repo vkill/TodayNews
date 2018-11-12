@@ -2,6 +2,8 @@ package com.kx.todaynews.widget;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -11,8 +13,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.ViewDragHelper;
+import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
-import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.BounceInterpolator;
@@ -22,17 +24,23 @@ import com.kx.todaynews.R;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.security.spec.ECField;
 
 /**
  * Created by admin on 2018/11/8.
  */
 public class DragLayout extends FrameLayout {
-
+    private ArgbEvaluator argbEvaluator;
     private View dragView;
+    private Toolbar mToolbar;
     private ViewPager mContentView;
     private ViewDragHelper mViewDragHelper;
-    private GestureDetector mGestureDetector ;
+    /**
+     *  判断当手指第一次按下所属区域：DragView  or  ContentView
+     *
+     *   当为true时, Action_down 和 Action_Move  事件下,ContentView不做任何处理
+     *   当为false时,在Action_down 中移动ContentView 时根据 progress 改变 DragView的透明值，
+     */
+    private boolean isDraged= true;
     // STATUS_EXPANDED状态下Top值
     private int mExpandedTop;
     // STATUS_COLLAPSED状态下Top值
@@ -74,14 +82,14 @@ public class DragLayout extends FrameLayout {
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.DragLayout, 0, 0);
         mFixHeight = a.getDimensionPixelOffset(R.styleable.DragLayout_fix_height, mFixHeight);
         a.recycle();
-        mGestureDetector = new GestureDetector(context,mGestureListener);
         mViewDragHelper = ViewDragHelper.create(this,1f,mCallback );
+        argbEvaluator = new ArgbEvaluator();
     }
 
     ViewDragHelper.Callback mCallback = new ViewDragHelper.Callback() {
         @Override
         public boolean tryCaptureView(@NonNull View child, int pointerId) {
-            return  true;
+            return  child== dragView;
         }
 
         /**
@@ -103,7 +111,6 @@ public class DragLayout extends FrameLayout {
          */
         @Override
         public void onViewReleased(@NonNull View releasedChild, float xvel, float yvel) {
-            if (releasedChild==dragView){
                 int controlY = mHeight - releasedChild.getHeight() / 2 ;
                 int top = releasedChild.getTop();
                 if (lastDragStatus == STATUS_EXPANDED && Math.abs(yvel) <= 5000 && yvel>0){
@@ -138,7 +145,6 @@ public class DragLayout extends FrameLayout {
                     }
                     ViewCompat.postInvalidateOnAnimation(DragLayout.this);
                 }
-            }
         }
     };
 
@@ -149,63 +155,91 @@ public class DragLayout extends FrameLayout {
         }
         super.computeScroll();
     }
-    /**
-     * 手势监听
-     */
-    private GestureDetector.OnGestureListener mGestureListener = new GestureDetector.SimpleOnGestureListener() {
-        // 是否是按下的标识，默认为其他动作，true为按下标识，false为其他动作
-        private boolean isDownTouch;
-
-        @Override
-        public boolean onDown(MotionEvent e) {
-            isDownTouch = true;
-            return super.onDown(e);
-        }
-
-        @Override
-        public boolean onSingleTapUp(MotionEvent e) {
-            return true;
-        }
-
-        @Override
-        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-            if (isDownTouch) {
-//                // 如果为上下滑动则控制拖拽
-//                if (Math.abs(distanceY) > Math.abs(distanceX)) {
-//                    _stopAllScroller();
-//                    mDragHelper.captureChildView(mDragView, 0);
-//                    mIsDrag = true;
-//                }
-//                isDownTouch = false;
-            }
-            return super.onScroll(e1, e2, distanceX, distanceY);
-        }
-    };
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-       // System.out.println(mContentView.getChildAt(mContentView.getCurrentItem()).getTop());
 
         mViewDragHelper.processTouchEvent(event);
         int action = event.getAction();
-      //  float downX =0;
-        //float downY =0;
+        float progress =0;
+
         switch (action){
             case MotionEvent.ACTION_DOWN:
-                downX = event.getX();
                 downY = event.getY();
                 break;
             case MotionEvent.ACTION_MOVE:
-                float moveX = event.getX();
                 float moveY = event.getY();
-                //  当触摸区域为DragView时不回调,只有在触摸区域是ContentView时才回调
-                if (mOnSlideExitScrollListenter!=null && !mViewDragHelper.isViewUnder(dragView, (int) event.getX(), (int) event.getY())){
-                    mOnSlideExitScrollListenter.onSlideExit(moveY - downY);
+                if (!isDraged ){
+                    //  根据移动的距离移动mContentView
+                    mContentView.setTranslationY(moveY - downY);
+                    progress = Math.abs((moveY - downY) * 2 / mContentView.getHeight() );
+                    if (progress>1){
+                        progress=1;
+                    }
+                    // 根据 progress 改变dragView和mToolbar的透明度
+                    if (progress <= 0.5){
+                        dragView.setAlpha(1-progress *2);
+                        mToolbar.setAlpha(1-progress *2);
+                    }
+                    // 根据 progress 改变背景的透明度
+                    this.setBackgroundColor((int) argbEvaluator.evaluate(
+                            progress,
+                            getResources().getColor(android.R.color.black),
+                            getResources().getColor(android.R.color.transparent)));
                 }
-              //  mContentView.setTranslationY(moveY-downY);
-
                 break;
             case MotionEvent.ACTION_UP:
+                if (isDraged ){
+                    return true ;
+                }
+                float upY = event.getY();
+                 progress = (upY- downY) * 2 / mContentView.getHeight();
+                if (Math.abs(progress)>1){
+                    progress=1;
+                }
+                ObjectAnimator objectAnimator;
+                //  Math.abs(progress) <0.5时，  mContentView回复原来的位置状态。
+                if (Math.abs(progress) <=0.5 ){
+                     objectAnimator = ObjectAnimator.ofFloat(mContentView, "translationY", upY - downY, 0);
+                     isDraged = true;
+                }else {
+                  //  Math.abs(progress) > 0.5  %%  progress>0 时  向下移出屏幕，关闭Activity
+                    if (progress>0){
+                        objectAnimator = ObjectAnimator.ofFloat(mContentView, "translationY", upY - downY, mContentView.getHeight()  );
+                    }else {
+                        //  Math.abs(progress) > 0.5  %%  progress < 0 时  向上移出屏幕，关闭Activity
+                        objectAnimator = ObjectAnimator.ofFloat(mContentView, "translationY", upY - downY,- mContentView.getHeight()  );
+                    }
+                    objectAnimator.addListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            if (mOnSlideExitScrollListener!=null){
+                                mOnSlideExitScrollListener.onSlideExit();
+                            }
+                        }
+                    });
+                }
+                objectAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                    @Override
+                    public void onAnimationUpdate(ValueAnimator animation) {
+                        float value = (float) animation.getAnimatedValue();
+                        float progress = Math.abs((value) * 2 / mContentView.getHeight() );
+                        if (progress>1){
+                            progress=1;
+                        }
+                        if (progress <= 0.5){
+                            dragView.setAlpha(1-progress *2);
+                            mToolbar.setAlpha(1-progress *2);
+                        }
+                        DragLayout.this.setBackgroundColor((int) argbEvaluator.evaluate(
+                                progress,
+                                getResources().getColor(android.R.color.black),
+                                getResources().getColor(android.R.color.transparent)));
 
+                    }
+                });
+
+                objectAnimator.setDuration(500);
+                objectAnimator.start();
                 break;
         }
         return true;
@@ -223,6 +257,11 @@ public class DragLayout extends FrameLayout {
             case MotionEvent.ACTION_DOWN:
                 downX = ev.getX();
                 downY = ev.getY();
+                if (mViewDragHelper.isViewUnder(dragView, (int) ev.getX(), (int) ev.getY())){
+                    isDraged = true;
+                }else {
+                    isDraged = false;
+                }
                 break;
             case MotionEvent.ACTION_MOVE:
                 float moveX = ev.getX();
@@ -240,9 +279,6 @@ public class DragLayout extends FrameLayout {
         if (mViewDragHelper.isViewUnder(dragView, (int) ev.getX(), (int) ev.getY())){
             return true ;
         }
-//        if (mViewDragHelper.isViewUnder(mContentView, (int) ev.getX(), (int) ev.getY())){
-//            return true ;
-//        }
         return super.onInterceptTouchEvent(ev);
     }
     @Override
@@ -375,6 +411,7 @@ public class DragLayout extends FrameLayout {
         super.onFinishInflate();
         dragView = getChildAt(1);
         mContentView = (ViewPager) getChildAt(0);
+        mToolbar = (Toolbar) getChildAt(2);
     }
 
     // 整个布局高度
@@ -386,12 +423,16 @@ public class DragLayout extends FrameLayout {
     // DragView的Top属性值
     private int mDragViewTop = 0;
 
-    public interface onSlideExitScrollListenter{
-         void onSlideExit(float dy);
+    /**
+     *  mContentView  向上滑动或向下滑动 关闭Activity的Listener
+     */
+    public interface onSlideExitScrollListener{
+         void onSlideExit( );
      }
-    onSlideExitScrollListenter mOnSlideExitScrollListenter;
 
-    public void setOnSlideExitScrollListenter(onSlideExitScrollListenter onSlideExitScrollListenter) {
-        mOnSlideExitScrollListenter = onSlideExitScrollListenter;
+    onSlideExitScrollListener mOnSlideExitScrollListener;
+
+    public void setOnSlideExitScrollListener(onSlideExitScrollListener onSlideExitScrollListener) {
+        mOnSlideExitScrollListener = onSlideExitScrollListener;
     }
 }
