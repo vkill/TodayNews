@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.github.chrisbanes.photoview.PhotoView;
 import com.kx.todaynews.R;
 import com.kx.todaynews.adapter.ImageListDetailAdapter;
 import com.kx.todaynews.base.BaseActivity;
@@ -41,6 +42,8 @@ public class ImageListDetailActivity extends BaseActivity<ImageListDetailPresent
     DragLayout dragLayout;
     private ImageListDetailAdapter mImageListDetailAdapter;
     private List<ImageListDetailBean.DataBean.GalleryBean> mGallery;
+    private ObjectAnimator mOutAnimator;
+    private ObjectAnimator mInAnimator;
 
 
     @Override
@@ -79,39 +82,44 @@ public class ImageListDetailActivity extends BaseActivity<ImageListDetailPresent
             public void onPhotoClick() {
                 if (isShow){
                     dragLayout.scrollOutScreen(500);
-                   // scrollOutScreen(toolbar,500);
+                    scrollOutScreen(500);
                 }else {
                     dragLayout.scrollInScreen(500);
-                  //  scrollOutScreen(toolbar,500);
+                    scrollInScreen(500);
                 }
                 isShow = !isShow ;
-//                if (isShow) {
-//                    scrollOutScreen(tvGallery, 500);
-//                    ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(toolbar, "translationY", 0, -toolbar.getHeight());
-//                    objectAnimator.setDuration(500);
-//                    objectAnimator.start();
-//                } else {
-//                    scrollInScreen(tvGallery, 500);
-//                    ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(toolbar, "translationY", -toolbar.getHeight(), 0);
-//                    objectAnimator.setDuration(500);
-//                    objectAnimator.start();
-//                }
-//                isShow = !isShow;
+            }
+        });
+        dragLayout.setOnSlideExitScrollListenter(new DragLayout.onSlideExitScrollListenter() {
+            @Override
+            public void onSlideExit(float dy) {
+                float progress = dy * 2 / imageListViewPager.getHeight() ;
+                imageListViewPager.setTranslationY(dy);
+                if (Math.abs(progress)>1){
+                    progress=1;
+                }
+                // 根据 progress 改变背景的透明度
+
+
             }
         });
     }
 
     //  alpha
-    private void scrollOutScreen(View target, int duration) {
-        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(target, "translationY", 0, - target.getHeight());
-        objectAnimator.setDuration(duration);
-        objectAnimator.start();
+    private void scrollOutScreen(int duration) {
+        if (mOutAnimator==null){
+            mOutAnimator = ObjectAnimator.ofFloat(toolbar, "translationY", 0, - toolbar.getHeight());
+        }
+        mOutAnimator.setDuration(duration);
+        mOutAnimator.start();
     }
 
-    private void scrollInScreen(View target, int duration) {
-        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(target, "translationY", - target.getHeight(), 0);
-        objectAnimator.setDuration(duration);
-        objectAnimator.start();
+    private void scrollInScreen(int duration) {
+        if (mInAnimator==null){
+            mInAnimator = ObjectAnimator.ofFloat(toolbar, "translationY",  - toolbar.getHeight(),0);
+        }
+        mInAnimator.setDuration(duration);
+        mInAnimator.start();
     }
 
     @Override
