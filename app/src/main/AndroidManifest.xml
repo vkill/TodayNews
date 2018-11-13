@@ -36,7 +36,7 @@
         </activity>
 
         <meta-data android:name="com.amap.api.v2.apikey" android:value="866009f4e4fdd4699fbe53d081f4ff7a"/>
-
+        <service android:name="com.amap.api.location.APSService"/>
         <activity
             android:name=".module.news.activity.ArticleDetailActivity"
             android:screenOrientation="portrait" />
