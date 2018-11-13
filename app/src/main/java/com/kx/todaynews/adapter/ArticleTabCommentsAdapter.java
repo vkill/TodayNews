@@ -54,7 +54,7 @@ public class ArticleTabCommentsAdapter extends BaseQuickAdapter<ArticleTabCommen
         holder.diggCount.setText(String.format("%s",dataBean.getDigg_count()));
         String text = dataBean.getText();
         holder.replyContent.setText(EmoJiUtils.parseEmoJi( holder.replyContent,mContext,text));
-        holder.createTime.setText(String.format("%s", TyDateUtils.getFriendlytimeByTime(dataBean.getCreate_time())));
+        holder.createTime.setText(String.format("%s", TyDateUtils.getFriendlytimeByDate(dataBean.getCreate_time())));
         holder.replyCount.setText(String.format("%s回复",(dataBean.getReply_count()<=0 ? "": dataBean.getReply_count())));
         if (mOnArticleReplyClickListener!=null){
             holder.itemView.setOnClickListener(new View.OnClickListener() {

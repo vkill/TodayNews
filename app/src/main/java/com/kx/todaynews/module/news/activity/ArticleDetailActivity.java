@@ -161,7 +161,7 @@ public class ArticleDetailActivity extends AppCompatActivity {
                                 }
                             }
                             mHeaderView.setDetail(content, () -> {
-                                ToastUtils.showToast("隐藏刷新界面");
+                              //  ToastUtils.showToast("隐藏刷新界面");
                                 loadingLayout.showContentView();
                             });
                         }

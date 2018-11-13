@@ -38,7 +38,7 @@ public class ArticleReplyListFragmentAdapter extends BaseQuickAdapter<ArticleRep
         Glide.with(mContext).load(item.getUser().getAvatar_url()).transform(new GlideCircleTransform(mContext)).into((ImageView) holder.getView(R.id.user_avatar));
         holder.setText(R.id.user_name,String.format("%s",item.getUser().getName()))
                 .setText(R.id.digg_count,String.format("%s",item.getDigg_count()))
-                .setText(R.id.create_time,String.format("%s", TyDateUtils.getFriendlytimeByTime(item.getCreate_time())));
+                .setText(R.id.create_time,String.format("%s", TyDateUtils.getFriendlytimeByDate(item.getCreate_time())));
         holder.getView(R.id.user_verified_reason).setVisibility(View.GONE);
         StringBuilder text = new StringBuilder(item.getText());
         ArticleReplyListBean.DataBeanX.DataBean.ReplyToCommentBean replyToComment = item.getReply_to_comment();

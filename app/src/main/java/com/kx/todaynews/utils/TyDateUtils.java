@@ -27,9 +27,9 @@ public class TyDateUtils {
     /**
      * 与当前时间比较，得到多少年，多少月，多少天前,多少小时前，多小分钟前
      */
-    public static String getFriendlytimeByDate(Date d) {
-        long delta = (System.currentTimeMillis() - d.getTime()) / 1000;
-        if (delta <= 0) return d.toLocaleString();
+    public static String getFriendlytimeByDate(Long date) {
+        long delta = (Long.valueOf(String.format("%s",System.currentTimeMillis()).substring(0,10)) - date);
+      //  if (delta <= 0) return d.toLocaleString();
         if (delta / (60 * 60 * 24 * 365) > 0) return delta / (60 * 60 * 24 * 365) + "年前";
         if (delta / (60 * 60 * 24 * 30) > 0) return delta / (60 * 60 * 24 * 30) + "个月前";
         if (delta / (60 * 60 * 24 * 7) > 0) return delta / (60 * 60 * 24 * 7) + "周前";
@@ -54,7 +54,7 @@ public class TyDateUtils {
         } else if (time >= 3600 * 48 && time < 3600 * 72) {
             return "前天";
         }else {
-            return "未知时间";
+            return "long long ";
         }
 //                else if (time >= 3600 * 72) {  
 //            return dateToString(dateStr, DATE_FORMAT);  

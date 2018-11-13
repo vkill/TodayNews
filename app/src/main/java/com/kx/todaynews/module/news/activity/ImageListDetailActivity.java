@@ -128,7 +128,7 @@ public class ImageListDetailActivity extends BaseActivity<ImageListDetailPresent
         imageListViewPager.setAdapter(mImageListDetailAdapter);
         RetrofitUrlManager.getInstance().putDomain("a3", NetClient.HOST_A3);
         String groupId = getIntent().getStringExtra(GROUPID);
-        mPresenter.getImageListDetail(groupId);
+        mPresenter.getImageListDetail("6623187852266045959");
 
     }
 
@@ -140,7 +140,7 @@ public class ImageListDetailActivity extends BaseActivity<ImageListDetailPresent
         mImageListDetailAdapter.setImageDetail(image_detail);
 
         mGallery = data.getGallery();
-        SpannableString spannableString = new SpannableString("1/" + mGallery.size() + mGallery.get(0).getSub_abstract());
+        SpannableString spannableString = new SpannableString("1/" + mGallery.size() + " "+mGallery.get(0).getSub_abstract());
         RelativeSizeSpan sizeSpan = new RelativeSizeSpan(0.7f);
         int end = 3;
         if (mGallery.size() >= 10) {

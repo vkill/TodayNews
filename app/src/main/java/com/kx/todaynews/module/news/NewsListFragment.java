@@ -174,6 +174,9 @@ public class NewsListFragment extends BaseFragment<NewsListPresenter> implements
                 if ("广告".equals(hotContent.getLabel())) {
                     continue;
                 }
+                if (TextUtils.isEmpty(hotContent.getTitle())) {
+                    continue;
+                }
                 hotContents.add(hotContent);
             }
             mNewsList.addAll(0,hotContents);

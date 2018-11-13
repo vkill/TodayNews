@@ -139,7 +139,7 @@ public class ArticleReplyListBottomFragment extends BaseFullBottomSheetFragment<
                 fabulousCount.setText(String.format("%s人赞过", commentBean.getDigg_count()));
                 String text = commentBean.getText();
                 replyContent.setText(EmoJiUtils.parseEmoJi(replyContent, getContext(), text));
-                createTime.setText(String.format("%s", TyDateUtils.getFriendlytimeByTime(commentBean.getCreate_time())));
+                createTime.setText(String.format("%s", TyDateUtils.getFriendlytimeByDate(commentBean.getCreate_time())));
                 id = commentBean.getId();
                 mPresenter.getArticleReplyLists(id, offset);
             }
