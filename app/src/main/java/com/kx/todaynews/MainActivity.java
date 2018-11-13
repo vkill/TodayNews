@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.kx.todaynews.module.map.MapFragment;
 import com.kx.todaynews.module.news.HomeFragment;
 import com.kx.todaynews.module.user.UserFragment;
 import com.kx.todaynews.widget.helper.BottomNavigationViewHelper;
@@ -26,9 +27,8 @@ public class MainActivity extends AppCompatActivity {
     private static final String POSITION = "position";
     private static final String SELECT_ITEM = "bottomNavigationSelectItem";
     private static final int FRAGMENT_NEWS = 0;
-    private static final int FRAGMENT_USER = 1;
-  //  private static final int FRAGMENT_PHOTO = 1;
-   // private static final int FRAGMENT_VIDEO = 2;
+    private static final int FRAGMENT_MAPS = 1;
+    private static final int FRAGMENT_USER = 2;
 
     @BindView(R.id.common_toolbar)
     Toolbar mToolbar;
@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     FrameLayout flContainer;
     private int mLastFgIndex = 0;
     HomeFragment mNewsFragment;
+    MapFragment  mMapFragment;
     UserFragment mUserFragment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,13 +60,18 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigation.setOnNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 case R.id.tab_main_news:
-                    mToolbar.setVisibility(View.VISIBLE);
-                    mTitleTv.setText(getString(R.string.main_news));
+                  //  mToolbar.setVisibility(View.VISIBLE);
+                  //  mTitleTv.setText(getString(R.string.main_news));
                     showFragment(FRAGMENT_NEWS);
                     break;
+                    case R.id.tab_main_map:
+                   // mToolbar.setVisibility(View.VISIBLE);
+                  //  mTitleTv.setText(getString(R.string.main_news));
+                    showFragment(FRAGMENT_MAPS);
+                    break;
                 case R.id.tab_main_user:
-                    mToolbar.setVisibility(View.GONE);
-                    mTitleTv.setText(getString(R.string.main_user));
+                  //  mToolbar.setVisibility(View.GONE);
+                  //  mTitleTv.setText(getString(R.string.main_user));
                     showFragment(FRAGMENT_USER);
                     break;
             }
@@ -114,6 +120,12 @@ public class MainActivity extends AppCompatActivity {
                     mNewsFragment = HomeFragment.getInstance();
                 }
                 fragment = mNewsFragment;
+                break;
+            case FRAGMENT_MAPS:
+                if (mMapFragment == null) {
+                    mMapFragment = MapFragment.getInstance();
+                }
+                fragment = mMapFragment;
                 break;
             case FRAGMENT_USER:
                 if (mUserFragment == null) {
