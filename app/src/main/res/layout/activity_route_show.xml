@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".module.map.RouteShowActivity">
+
+    <LinearLayout
+        android:background="@drawable/gray_bg"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="80dp">
+
+        <LinearLayout
+            android:gravity="center_horizontal"
+            android:layout_marginStart="15dp"
+            android:layout_gravity="center_vertical"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <com.kx.todaynews.widget.CircleView
+                app:circle_color="@color/Green"
+                android:layout_width="10dp"
+                android:layout_height="10dp" />
+
+            <View
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:background="@color/gray_line"
+                android:layout_width="1dp"
+                android:layout_height="20dp"/>
+
+            <com.kx.todaynews.widget.CircleView
+                app:circle_color="@color/red"
+                android:layout_width="10dp"
+                android:layout_height="10dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:gravity="center_vertical"
+            android:layout_marginLeft="20dp"
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent">
+
+            <EditText
+                android:textSize="@dimen/sp_16"
+                android:background="@null"
+                android:hint="输入起点"
+                android:layout_width="match_parent"
+                android:layout_height="39dp" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@color/gray_line"/>
+
+            <EditText
+                android:textSize="@dimen/sp_16"
+                android:background="@null"
+                android:hint="输入终点"
+                android:layout_width="match_parent"
+                android:layout_height="39dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/fl_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</LinearLayout>

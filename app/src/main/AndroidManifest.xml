@@ -2,22 +2,22 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.kx.todaynews">
 
+    <!-- 地图SDK（包含其搜索功能）需要的基础权限 -->
 
-    <!--地图SDK（包含其搜索功能）需要的基础权限-->
 
-    <!--允许程序打开网络套接字-->
+    <!-- 允许程序打开网络套接字 -->
     <uses-permission android:name="android.permission.INTERNET" />
-    <!--允许程序设置内置sd卡的写权限-->
+    <!-- 允许程序设置内置sd卡的写权限 -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <!--允许程序获取网络状态-->
+    <!-- 允许程序获取网络状态 -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <!--允许程序访问WiFi网络信息-->
+    <!-- 允许程序访问WiFi网络信息 -->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <!--允许程序读写手机状态和身份-->
+    <!-- 允许程序读写手机状态和身份 -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <!--允许程序访问CellID或WiFi热点来获取粗略的位置-->
+    <!-- 允许程序访问CellID或WiFi热点来获取粗略的位置 -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
@@ -37,8 +37,12 @@
             </intent-filter>
         </activity>
 
-        <meta-data android:name="com.amap.api.v2.apikey" android:value="866009f4e4fdd4699fbe53d081f4ff7a"/>
-        <service android:name="com.amap.api.location.APSService"/>
+        <meta-data
+            android:name="com.amap.api.v2.apikey"
+            android:value="866009f4e4fdd4699fbe53d081f4ff7a" />
+
+        <service android:name="com.amap.api.location.APSService" />
+
         <activity
             android:name=".module.news.activity.ArticleDetailActivity"
             android:screenOrientation="portrait" />
@@ -62,9 +66,11 @@
         <activity
             android:name=".module.news.activity.CategoryExpandActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".module.news.activity.ImageListDetailActivity"
-            android:theme="@style/translucent"
-            />
+        <activity
+            android:name=".module.news.activity.ImageListDetailActivity"
+            android:theme="@style/translucent" />
+        <activity android:name=".module.map.RouteShowActivity" />
+        <activity android:name=".module.map.SelectMapPointActivity"></activity>
     </application>
 
 </manifest>

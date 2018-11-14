@@ -5,6 +5,11 @@
         <attr name="ignore_recommend_height" format="boolean" />
     </declare-styleable>
 
+
+    <declare-styleable name="CircleView">
+        <attr name="circle_color" format="color" />
+    </declare-styleable>
+
     <declare-styleable name="DragLayout">
         <attr name="fix_height" format="dimension"/>
         <attr name="max_height" format="dimension"/>

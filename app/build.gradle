@@ -11,7 +11,7 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         ndk {
             //设置支持的SO库架构（开发者可以根据需要，选择一个或多个平台的so）
-            abiFilters "armeabi", "armeabi-v7a", "arm64-v8a", "x86","x86_64"
+            abiFilters "armeabi", "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
         }
     }
     //签名
@@ -122,6 +122,8 @@ dependencies {
     implementation 'com.amap.api:location:4.3.0'
     // 3D地图
     implementation 'com.amap.api:3dmap:6.5.0'
+
+    implementation 'com.amap.api:search:6.5.0.1'
     //权限框架
     implementation 'com.yanzhenjie:permission:2.0.0-rc12'
 }

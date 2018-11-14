@@ -1,5 +1,6 @@
 package com.kx.todaynews.module.map;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
@@ -20,8 +21,6 @@ import com.amap.api.maps.MapView;
 import com.amap.api.maps.SupportMapFragment;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.LatLng;
-import com.amap.api.maps.model.Marker;
-import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.MyLocationStyle;
 import com.kx.todaynews.R;
 import com.kx.todaynews.utils.LogUtils;
@@ -125,7 +124,7 @@ public class MapFragment extends SupportMapFragment implements AMapLocationListe
         mLocationOption.setInterval(2000);
         //获取一次定位结果：
         //该方法默认为false。
-       // mLocationOption.setOnceLocation(true);
+        mLocationOption.setOnceLocation(true);
         //设置是否返回地址信息（默认返回地址信息）
         mLocationOption.setNeedAddress(true);
         /**
@@ -209,6 +208,10 @@ public class MapFragment extends SupportMapFragment implements AMapLocationListe
     public void ReLocate(){
         mAMap.setMyLocationEnabled(true);
         followMove = true;
+    }
+    @OnClick(R.id.bt_route)
+    public void onShowRoute(){
+        startActivity(new Intent(getContext(),RouteShowActivity.class));
     }
     private boolean showTraffic = true;
     @OnClick(R.id.iv_setTraffic)
