@@ -118,9 +118,10 @@ dependencies {
     implementation 'cn.jzvd:jiaozivideoplayer:6.3.1'
     implementation project(':playerview')
     implementation 'com.github.chrisbanes:PhotoView:2.1.4'
-    implementation 'com.github.tbruyelle:rxpermissions:0.10.2'
     //定位功能
     implementation 'com.amap.api:location:4.3.0'
     // 3D地图
     implementation 'com.amap.api:3dmap:6.5.0'
+    //权限框架
+    implementation 'com.yanzhenjie:permission:2.0.0-rc12'
 }

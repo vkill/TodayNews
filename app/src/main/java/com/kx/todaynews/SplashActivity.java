@@ -5,7 +5,9 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import java.util.PrimitiveIterator;
+import com.yanzhenjie.permission.AndPermission;
+import com.yanzhenjie.permission.Permission;
+
 
 /**
  * @author Administrator
@@ -19,8 +21,18 @@ public class SplashActivity extends AppCompatActivity {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                startActivity(new Intent(SplashActivity.this,MainActivity.class));
-                finish();
+                AndPermission.with(SplashActivity.this)
+                        .runtime()
+                        .permission(Permission.Group.STORAGE,Permission.Group.LOCATION)
+                        .onGranted(permissions -> {
+                            // Storage permission are allowed.
+                            startActivity(new Intent(SplashActivity.this,MainActivity.class));
+                            finish();
+                        })
+                        .onDenied(permissions -> {
+                            // Storage permission are not allowed.
+                        })
+                        .start();
             }
         },500);
     }

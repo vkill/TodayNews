@@ -18,6 +18,8 @@ import com.amap.api.maps.AMap;
 import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.MapView;
 import com.amap.api.maps.SupportMapFragment;
+import com.amap.api.maps.model.BitmapDescriptor;
+import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
@@ -55,18 +57,6 @@ public class MapFragment extends SupportMapFragment implements AMapLocationListe
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        RxPermissions rxPermissions = new RxPermissions(this);
-        rxPermissions.requestEachCombined(Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE)
-                .subscribe(permission -> {
-                    if (permission.granted) {
-                        // All permissions are granted !
-                    } else if (permission.shouldShowRequestPermissionRationale){
-                        // At least one denied permission without ask never again
-                    } else {
-
-                    }
-                });
     }
     //声明AMapLocationClient类对象
     public AMapLocationClient mLocationClient = null;
