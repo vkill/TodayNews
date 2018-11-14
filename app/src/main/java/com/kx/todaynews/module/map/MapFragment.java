@@ -1,6 +1,6 @@
 package com.kx.todaynews.module.map;
 
-import android.Manifest;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -18,7 +18,6 @@ import com.amap.api.maps.AMap;
 import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.MapView;
 import com.amap.api.maps.SupportMapFragment;
-import com.amap.api.maps.model.BitmapDescriptor;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
@@ -27,7 +26,6 @@ import com.amap.api.maps.model.MyLocationStyle;
 import com.kx.todaynews.R;
 import com.kx.todaynews.utils.LogUtils;
 import com.kx.todaynews.utils.ToastUtils;
-import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -83,14 +81,15 @@ public class MapFragment extends SupportMapFragment implements AMapLocationListe
 
         myLocationStyle.interval(2000); //设置连续定位模式下的定位间隔，只在连续定位模式下生效，单次定位模式下不会生效。单位为毫秒。
         //设置定位蓝点精度圆圈的填充颜色的方法。
-        myLocationStyle.radiusFillColor(android.R.color.white);
+        myLocationStyle.radiusFillColor(Color.argb(30, 0, 0, 180));
         //设置定位蓝点精度圆圈的边框颜色的方法。
-        myLocationStyle.strokeColor(android.R.color.white);
+        myLocationStyle.strokeColor(Color.argb(50, 0, 0, 220));
         myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE_NO_CENTER);
-
+        mAMap.getUiSettings().setZoomControlsEnabled(false);
+        // 修改蓝点图标
+        myLocationStyle.myLocationIcon(BitmapDescriptorFactory.fromResource(R.drawable.navi_map_gps_locked));
         mAMap.setMyLocationStyle(myLocationStyle);//设置定位蓝点的Style
         // aMap.getUiSettings().setMyLocationButtonEnabled(true);// 设置默认定位按钮是否显示，非必需设置。
-
         mAMap.moveCamera(CameraUpdateFactory.zoomTo(17));
         /**
          *  解决拖动地图就会自动回到中心点的问题
@@ -123,10 +122,10 @@ public class MapFragment extends SupportMapFragment implements AMapLocationListe
         //设置定位模式为AMapLocationMode.Hight_Accuracy，高精度模式。
         mLocationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
         //设置定位间隔,单位毫秒,默认为2000ms，最低1000ms。
-       // mLocationOption.setInterval(3000);
+        mLocationOption.setInterval(2000);
         //获取一次定位结果：
         //该方法默认为false。
-        mLocationOption.setOnceLocation(true);
+       // mLocationOption.setOnceLocation(true);
         //设置是否返回地址信息（默认返回地址信息）
         mLocationOption.setNeedAddress(true);
         /**
@@ -197,7 +196,7 @@ public class MapFragment extends SupportMapFragment implements AMapLocationListe
                 //可在其中解析amapLocation获取相应内容。
                 LogUtils.e("地址：" +aMapLocation.getAddress() +"   经度："+ aMapLocation.getLongitude() +"  纬度："+aMapLocation.getLatitude());
                 LatLng latLng = new LatLng(aMapLocation.getLatitude(),aMapLocation.getLongitude());
-                final Marker marker = mAMap.addMarker(new MarkerOptions().position(latLng).title("家").snippet("DefaultMarker").draggable(true));
+               // final Marker marker = mAMap.addMarker(new MarkerOptions().position(latLng).title("家").snippet("DefaultMarker").draggable(true));
             }else {
                 //定位失败时，可通过ErrCode（错误码）信息来确定失败的原因，errInfo是错误信息，详见错误码表。
                 ToastUtils.showToast("ErrCode:"
@@ -210,6 +209,17 @@ public class MapFragment extends SupportMapFragment implements AMapLocationListe
     public void ReLocate(){
         mAMap.setMyLocationEnabled(true);
         followMove = true;
+    }
+    private boolean showTraffic = true;
+    @OnClick(R.id.iv_setTraffic)
+    public void SetTraffic(){
+        showTraffic = !showTraffic;
+        mAMap.setTrafficEnabled(showTraffic);
+        if (showTraffic){
+            ToastUtils.showToast("开始并更新实时路况");
+        }else {
+            ToastUtils.showToast("关闭实时路况");
+        }
     }
 
 }
