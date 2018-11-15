@@ -149,8 +149,8 @@ public class SelectMapPointActivity extends AppCompatActivity implements AMapLoc
 
                 isItemClickAction = true;
 
-                aMap.moveCamera(CameraUpdateFactory.newLatLngZoom(curLatlng, 16f));
-
+                //aMap.moveCamera(CameraUpdateFactory.newLatLngZoom(curLatlng, 16f));
+                aMap.animateCamera(CameraUpdateFactory.newLatLngZoom(curLatlng, 16f));
                 searchResultAdapter.setSelectedPosition(position);
                 searchResultAdapter.notifyDataSetChanged();
             }
@@ -187,8 +187,8 @@ public class SelectMapPointActivity extends AppCompatActivity implements AMapLoc
         LatLng latLng = aMap.getCameraPosition().target;
         Point screenPosition = aMap.getProjection().toScreenLocation(latLng);
         locationMarker = aMap.addMarker(new MarkerOptions()
-                .anchor(0.5f, 0.5f)
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.navi_map_gps_locked)));
+                .anchor(1f, 1f)
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.bubble_start)));
         //设置Marker在屏幕上,不跟随地图移动
         locationMarker.setPositionByPixels(screenPosition.x, screenPosition.y);
         locationMarker.setZIndex(1);

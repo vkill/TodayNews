@@ -128,7 +128,7 @@ public class ImageListDetailActivity extends BaseActivity<ImageListDetailPresent
         imageListViewPager.setAdapter(mImageListDetailAdapter);
         RetrofitUrlManager.getInstance().putDomain("a3", NetClient.HOST_A3);
         String groupId = getIntent().getStringExtra(GROUPID);
-        mPresenter.getImageListDetail("6623187852266045959");
+        mPresenter.getImageListDetail(groupId);
 
     }
 
