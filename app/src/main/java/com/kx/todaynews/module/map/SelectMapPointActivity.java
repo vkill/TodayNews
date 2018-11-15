@@ -108,6 +108,9 @@ public class SelectMapPointActivity extends AppCompatActivity implements AMapLoc
         geocoderSearch.setOnGeocodeSearchListener(this);
         progDialog = new ProgressDialog(this);
 
+        searchResultAdapter.setonConfirmCheckClickListener(poiItem -> {
+            System.out.println(poiItem.getLatLonPoint().getLatitude()+ "  --  "+ poiItem.getLatLonPoint().getLongitude());
+        });
     }
 
     public void init() {

@@ -31,11 +31,17 @@
 
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/image_check"
-        android:layout_width="32dp"
+    <TextView
+        android:paddingRight="7dp"
+        android:paddingLeft="7dp"
+        android:gravity="center"
+        android:background="@color/Blue"
+        android:textSize="@dimen/sp14"
+        android:textColor="@color/white"
+        android:text="确认选点"
+        android:id="@+id/tv_check"
+        android:layout_width="wrap_content"
         android:layout_height="32dp"
-        android:src="@drawable/icon_affirm_selected"
-        android:layout_marginLeft="8dp"/>
+        />
 
 </LinearLayout>

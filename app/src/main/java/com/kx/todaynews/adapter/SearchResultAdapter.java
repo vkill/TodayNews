@@ -70,6 +70,15 @@ public class SearchResultAdapter extends BaseAdapter {
 
         viewHolder.bindView(position);
 
+        if (mListener!=null){
+            viewHolder.tvCheck.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mListener.onConfirmCheckClick(data.get(position));
+                }
+            });
+        }
+
         return convertView;
     }
 
@@ -77,12 +86,12 @@ public class SearchResultAdapter extends BaseAdapter {
     class ViewHolder {
         TextView textTitle;
         TextView textSubTitle;
-        ImageView imageCheck;
+        TextView tvCheck;
 
         public ViewHolder(View view) {
-            textTitle = (TextView) view.findViewById(R.id.text_title);
-            textSubTitle = (TextView) view.findViewById(R.id.text_title_sub);
-            imageCheck = (ImageView) view.findViewById(R.id.image_check);
+            textTitle =  view.findViewById(R.id.text_title);
+            textSubTitle =view.findViewById(R.id.text_title_sub);
+            tvCheck = view.findViewById(R.id.tv_check);
         }
 
         public void bindView(int position) {
@@ -94,8 +103,15 @@ public class SearchResultAdapter extends BaseAdapter {
             textTitle.setText(poiItem.getTitle());
             textSubTitle.setText(poiItem.getCityName() + poiItem.getAdName() + poiItem.getSnippet());
 
-            imageCheck.setVisibility(position == selectedPosition ? View.VISIBLE : View.INVISIBLE);
             textSubTitle.setVisibility((position == 0 && poiItem.getPoiId().equals("regeo")) ? View.GONE : View.VISIBLE);
         }
+    }
+    public interface onConfirmCheckClickListener{
+        void onConfirmCheckClick( PoiItem poiItem);
+    }
+    onConfirmCheckClickListener mListener;
+
+    public void setonConfirmCheckClickListener(onConfirmCheckClickListener listener) {
+        mListener = listener;
     }
 }
