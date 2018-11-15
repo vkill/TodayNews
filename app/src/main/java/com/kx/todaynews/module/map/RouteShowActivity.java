@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import com.amap.api.services.core.PoiItem;
 import com.kx.todaynews.R;
 import com.kx.todaynews.base.BaseActivity;
 import com.kx.todaynews.base.BasePresenter;
@@ -20,7 +21,7 @@ import com.kx.todaynews.module.map.fragment.SearchPoiFragment;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-public class RouteShowActivity extends BaseActivity {
+public class RouteShowActivity extends BaseActivity implements SearchPoiFragment.onRouteSelectListener{
 
     @BindView(R.id.et_start)
     EditText etStart;
@@ -128,6 +129,23 @@ public class RouteShowActivity extends BaseActivity {
         });
         animatorSet.start();
 
+    }
+
+    /**
+     *  起点选择回调
+     */
+    @Override
+    public void onStartSelect(PoiItem poiItem) {
+        etStart.setText(poiItem.getTitle());
+        etStart.setSelection(etStart.getText().toString().trim().length());
+    }
+    /**
+     *  终点选择回调
+     */
+    @Override
+    public void onEndSelect(PoiItem poiItem) {
+        etEnd.setText(poiItem.getTitle());
+        etEnd.setSelection(etEnd.getText().toString().trim().length());
     }
     /**
      * 添加需要移动的 镜像View

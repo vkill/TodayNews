@@ -69,8 +69,13 @@
         <activity
             android:name=".module.news.activity.ImageListDetailActivity"
             android:theme="@style/translucent" />
-        <activity android:name=".module.map.RouteShowActivity" />
-        <activity android:name=".module.map.SelectMapPointActivity"></activity>
+        <activity android:name=".module.map.RouteShowActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".module.map.SelectMapPointActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".module.map.walkroute.WalkRouteDetailActivity"
+            android:screenOrientation="portrait"
+            />
     </application>
 
 </manifest>

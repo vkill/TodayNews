@@ -1,7 +1,10 @@
 package com.kx.todaynews.module.map;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -13,6 +16,7 @@ import android.view.View;
 import android.view.animation.Interpolator;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.amap.api.location.AMapLocation;
@@ -28,6 +32,7 @@ import com.amap.api.maps.model.CameraPosition;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
+import com.amap.api.maps.model.MyLocationStyle;
 import com.amap.api.maps.model.animation.Animation;
 import com.amap.api.maps.model.animation.TranslateAnimation;
 import com.amap.api.services.core.AMapException;
@@ -44,6 +49,7 @@ import com.amap.api.services.poisearch.PoiSearch;
 import com.kx.todaynews.R;
 import com.kx.todaynews.adapter.SearchResultAdapter;
 import com.kx.todaynews.utils.ToastUtils;
+import com.kx.todaynews.widget.SegmentedGroup;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,8 +57,14 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class SelectMapPointActivity extends AppCompatActivity implements AMapLocationListener, LocationSource, PoiSearch.OnPoiSearchListener, GeocodeSearch.OnGeocodeSearchListener {
+import static com.kx.todaynews.module.map.fragment.SearchPoiFragment.MY_POSITION_REQUESTCODE;
 
+public class SelectMapPointActivity extends AppCompatActivity implements AMapLocationListener, LocationSource, PoiSearch.OnPoiSearchListener,
+        GeocodeSearch.OnGeocodeSearchListener {
+
+    public static final String TAG = "REQUESTCODE";
+    public static final String MYPOSITIONLATLNG = "MYPOSITIONLATLNG";
+    public static final String CHOOSEPOINTLATLNG = "CHOOSEPOINTLATLNG";
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
     @BindView(R.id.tv_title)
@@ -63,6 +75,8 @@ public class SelectMapPointActivity extends AppCompatActivity implements AMapLoc
     public AMapLocationClientOption mLocationOption = null;
     @BindView(R.id.listview)
     ListView listView;
+    @BindView(R.id.segmented_group)
+    SegmentedGroup mSegmentedGroup;
     private SearchResultAdapter searchResultAdapter;
     private AMap aMap;
     private boolean isItemClickAction;
@@ -86,6 +100,8 @@ public class SelectMapPointActivity extends AppCompatActivity implements AMapLoc
     private PoiItem firstItem;
     private ProgressDialog progDialog = null;
     private GeocodeSearch geocoderSearch;
+    LatLng myPosition;
+    LatLng choosePoint;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,9 +123,18 @@ public class SelectMapPointActivity extends AppCompatActivity implements AMapLoc
         geocoderSearch = new GeocodeSearch(this);
         geocoderSearch.setOnGeocodeSearchListener(this);
         progDialog = new ProgressDialog(this);
+        myPosition = getIntent().getParcelableExtra(MYPOSITIONLATLNG);
+        choosePoint = getIntent().getParcelableExtra(CHOOSEPOINTLATLNG);
 
         searchResultAdapter.setonConfirmCheckClickListener(poiItem -> {
-            System.out.println(poiItem.getLatLonPoint().getLatitude()+ "  --  "+ poiItem.getLatLonPoint().getLongitude());
+            Intent intent = new Intent();
+            if (getIntent().getIntExtra(TAG, 0) == MY_POSITION_REQUESTCODE) {
+                intent.putExtra(MYPOSITIONLATLNG, poiItem);
+            } else {
+                intent.putExtra(CHOOSEPOINTLATLNG, poiItem);
+            }
+            setResult(Activity.RESULT_OK, intent);
+            finish();
         });
     }
 
@@ -136,14 +161,37 @@ public class SelectMapPointActivity extends AppCompatActivity implements AMapLoc
             }
         });
 
+
         aMap.setOnMapLoadedListener(new AMap.OnMapLoadedListener() {
             @Override
             public void onMapLoaded() {
                 addMarkerInScreenCenter(null);
             }
         });
+        mSegmentedGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                searchType = items[0];
+                switch (checkedId) {
+                    case R.id.radio0 :
+                        searchType = items[0];
+                        break;
+                    case R.id.radio1 :
+                        searchType = items[1];
+                        break;
+                    case R.id.radio2 :
+                        searchType = items[2];
+                        break;
+                    case R.id.radio3 :
+                        searchType = items[3];
+                        break;
+                }
+                geoAddress();
+            }
+        });
     }
-  AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
+
+    AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             if (position != searchResultAdapter.getSelectedPosition()) {
@@ -159,13 +207,12 @@ public class SelectMapPointActivity extends AppCompatActivity implements AMapLoc
             }
         }
     };
+
     /**
      * 响应逆地理编码
      */
     public void geoAddress() {
-//        Log.i("MY", "geoAddress"+ searchLatlonPoint.toString());
         showDialog();
-
         if (searchLatlonPoint != null) {
             RegeocodeQuery query = new RegeocodeQuery(searchLatlonPoint, 200, GeocodeSearch.AMAP);// 第一个参数表示一个Latlng，第二参数表示范围多少米，第三个参数表示是火系坐标系还是GPS原生坐标系
             geocoderSearch.getFromLocationAsyn(query);
@@ -187,13 +234,31 @@ public class SelectMapPointActivity extends AppCompatActivity implements AMapLoc
     }
 
     private void addMarkerInScreenCenter(LatLng locationLatLng) {
-        LatLng latLng = aMap.getCameraPosition().target;
-        Point screenPosition = aMap.getProjection().toScreenLocation(latLng);
-        locationMarker = aMap.addMarker(new MarkerOptions()
-                .anchor(1f, 1f)
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.bubble_start)));
+        Point screenPosition;
+        if (getIntent().getIntExtra(TAG, 0) == MY_POSITION_REQUESTCODE) {
+            locationMarker = aMap.addMarker(new MarkerOptions()
+                    .anchor(0.5f, 0.5f)
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.bubble_start)));
+            if (myPosition != null) {
+                screenPosition = aMap.getProjection().toScreenLocation(myPosition);
+            } else {
+                LatLng latLng = aMap.getCameraPosition().target;
+                screenPosition = aMap.getProjection().toScreenLocation(latLng);
+            }
+        } else {
+            if (choosePoint != null) {
+                screenPosition = aMap.getProjection().toScreenLocation(choosePoint);
+            } else {
+                LatLng latLng = aMap.getCameraPosition().target;
+                screenPosition = aMap.getProjection().toScreenLocation(latLng);
+            }
+            locationMarker = aMap.addMarker(new MarkerOptions()
+                    .anchor(0.5f, 0.5f)
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.bubble_end)));
+        }
         //设置Marker在屏幕上,不跟随地图移动
         locationMarker.setPositionByPixels(screenPosition.x, screenPosition.y);
+        //  aMap.animateCamera(CameraUpdateFactory.newLatLng(new LatLng(screenPosition.x,screenPosition.y)));
         locationMarker.setZIndex(1);
     }
 
@@ -244,11 +309,17 @@ public class SelectMapPointActivity extends AppCompatActivity implements AMapLoc
      * 设置一些amap的属性
      */
     private void setUpMap() {
+        MyLocationStyle myLocationStyle = new MyLocationStyle();
+        //设置定位蓝点精度圆圈的填充颜色的方法。
+        myLocationStyle.radiusFillColor(Color.argb(0, 0, 0, 0));
+        //设置定位蓝点精度圆圈的边框颜色的方法。
+        myLocationStyle.strokeColor(Color.argb(0, 0, 0, 0));
         aMap.getUiSettings().setZoomControlsEnabled(false);
         aMap.setLocationSource(this);// 设置定位监听
         aMap.getUiSettings().setMyLocationButtonEnabled(true);// 设置默认定位按钮是否显示
         aMap.setMyLocationEnabled(true);// 设置为true表示显示定位层并可触发定位，false表示隐藏定位层并不可触发定位，默认是false
         aMap.setMyLocationType(AMap.LOCATION_TYPE_LOCATE);
+        aMap.setMyLocationStyle(myLocationStyle);//设置定位蓝点的Style
     }
 
     private String inputSearchKey;
@@ -331,8 +402,7 @@ public class SelectMapPointActivity extends AppCompatActivity implements AMapLoc
     @Override
     public void onLocationChanged(AMapLocation amapLocation) {
         if (mListener != null && amapLocation != null) {
-            if (amapLocation != null
-                    && amapLocation.getErrorCode() == 0) {
+            if (amapLocation.getErrorCode() == 0) {
                 mListener.onLocationChanged(amapLocation);
 
                 LatLng curLatlng = new LatLng(amapLocation.getLatitude(), amapLocation.getLongitude());
@@ -343,6 +413,26 @@ public class SelectMapPointActivity extends AppCompatActivity implements AMapLoc
 
                 isInputKeySearch = false;
 
+                if (locationMarker == null){
+                    addMarkerInScreenCenter(null);
+                }
+
+                // 点击我的位置，添加 终点 Marker
+                if (getIntent().getIntExtra(TAG, 0) == MY_POSITION_REQUESTCODE) {
+                    if (choosePoint != null) {
+                        MarkerOptions markerOptions = new MarkerOptions();
+                        markerOptions.position(choosePoint);
+                        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.bubble_end));
+                        aMap.addMarker(markerOptions);
+                    }
+                } else {
+                    if (myPosition != null) {
+                        MarkerOptions markerOptions = new MarkerOptions();
+                        markerOptions.position(myPosition);
+                        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.bubble_start));
+                        aMap.addMarker(markerOptions);
+                    }
+                }
             } else {
                 String errText = "定位失败," + amapLocation.getErrorCode() + ": " + amapLocation.getErrorInfo();
                 Log.e("AmapErr", errText);
@@ -450,8 +540,10 @@ public class SelectMapPointActivity extends AppCompatActivity implements AMapLoc
     public void onGeocodeSearched(GeocodeResult geocodeResult, int i) {
 
     }
+
     /**
      * 更新列表中的item
+     *
      * @param poiItems
      */
     private void updateListview(List<PoiItem> poiItems) {

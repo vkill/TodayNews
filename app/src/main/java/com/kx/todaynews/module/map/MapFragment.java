@@ -80,9 +80,9 @@ public class MapFragment extends SupportMapFragment implements AMapLocationListe
 
         myLocationStyle.interval(2000); //设置连续定位模式下的定位间隔，只在连续定位模式下生效，单次定位模式下不会生效。单位为毫秒。
         //设置定位蓝点精度圆圈的填充颜色的方法。
-        myLocationStyle.radiusFillColor(Color.argb(30, 0, 0, 180));
+        myLocationStyle.radiusFillColor(Color.argb(0, 0, 0, 0));
         //设置定位蓝点精度圆圈的边框颜色的方法。
-        myLocationStyle.strokeColor(Color.argb(50, 0, 0, 220));
+        myLocationStyle.strokeColor(Color.argb(0, 0, 0, 0));
         myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE_NO_CENTER);
         mAMap.getUiSettings().setZoomControlsEnabled(false);
         // 修改蓝点图标
