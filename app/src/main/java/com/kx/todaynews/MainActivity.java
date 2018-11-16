@@ -79,10 +79,13 @@ public class MainActivity extends AppCompatActivity {
         });
         if (savedInstanceState != null) {
             mNewsFragment = (HomeFragment) getSupportFragmentManager().findFragmentByTag(HomeFragment.class.getName());
-            showFragment(0);
+            mMapFragment = (MapFragment) getSupportFragmentManager().findFragmentByTag(MapFragment.class.getName());
+            mUserFragment= (UserFragment) getSupportFragmentManager().findFragmentByTag(UserFragment.class.getName());
+           // showFragment(0);
            // mUserFragment = (UserFragment) getSupportFragmentManager().findFragmentByTag(UserFragment.class.getName());
             // 恢复 recreate 前的位置
-           // showFragment(savedInstanceState.getInt(POSITION));
+            mLastFgIndex =savedInstanceState.getInt(POSITION);
+            showFragment(savedInstanceState.getInt(POSITION));
             bottomNavigation.setSelectedItemId(savedInstanceState.getInt(SELECT_ITEM));
         } else {
             showFragment(FRAGMENT_NEWS);

@@ -15,6 +15,7 @@ import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.Polyline;
 import com.amap.api.maps.model.PolylineOptions;
 import com.kx.todaynews.R;
+import com.kx.todaynews.utils.UiUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -198,11 +199,11 @@ public class RouteOverlay {
 	}
 	
 	protected float getRouteWidth() {
-		return 18f;
+		return UiUtils.dp2px(mContext,14);
 	}
 
 	protected int getWalkColor() {
-		return Color.parseColor("#6db74d");
+		return mContext.getResources().getColor(R.color.Blue);
 	}
 
 	/**

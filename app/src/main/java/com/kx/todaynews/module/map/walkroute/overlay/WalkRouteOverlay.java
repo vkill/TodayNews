@@ -4,14 +4,17 @@ import android.content.Context;
 
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.model.BitmapDescriptor;
+import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.PolylineOptions;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.route.WalkPath;
 import com.amap.api.services.route.WalkStep;
+import com.kx.todaynews.R;
 import com.kx.todaynews.module.map.walkroute.util.AMapServicesUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -56,8 +59,8 @@ public class WalkRouteOverlay extends RouteOverlay {
                 WalkStep walkStep = walkPaths.get(i);
                 LatLng latLng = AMapServicesUtil.convertToLatLng(walkStep
                         .getPolyline().get(0));
-                
-				addWalkStationMarkers(walkStep, latLng);
+                // 添加拐点处的Marker
+				//addWalkStationMarkers(walkStep, latLng);
                 addWalkPolyLines(walkStep);
                
             }
@@ -139,7 +142,20 @@ public class WalkRouteOverlay extends RouteOverlay {
         mPolylineOptions = null;
 
         mPolylineOptions = new PolylineOptions();
-        mPolylineOptions.color(getWalkColor()).width(getRouteWidth());
+       // mPolylineOptions.color(getWalkColor()).width(getRouteWidth());
+
+        //添加纹理图片
+         List<BitmapDescriptor> textureList = new ArrayList<>();
+        BitmapDescriptor mRedTexture = BitmapDescriptorFactory.fromResource(R.drawable.blue_lines);
+        textureList.add(mRedTexture);
+        // 添加纹理图片对应的顺序
+        List<Integer> textureIndexs = new ArrayList<>();
+        textureIndexs.add(0);
+      //  mPolylineOptions.setCustomTextureList(textureList);
+      //  mPolylineOptions.setCustomTextureIndex(textureIndexs);
+        mPolylineOptions.setCustomTexture(mRedTexture);
+        mPolylineOptions.setUseTexture(true);
+        mPolylineOptions.width(getRouteWidth());
     }
 
 

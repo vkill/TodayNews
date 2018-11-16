@@ -238,7 +238,7 @@ public class SelectMapPointActivity extends AppCompatActivity implements AMapLoc
         if (getIntent().getIntExtra(TAG, 0) == MY_POSITION_REQUESTCODE) {
             locationMarker = aMap.addMarker(new MarkerOptions()
                     .anchor(0.5f, 0.5f)
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.bubble_start)));
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.start_marker_bak)));
             if (myPosition != null) {
                 screenPosition = aMap.getProjection().toScreenLocation(myPosition);
             } else {
@@ -254,7 +254,7 @@ public class SelectMapPointActivity extends AppCompatActivity implements AMapLoc
             }
             locationMarker = aMap.addMarker(new MarkerOptions()
                     .anchor(0.5f, 0.5f)
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.bubble_end)));
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.end_marker_bak)));
         }
         //设置Marker在屏幕上,不跟随地图移动
         locationMarker.setPositionByPixels(screenPosition.x, screenPosition.y);
@@ -422,14 +422,14 @@ public class SelectMapPointActivity extends AppCompatActivity implements AMapLoc
                     if (choosePoint != null) {
                         MarkerOptions markerOptions = new MarkerOptions();
                         markerOptions.position(choosePoint);
-                        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.bubble_end));
+                        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.end_marker_bak));
                         aMap.addMarker(markerOptions);
                     }
                 } else {
                     if (myPosition != null) {
                         MarkerOptions markerOptions = new MarkerOptions();
                         markerOptions.position(myPosition);
-                        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.bubble_start));
+                        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.start_marker_bak));
                         aMap.addMarker(markerOptions);
                     }
                 }

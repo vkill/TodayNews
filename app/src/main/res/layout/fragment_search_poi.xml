@@ -55,10 +55,10 @@
                 android:paddingRight="10dp" >
 
                 <RelativeLayout
+                    android:id="@+id/rl_on_drive_click"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:onClick="onDriveClick" >
+                    android:layout_weight="1">
 
                     <ImageView
                         android:id="@+id/route_drive"
@@ -70,10 +70,10 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/rl_on_bus_click"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:onClick="onBusClick" >
+                    android:layout_weight="1">
 
                     <ImageView
                         android:id="@+id/route_bus"
@@ -104,7 +104,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:onClick="onCrosstownBusClick" >
+                     >
 
                     <TextView
                         android:id="@+id/route_CrosstownBus"

@@ -3,18 +3,24 @@ package com.kx.todaynews.module.map.fragment;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.location.Location;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.amap.api.maps.AMap;
+import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.MapView;
 import com.amap.api.maps.SupportMapFragment;
+import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
+import com.amap.api.maps.model.MyLocationStyle;
 import com.amap.api.services.core.AMapException;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.core.PoiItem;
@@ -100,9 +106,40 @@ public class SearchPoiFragment extends SupportMapFragment implements RouteSearch
         mHeadLayout = (RelativeLayout) rootView.findViewById(R.id.routemap_header);
         mRotueTimeDes = (TextView) rootView.findViewById(R.id.firstline);
         mRouteDetailDes = (TextView) rootView.findViewById(R.id.secondline);
+        MyLocationStyle myLocationStyle = new MyLocationStyle();
 
+        myLocationStyle.interval(2000); //设置连续定位模式下的定位间隔，只在连续定位模式下生效，单次定位模式下不会生效。单位为毫秒。
+        //设置定位蓝点精度圆圈的填充颜色的方法。
+        myLocationStyle.radiusFillColor(Color.argb(0, 0, 0, 0));
+        //设置定位蓝点精度圆圈的边框颜色的方法。
+        myLocationStyle.strokeColor(Color.argb(0, 0, 0, 0));
+        myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE_NO_CENTER);
+        aMap.getUiSettings().setZoomControlsEnabled(true);
+        // 修改蓝点图标
+        myLocationStyle.myLocationIcon(BitmapDescriptorFactory.fromResource(R.drawable.navi_map_gps_locked));
+        aMap.setMyLocationStyle(myLocationStyle);//设置定位蓝点的Style
+        // aMap.getUiSettings().setMyLocationButtonEnabled(true);// 设置默认定位按钮是否显示，非必需设置。
+        aMap.moveCamera(CameraUpdateFactory.zoomTo(16.5f));
+        aMap.setMyLocationEnabled(true);
+        aMap.setOnMyLocationChangeListener(new AMap.OnMyLocationChangeListener() {
+            @Override
+            public void onMyLocationChange(Location location) {
+                if (followMove) {
+                    aMap.animateCamera(CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(),location.getLongitude())));
+                }
+            }
+        });
+        aMap.setOnMapTouchListener(new AMap.OnMapTouchListener() {
+            @Override
+            public void onTouch(MotionEvent motionEvent) {
+                if (followMove) {
+                    //用户拖动地图后，不再跟随移动，直到用户点击定位按钮
+                    followMove = false ;
+                }
+            }
+        });
     }
-
+    private boolean followMove=true;
     /**
      * 注册监听
      */
@@ -187,7 +224,7 @@ public class SearchPoiFragment extends SupportMapFragment implements RouteSearch
     /**
      * 隐藏进度框
      */
-    private void dissmissProgressDialog() {
+    private void dismissProgressDialog() {
         if (progDialog != null) {
             progDialog.dismiss();
         }
@@ -237,7 +274,7 @@ public class SearchPoiFragment extends SupportMapFragment implements RouteSearch
     }
     @Override
     public void onWalkRouteSearched(WalkRouteResult result, int errorCode) {
-        dissmissProgressDialog();
+        dismissProgressDialog();
         aMap.clear();// 清理地图上的所有覆盖物
         if (errorCode == AMapException.CODE_AMAP_SUCCESS) {
             if (result != null && result.getPaths() != null) {
@@ -328,6 +365,10 @@ public class SearchPoiFragment extends SupportMapFragment implements RouteSearch
     }
     @OnClick(R.id.rl_on_walk_click)
     public void  onWalkClick(View view){
+        searchRouteResult(ROUTE_TYPE_WALK);
+    }
+    @OnClick(R.id.rl_on_bus_click)
+    public void  onBusClick(View view){
         searchRouteResult(ROUTE_TYPE_WALK);
     }
 
