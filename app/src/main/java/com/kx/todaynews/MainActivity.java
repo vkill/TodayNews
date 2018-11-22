@@ -7,12 +7,12 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.kx.todaynews.module.map.MapFragment;
 import com.kx.todaynews.module.news.HomeFragment;
+import com.kx.todaynews.module.photo.WelfarePhotoFragment;
 import com.kx.todaynews.module.user.UserFragment;
 import com.kx.todaynews.widget.helper.BottomNavigationViewHelper;
 
@@ -27,8 +27,9 @@ public class MainActivity extends AppCompatActivity {
     private static final String POSITION = "position";
     private static final String SELECT_ITEM = "bottomNavigationSelectItem";
     private static final int FRAGMENT_NEWS = 0;
-    private static final int FRAGMENT_MAPS = 1;
-    private static final int FRAGMENT_USER = 2;
+    private static final int FRAGMENT_PHOTO = 1;
+    private static final int FRAGMENT_MAPS = 2;
+    private static final int FRAGMENT_USER = 3;
 
     @BindView(R.id.common_toolbar)
     Toolbar mToolbar;
@@ -40,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     FrameLayout flContainer;
     private int mLastFgIndex = 0;
     HomeFragment mNewsFragment;
+    WelfarePhotoFragment mPhotoFragment;
     MapFragment  mMapFragment;
     UserFragment mUserFragment;
     @Override
@@ -63,6 +65,11 @@ public class MainActivity extends AppCompatActivity {
                   //  mToolbar.setVisibility(View.VISIBLE);
                   //  mTitleTv.setText(getString(R.string.main_news));
                     showFragment(FRAGMENT_NEWS);
+                    break;
+                    case R.id.tab_main_photo:
+                  //  mToolbar.setVisibility(View.VISIBLE);
+                  //  mTitleTv.setText(getString(R.string.main_news));
+                    showFragment(FRAGMENT_PHOTO);
                     break;
                     case R.id.tab_main_map:
                    // mToolbar.setVisibility(View.VISIBLE);
@@ -135,6 +142,12 @@ public class MainActivity extends AppCompatActivity {
                     mUserFragment = UserFragment.getInstance();
                 }
                 fragment = mUserFragment;
+                break;
+                case FRAGMENT_PHOTO:
+                if (mPhotoFragment == null) {
+                    mPhotoFragment = WelfarePhotoFragment.getInstance();
+                }
+                fragment = mPhotoFragment;
                 break;
         }
         return fragment;

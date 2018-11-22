@@ -46,6 +46,7 @@ public class NetClient {
     private ClearableCookieJar cookieJar;
     public static String HOST_1F = "http://lf.snssdk.com";
     public static  String HOST_A3 = "http://a3.pstatp.com";
+    public static  String HOST_GANK = "http://gank.io";
 
     private NetClient(){
       //  cookies = getCookie();

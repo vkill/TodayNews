@@ -31,7 +31,7 @@
     <dimen name="margin_padding">15dp</dimen>
     <dimen name="zero">0dp</dimen>
     <dimen name="trace_spinner_padding">2dp</dimen>
-
+    <dimen name="photo_margin_width">1dp</dimen>
     <dimen name="dp2">2dp</dimen>
     <dimen name="dp3">3dp</dimen>
     <dimen name="dp4">4dp</dimen>

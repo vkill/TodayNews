@@ -4,6 +4,7 @@ package com.kx.todaynews;
 import com.kx.todaynews.bean.ArticleCategory;
 import com.kx.todaynews.bean.HotBean;
 import com.kx.todaynews.bean.ImageListDetailBean;
+import com.kx.todaynews.bean.PhotoListBean;
 import com.kx.todaynews.bean.article.ArticleReplyDiggListBean;
 import com.kx.todaynews.bean.article.ArticleReplyListBean;
 import com.kx.todaynews.bean.article.ArticleTabCommentsBean;
@@ -130,5 +131,12 @@ public interface Api {
             @Query("_rticket") long _rticket,
             @Query("ts") long ts
     );
-
+    /**
+     * 获取福利图片
+     * eg: http://gank.io/api/data/福利/10/1
+     * @param page 页码
+     */
+    @Headers({"Domain-Name: gank"}) // Add the Domain-Name header
+    @GET("api/data/福利/10/{page}")
+    Observable<PhotoListBean> getWelfarePhoto(@Path("page") int page);
 }
