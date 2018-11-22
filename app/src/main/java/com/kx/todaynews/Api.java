@@ -137,6 +137,6 @@ public interface Api {
      * @param page 页码
      */
     @Headers({"Domain-Name: gank"}) // Add the Domain-Name header
-    @GET("api/data/福利/10/{page}")
+    @GET("api/data/福利/15/{page}")
     Observable<PhotoListBean> getWelfarePhoto(@Path("page") int page);
 }

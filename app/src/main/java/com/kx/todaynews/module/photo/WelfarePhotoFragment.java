@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.kx.todaynews.R;
 import com.kx.todaynews.base.BaseFragment;
 import com.kx.todaynews.bean.PhotoListBean;
@@ -50,6 +51,12 @@ public class WelfarePhotoFragment extends BaseFragment<WelfarePhotoPresenter> im
 
     @Override
     protected void initListener() {
+        mWelfarePhotoAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
+            @Override
+            public void onLoadMoreRequested() {
+                mPresenter.getMorePhotoData();
+            }
+        },photoRecyclerView);
 
     }
 
@@ -67,10 +74,12 @@ public class WelfarePhotoFragment extends BaseFragment<WelfarePhotoPresenter> im
     @Override
     public void showMorePhotoData(List<PhotoListBean.ResultsBean> beans) {
         mWelfarePhotoAdapter.addData(beans);
+        mWelfarePhotoAdapter.loadMoreComplete();
     }
 
     @Override
     public void showError() {
-        super.showError();
+        showToast("请求出错啦");
+        mWelfarePhotoAdapter.loadMoreFail();
     }
 }

@@ -7,7 +7,6 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
-import com.dl7.player.utils.StringUtils;
 import com.kx.todaynews.R;
 import com.kx.todaynews.bean.PhotoListBean;
 import com.orhanobut.logger.Logger;
@@ -26,12 +25,12 @@ public class WelfarePhotoAdapter extends BaseQuickAdapter<PhotoListBean.ResultsB
     @Override
     protected void convert(BaseViewHolder holder, PhotoListBean.ResultsBean item) {
         final ImageView ivPhoto = holder.getView(R.id.iv_photo);
-      //  int photoHeight = calcPhotoHeight(item.getPixel(), mPhotoWidth);
+        int photoHeight = calcPhotoHeight(item.getPixel(), mPhotoWidth);
         // 返回的数据有像素分辨率，根据这个来缩放图片大小
-     //   final ViewGroup.LayoutParams params = ivPhoto.getLayoutParams();
-    //    params.width = mPhotoWidth;
-    //    params.height = photoHeight;
-    //    ivPhoto.setLayoutParams(params);
+        final ViewGroup.LayoutParams params = ivPhoto.getLayoutParams();
+        params.width = mPhotoWidth;
+        params.height = photoHeight;
+        ivPhoto.setLayoutParams(params);
         Glide.with(mContext).load(item.getUrl()).fitCenter().dontAnimate().into(ivPhoto);
         holder.setText(R.id.tv_title, item.getCreatedAt());
     }

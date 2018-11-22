@@ -15,8 +15,12 @@ import java.io.File;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
+import io.reactivex.ObservableTransformer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 
@@ -27,18 +31,18 @@ public class WelfarePhotoPresenter extends BasePresenter<IWelfarePhotoContract.I
     @Override
     public void getPhotoData() {
         addRxSubscribe(NetClient.getInstance().get(Api.class).getWelfarePhoto(mPage)
+                .compose(mTransformer)
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<PhotoListBean>() {
+                .subscribe(new Consumer<List<PhotoListBean.ResultsBean>>() {
                     @Override
-                    public void accept(PhotoListBean photoListBean) throws Exception {
-                        mView.showPhotoData(photoListBean.getResults());
+                    public void accept(List<PhotoListBean.ResultsBean> photoListBean) throws Exception {
+                        mView.showPhotoData(photoListBean);
                         mPage++;
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
                         mView.showError();
-                        System.out.println(throwable.toString());
                     }
                 })
         );
@@ -47,16 +51,18 @@ public class WelfarePhotoPresenter extends BasePresenter<IWelfarePhotoContract.I
     @Override
     public void getMorePhotoData() {
         addRxSubscribe(NetClient.getInstance().get(Api.class).getWelfarePhoto(mPage)
+                .compose(mTransformer)
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<PhotoListBean>() {
+                .subscribe(new Consumer<List<PhotoListBean.ResultsBean>>() {
                     @Override
-                    public void accept(PhotoListBean photoListBean) throws Exception {
-                        mView.showMorePhotoData(calePhotoSize(photoListBean.getResults()));
+                    public void accept(List<PhotoListBean.ResultsBean> resultsBeans) throws Exception {
+                        mView.showMorePhotoData(resultsBeans);
                         mPage++;
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
+                        System.out.println(throwable.toString());
                         mView.showError();
                     }
                 })
@@ -65,37 +71,22 @@ public class WelfarePhotoPresenter extends BasePresenter<IWelfarePhotoContract.I
     /**
      * 统一变换
      */
-//    private ObservableTransformer<PhotoListBean.ResultsBean, List<PhotoListBean.ResultsBean>> mTransformer = new ObservableTransformer<PhotoListBean.ResultsBean, List<PhotoListBean.ResultsBean>>() {
-//        @Override
-//        public ObservableSource<List<PhotoListBean.ResultsBean>> apply(Observable<PhotoListBean.ResultsBean> observable) {
-//            return observable
-//                    .observeOn(Schedulers.io())
-//                    // 接口返回的数据是没有宽高参数的，所以这里设置图片的宽度和高度，速度会慢一点
-//                    su
-//                    .filter(new Predicate<PhotoListBean.ResultsBean>() {
-//                        @Override
-//                        public boolean test(PhotoListBean.ResultsBean photoListBean) throws Exception {
-//                            try {
-//                                photoListBean.setPixel(calePhotoSize(photoListBean.getUrl()));
-//                                return true;
-//                            } catch (ExecutionException e) {
-//                                e.printStackTrace();
-//                                return false;
-//                            } catch (InterruptedException e) {
-//                                e.printStackTrace();
-//                                return false;
-//                            }
-//                        }
-//                    })
-//                    .observeOn(AndroidSchedulers.mainThread())
-//                    .toList().compose(new SingleTransformer<List<PhotoListBean.ResultsBean>, List<PhotoListBean.ResultsBean>>() {
-//                        @Override
-//                        public SingleSource<List<PhotoListBean.ResultsBean>> apply(Single<List<PhotoListBean.ResultsBean>> upstream) {
-//                            return upstream;
-//                        }
-//                    });
-//        }
-//    };
+    private ObservableTransformer<PhotoListBean, List<PhotoListBean.ResultsBean>> mTransformer = new ObservableTransformer<PhotoListBean, List<PhotoListBean.ResultsBean>>() {
+        @Override
+        public ObservableSource<List<PhotoListBean.ResultsBean>> apply(Observable<PhotoListBean> observable) {
+            return observable
+                    .flatMap(new Function<PhotoListBean, ObservableSource<List<PhotoListBean.ResultsBean>>>() {
+                        @Override
+                        public ObservableSource<List<PhotoListBean.ResultsBean>> apply(PhotoListBean photoListBean) throws Exception {
+                            List<PhotoListBean.ResultsBean> results = photoListBean.getResults();
+                           return  Observable.just(calePhotoSize(results));
+                        }
+                    })
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread());
+
+        }
+    };
     /**
      * 计算图片分辨率
      * @return
@@ -104,6 +95,7 @@ public class WelfarePhotoPresenter extends BasePresenter<IWelfarePhotoContract.I
      */
     public static List<PhotoListBean.ResultsBean>  calePhotoSize(List<PhotoListBean.ResultsBean> beans) throws ExecutionException, InterruptedException {
         for (PhotoListBean.ResultsBean resultsBean: beans) {
+            // 接口返回的数据是没有宽高参数的，这里设置图片的宽度和高度
             File file = Glide.with(AndroidApplication.getContext()).load(resultsBean.getUrl())
                     .downloadOnly(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).get();
             // First decode with inJustDecodeBounds=true to check dimensions
