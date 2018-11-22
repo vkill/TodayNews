@@ -60,7 +60,7 @@ public class WalkRouteOverlay extends RouteOverlay {
                 LatLng latLng = AMapServicesUtil.convertToLatLng(walkStep
                         .getPolyline().get(0));
                 // 添加拐点处的Marker
-				//addWalkStationMarkers(walkStep, latLng);
+				addWalkStationMarkers(walkStep, latLng);
                 addWalkPolyLines(walkStep);
                
             }
