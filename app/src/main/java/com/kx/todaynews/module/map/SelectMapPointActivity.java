@@ -57,14 +57,14 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.kx.todaynews.module.map.fragment.SearchPoiFragment.MY_POSITION_REQUESTCODE;
+import static com.kx.todaynews.module.map.fragment.SearchPoiFragment.START_POINT_REQUESTCODE;
 
 public class SelectMapPointActivity extends AppCompatActivity implements AMapLocationListener, LocationSource, PoiSearch.OnPoiSearchListener,
         GeocodeSearch.OnGeocodeSearchListener {
 
     public static final String TAG = "REQUESTCODE";
-    public static final String MYPOSITIONLATLNG = "MYPOSITIONLATLNG";
-    public static final String CHOOSEPOINTLATLNG = "CHOOSEPOINTLATLNG";
+    public static final String STARTPOINTLATLNG = "STARTPOINTLATLNG";
+    public static final String ENDPOINTLATLNG = "ENDPOINTLATLNG";
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
     @BindView(R.id.tv_title)
@@ -123,15 +123,15 @@ public class SelectMapPointActivity extends AppCompatActivity implements AMapLoc
         geocoderSearch = new GeocodeSearch(this);
         geocoderSearch.setOnGeocodeSearchListener(this);
         progDialog = new ProgressDialog(this);
-        myPosition = getIntent().getParcelableExtra(MYPOSITIONLATLNG);
-        choosePoint = getIntent().getParcelableExtra(CHOOSEPOINTLATLNG);
+        myPosition = getIntent().getParcelableExtra(STARTPOINTLATLNG);
+        choosePoint = getIntent().getParcelableExtra(ENDPOINTLATLNG);
 
         searchResultAdapter.setonConfirmCheckClickListener(poiItem -> {
             Intent intent = new Intent();
-            if (getIntent().getIntExtra(TAG, 0) == MY_POSITION_REQUESTCODE) {
-                intent.putExtra(MYPOSITIONLATLNG, poiItem);
+            if (getIntent().getIntExtra(TAG, 0) == START_POINT_REQUESTCODE) {
+                intent.putExtra(STARTPOINTLATLNG, poiItem);
             } else {
-                intent.putExtra(CHOOSEPOINTLATLNG, poiItem);
+                intent.putExtra(ENDPOINTLATLNG, poiItem);
             }
             setResult(Activity.RESULT_OK, intent);
             finish();
@@ -235,7 +235,7 @@ public class SelectMapPointActivity extends AppCompatActivity implements AMapLoc
 
     private void addMarkerInScreenCenter(LatLng locationLatLng) {
         Point screenPosition;
-        if (getIntent().getIntExtra(TAG, 0) == MY_POSITION_REQUESTCODE) {
+        if (getIntent().getIntExtra(TAG, 0) == START_POINT_REQUESTCODE) {
             locationMarker = aMap.addMarker(new MarkerOptions()
                     .anchor(0.5f, 0.5f)
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.start_marker_bak)));
@@ -258,7 +258,7 @@ public class SelectMapPointActivity extends AppCompatActivity implements AMapLoc
         }
         //设置Marker在屏幕上,不跟随地图移动
         locationMarker.setPositionByPixels(screenPosition.x, screenPosition.y);
-        //  aMap.animateCamera(CameraUpdateFactory.newLatLng(new LatLng(screenPosition.x,screenPosition.y)));
+      //  aMap.animateCamera(CameraUpdateFactory.newLatLng(new LatLng(screenPosition.x,screenPosition.y)));
         locationMarker.setZIndex(1);
     }
 
@@ -414,11 +414,11 @@ public class SelectMapPointActivity extends AppCompatActivity implements AMapLoc
                 isInputKeySearch = false;
 
                 if (locationMarker == null){
-                    addMarkerInScreenCenter(null);
+                  //  addMarkerInScreenCenter(null);
                 }
 
                 // 点击我的位置，添加 终点 Marker
-                if (getIntent().getIntExtra(TAG, 0) == MY_POSITION_REQUESTCODE) {
+                if (getIntent().getIntExtra(TAG, 0) == START_POINT_REQUESTCODE) {
                     if (choosePoint != null) {
                         MarkerOptions markerOptions = new MarkerOptions();
                         markerOptions.position(choosePoint);
@@ -433,6 +433,7 @@ public class SelectMapPointActivity extends AppCompatActivity implements AMapLoc
                         aMap.addMarker(markerOptions);
                     }
                 }
+
             } else {
                 String errText = "定位失败," + amapLocation.getErrorCode() + ": " + amapLocation.getErrorInfo();
                 Log.e("AmapErr", errText);
