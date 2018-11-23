@@ -14,11 +14,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.kx.todaynews.R;
 import com.kx.todaynews.bean.article.ArticleReplyListBean;
-import com.kx.todaynews.utils.GlideCircleTransform;
 import com.kx.todaynews.utils.TyDateUtils;
 import com.kx.todaynews.widget.emoji.EmoJiUtils;
 
@@ -28,14 +28,15 @@ import com.kx.todaynews.widget.emoji.EmoJiUtils;
  */
 public class ArticleReplyListFragmentAdapter extends BaseQuickAdapter<ArticleReplyListBean.DataBeanX.DataBean,BaseViewHolder> {
     private Context mContext;
-
+    private final RequestOptions mRequestOptions;
     public ArticleReplyListFragmentAdapter(Context context,int layoutResId) {
         super(layoutResId);
         this.mContext = context;
+        mRequestOptions   =  RequestOptions.circleCropTransform();
     }
     @Override
     protected void convert(BaseViewHolder holder, ArticleReplyListBean.DataBeanX.DataBean item) {
-        Glide.with(mContext).load(item.getUser().getAvatar_url()).transform(new GlideCircleTransform(mContext)).into((ImageView) holder.getView(R.id.user_avatar));
+        Glide.with(mContext).load(item.getUser().getAvatar_url()).apply(mRequestOptions).into((ImageView) holder.getView(R.id.user_avatar));
         holder.setText(R.id.user_name,String.format("%s",item.getUser().getName()))
                 .setText(R.id.digg_count,String.format("%s",item.getDigg_count()))
                 .setText(R.id.create_time,String.format("%s", TyDateUtils.getFriendlytimeByDate(item.getCreate_time())));

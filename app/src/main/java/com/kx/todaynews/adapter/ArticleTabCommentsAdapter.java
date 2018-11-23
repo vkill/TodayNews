@@ -3,18 +3,17 @@ package com.kx.todaynews.adapter;
 import android.content.Context;
 import android.graphics.Paint;
 import android.support.annotation.LayoutRes;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.kx.todaynews.R;
 import com.kx.todaynews.bean.article.ArticleTabCommentsBean;
 import com.kx.todaynews.listener.OnArticleReplyClickListener;
-import com.kx.todaynews.utils.GlideCircleTransform;
 import com.kx.todaynews.utils.TyDateUtils;
 import com.kx.todaynews.widget.emoji.EmoJiUtils;
 
@@ -31,9 +30,12 @@ import butterknife.ButterKnife;
 public class ArticleTabCommentsAdapter extends BaseQuickAdapter<ArticleTabCommentsBean.DataBean,ArticleTabCommentsAdapter.CommentsHolder> {
 
     private Context mContext ;
+    private final RequestOptions mRequestOptions;
     public ArticleTabCommentsAdapter(Context context, @LayoutRes int LayoutRes) {
         super(LayoutRes);
         mContext = context ;
+        mRequestOptions   =  RequestOptions.circleCropTransform();
+
     }
     @Override
     public int getItemCount() {
@@ -48,7 +50,7 @@ public class ArticleTabCommentsAdapter extends BaseQuickAdapter<ArticleTabCommen
     @Override
     protected void convert(CommentsHolder holder, ArticleTabCommentsBean.DataBean itemData) {
         ArticleTabCommentsBean.DataBean.CommentBean dataBean  = itemData.getComment();
-        Glide.with(mContext).load(dataBean.getUser_profile_image_url()).transform(new GlideCircleTransform(mContext)).into(holder.userAvatar);
+        Glide.with(mContext).load(dataBean.getUser_profile_image_url()).apply(mRequestOptions).into(holder.userAvatar);
         holder.userName.setText(String.format("%s",dataBean.getUser_name()));
         holder.userVerifiedReason.setText(String.format("%s",dataBean.getVerified_reason()));
         holder.diggCount.setText(String.format("%s",dataBean.getDigg_count()));

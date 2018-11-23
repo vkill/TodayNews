@@ -1,6 +1,7 @@
 package com.kx.todaynews.module.photo;
 
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.Target;
@@ -42,6 +43,7 @@ public class WelfarePhotoPresenter extends BasePresenter<IWelfarePhotoContract.I
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
+                        System.out.println(throwable.toString());
                         mView.showError();
                     }
                 })
@@ -79,7 +81,9 @@ public class WelfarePhotoPresenter extends BasePresenter<IWelfarePhotoContract.I
                         @Override
                         public ObservableSource<List<PhotoListBean.ResultsBean>> apply(PhotoListBean photoListBean) throws Exception {
                             List<PhotoListBean.ResultsBean> results = photoListBean.getResults();
-                           return  Observable.just(calePhotoSize(results));
+                           return  Observable.just(calePhotoSize(results))
+                                   .subscribeOn(Schedulers.io())
+                                   .observeOn(AndroidSchedulers.mainThread());
                         }
                     })
                     .subscribeOn(Schedulers.io())

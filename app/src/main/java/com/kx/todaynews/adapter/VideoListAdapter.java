@@ -6,6 +6,7 @@ import android.util.Base64;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.kx.todaynews.Api;
@@ -14,7 +15,6 @@ import com.kx.todaynews.bean.HotContent;
 import com.kx.todaynews.bean.VideoDetailInfo;
 import com.kx.todaynews.module.video.VideoContentBean;
 import com.kx.todaynews.net.NetClient;
-import com.kx.todaynews.utils.GlideCircleTransform;
 import com.kx.todaynews.utils.LogUtils;
 import com.kx.todaynews.utils.TyDateUtils;
 import com.kx.todaynews.utils.UiUtils;
@@ -35,8 +35,11 @@ import io.reactivex.schedulers.Schedulers;
 
 public class VideoListAdapter extends BaseQuickAdapter<HotContent,BaseViewHolder> {
 
+    private final RequestOptions mRequestOptions;
+
     public VideoListAdapter(int layoutResId, @Nullable List<HotContent> data) {
         super(layoutResId, data);
+         mRequestOptions =  RequestOptions.circleCropTransform();
     }
     @Override
     protected void convert(BaseViewHolder helper, HotContent news) {
@@ -48,8 +51,9 @@ public class VideoListAdapter extends BaseQuickAdapter<HotContent,BaseViewHolder
         helper.setVisible(R.id.ll_title,true);//显示标题栏
         helper.setText(R.id.tv_title, news.getTitle());//设置标题
 //
+
         Glide.with(mContext).load(news.getUser_info().getAvatar_url())
-                .transform(new GlideCircleTransform(mContext)).into((ImageView) helper.getView(R.id.iv_avatar));
+                .apply(mRequestOptions).into((ImageView) helper.getView(R.id.iv_avatar));
         helper.setVisible(R.id.ll_duration, true)//显示时长
                 .setText(R.id.tv_duration, TyDateUtils.getTimeStrBySecond(news.getVideo_duration()));//设置时长
 

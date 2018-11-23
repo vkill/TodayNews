@@ -5,10 +5,10 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.kx.todaynews.R;
 import com.kx.todaynews.base.BaseFragment;
 import com.kx.todaynews.base.BasePresenter;
-import com.kx.todaynews.utils.GlideCircleTransform;
 
 import butterknife.BindView;
 
@@ -47,7 +47,8 @@ public class UserFragment extends BaseFragment {
     @Override
     protected void initEventAndData() {
         String url  = "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1541353845829&di=a64d7fedf9a6b8c50834ce73600d2cc0&imgtype=0&src=http%3A%2F%2Fwww.qqzhi.com%2Fuploadpic%2F2014-09-22%2F102336704.jpg";
-        Glide.with(mActivity).load(url).transform(new GlideCircleTransform(mActivity)).into(mIvAvatar);
+        RequestOptions requestOptions =  RequestOptions.circleCropTransform();
+        Glide.with(mActivity).load(url).apply(requestOptions).into(mIvAvatar);
         //  changeNightMode.setOnClickListener(new View.OnClickListener() {
         //    @Override
         //     public void onClick(View v) {

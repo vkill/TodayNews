@@ -1,10 +1,12 @@
 package com.kx.todaynews.module.photo;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.kx.todaynews.R;
@@ -15,23 +17,28 @@ public class WelfarePhotoAdapter extends BaseQuickAdapter<PhotoListBean.ResultsB
 
     // 图片的宽度
     private int mPhotoWidth;
+    private final RequestOptions mRequestOptions;
 
     public WelfarePhotoAdapter(Context context) {
         super(R.layout.adapter_welfare_photo);
         int widthPixels = context.getResources().getDisplayMetrics().widthPixels;
         int marginPixels = context.getResources().getDimensionPixelOffset(R.dimen.photo_margin_width);
         mPhotoWidth = widthPixels / 2 - marginPixels;
+        mRequestOptions = new RequestOptions()
+                .fitCenter().dontAnimate();
     }
     @Override
     protected void convert(BaseViewHolder holder, PhotoListBean.ResultsBean item) {
         final ImageView ivPhoto = holder.getView(R.id.iv_photo);
-        int photoHeight = calcPhotoHeight(item.getPixel(), mPhotoWidth);
-        // 返回的数据有像素分辨率，根据这个来缩放图片大小
-        final ViewGroup.LayoutParams params = ivPhoto.getLayoutParams();
-        params.width = mPhotoWidth;
-        params.height = photoHeight;
-        ivPhoto.setLayoutParams(params);
-        Glide.with(mContext).load(item.getUrl()).fitCenter().dontAnimate().into(ivPhoto);
+        if (!TextUtils.isEmpty(item.getPixel())){
+            int photoHeight = calcPhotoHeight(item.getPixel(), mPhotoWidth);
+            // 返回的数据有像素分辨率，根据这个来缩放图片大小
+            final ViewGroup.LayoutParams params = ivPhoto.getLayoutParams();
+            params.width = mPhotoWidth;
+            params.height = photoHeight;
+            ivPhoto.setLayoutParams(params);
+        }
+        Glide.with(mContext).load(item.getUrl()).apply(mRequestOptions).into(ivPhoto);
         holder.setText(R.id.tv_title, item.getCreatedAt());
     }
     /**

@@ -2,11 +2,9 @@ package com.kx.todaynews.module.news.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -14,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.kx.todaynews.R;
 import com.kx.todaynews.bean.article.ArticleReplyListBean;
@@ -22,7 +21,6 @@ import com.kx.todaynews.contract.IArticleReplyListContract;
 import com.kx.todaynews.module.BaseFullBottomSheetFragment;
 import com.kx.todaynews.module.adapter.ArticleReplyListFragmentAdapter;
 import com.kx.todaynews.presenter.ArticleReplyListPresenter;
-import com.kx.todaynews.utils.GlideCircleTransform;
 import com.kx.todaynews.utils.ToastUtils;
 import com.kx.todaynews.utils.TyDateUtils;
 import com.kx.todaynews.utils.UiUtils;
@@ -31,9 +29,7 @@ import com.kx.todaynews.widget.emoji.EmoJiUtils;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.Unbinder;
 
 public class ArticleReplyListBottomFragment extends BaseFullBottomSheetFragment<ArticleReplyListPresenter>
         implements IArticleReplyListContract.View {
@@ -133,7 +129,8 @@ public class ArticleReplyListBottomFragment extends BaseFullBottomSheetFragment<
             }
             commentBean = arguments.getParcelable(COMMENTBEAN);
             if (commentBean != null) {
-                Glide.with(getContext()).load(commentBean.getUser_profile_image_url()).transform(new GlideCircleTransform(getContext())).into(userAvatar);
+                RequestOptions requestOptions =  RequestOptions.circleCropTransform();
+                Glide.with(getContext()).load(commentBean.getUser_profile_image_url()).apply(requestOptions).into(userAvatar);
                 userName.setText(String.format("%s", commentBean.getUser_name()));
                 diggCount.setText(String.format("%s", commentBean.getDigg_count()));
                 fabulousCount.setText(String.format("%s人赞过", commentBean.getDigg_count()));
@@ -159,6 +156,7 @@ public class ArticleReplyListBottomFragment extends BaseFullBottomSheetFragment<
             titleReplyCount.setText(String.format("%S条回复", totalCount));
         }
         List<String> diggListImages = articleReplyListBean.getDiggListImages();
+        RequestOptions requestOptions =  RequestOptions.circleCropTransform();
         if (diggListImages != null) {
             for (String images : diggListImages) {
                 ImageView imageView = new ImageView(getContext());
@@ -167,7 +165,7 @@ public class ArticleReplyListBottomFragment extends BaseFullBottomSheetFragment<
                 params.height = (int) UiUtils.dp2px(getContext(), 25);
                 params.rightMargin = (int) UiUtils.dp2px(getContext(), 4);
                 imageView.setLayoutParams(params);
-                Glide.with(getContext()).load(images).transform(new GlideCircleTransform(getContext())).into(imageView);
+                Glide.with(getContext()).load(images).apply(requestOptions).into(imageView);
                 llIvContainer.addView(imageView);
             }
         }
