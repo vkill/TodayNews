@@ -21,6 +21,9 @@
     <color name="Grey800">#424242</color>
     <color name="Grey900">#212121</color>
 
+    <color name="half_black">#808080</color>
+    <color name="white_pressed">#f1f1f1</color>
+
     <color name="translucent_background">#55000000</color>
 
     <color name="tip">#9c9c9c</color>

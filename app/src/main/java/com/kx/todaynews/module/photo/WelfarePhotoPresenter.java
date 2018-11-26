@@ -93,6 +93,7 @@ public class WelfarePhotoPresenter extends BasePresenter<IWelfarePhotoContract.I
     };
     /**
      * 计算图片分辨率
+     * 添加try catch 解决 glide 下载线上图片不存在时失败的bug
      * @return
      * @throws ExecutionException
      * @throws InterruptedException

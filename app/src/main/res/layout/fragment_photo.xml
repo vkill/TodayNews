@@ -1,11 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <android.support.v7.widget.RecyclerView
         android:id="@+id/photoRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+
+    <com.kx.todaynews.widget.fab.FloatingActionsMenu
+        android:layout_marginBottom="@dimen/dp40"
+        android:layout_marginEnd="@dimen/dp40"
+        fab:layout_constraintBottom_toBottomOf="parent"
+        fab:layout_constraintRight_toRightOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <com.kx.todaynews.widget.fab.AddFloatingActionButton
+            android:visibility="gone"
+            fab:fab_plusIconColor="@color/half_black"
+            fab:fab_colorNormal="@color/white"
+            fab:fab_colorPressed="@color/white_pressed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </com.kx.todaynews.widget.fab.FloatingActionsMenu>
 
 </android.support.constraint.ConstraintLayout>
