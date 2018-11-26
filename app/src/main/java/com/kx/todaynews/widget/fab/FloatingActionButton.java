@@ -83,6 +83,12 @@ public class FloatingActionButton extends android.support.v7.widget.AppCompatTex
         mCircleSize = getDimension(mSize == SIZE_NORMAL ? R.dimen.fab_size_normal : R.dimen.fab_size_mini);
     }
 
+//    @Override
+//    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+//        setMeasuredDimension((int) mCircleSize,(int)mCircleSize);
+//    }
+
+
     void updateBackground() {
         final float strokeWidth = getDimension(R.dimen.fab_stroke_width);
         final float halfStrokeWidth = strokeWidth / 2f;

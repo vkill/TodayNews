@@ -18,5 +18,9 @@
         <attr name="fab_plusIconColor" format="color"/>
     </declare-styleable>
 
+    <declare-styleable name="FloatingActionsMenu">
+        <attr name="fab_buttonSpacing" format="dimension"/>
+    </declare-styleable>
+
 
 </resources>

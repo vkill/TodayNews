@@ -3,6 +3,7 @@ package com.kx.todaynews.widget.fab;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
@@ -14,11 +15,17 @@ import android.view.animation.OvershootInterpolator;
 import android.widget.FrameLayout;
 
 import com.kx.todaynews.R;
+import com.kx.todaynews.utils.ToastUtils;
+import com.kx.todaynews.utils.UiUtils;
 
 
 public class FloatingActionsMenu extends FrameLayout {
 
     private int mChildCount;
+    /**
+     *  FloatingActionButton 之间的间距.默认5dp
+     */
+    private int mButtonSpacing  ;
 
     public FloatingActionsMenu(@NonNull Context context) {
         this(context,null);
@@ -30,24 +37,50 @@ public class FloatingActionsMenu extends FrameLayout {
 
     public FloatingActionsMenu(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.FloatingActionsMenu, 0, 0);
+        mButtonSpacing = typedArray.getDimensionPixelOffset(R.styleable.FloatingActionsMenu_fab_buttonSpacing, UiUtils.dp2px(context,5));
+        typedArray.recycle();
         mTouchDelegateGroup = new TouchDelegateGroup(this);
         setTouchDelegate(mTouchDelegateGroup);
 
         createAddButton(getContext());
 
     }
+    int totalChildHeight = 0;
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
+        int width = 0;
+        int height = 0;
+       // int maxButtonWidth = 0;
+        for (int i = 0; i < mChildCount; i++) {
+            View child = getChildAt(i);
+            if (child.getVisibility() == GONE){
+                continue;
+            }
+        //  maxButtonWidth = Math.max(maxButtonWidth,child.getMeasuredWidth());
+            width = Math.max(width,child.getMeasuredWidth());
+            height += child.getMeasuredHeight();
+            totalChildHeight +=  child.getMeasuredHeight();
+        }
+       // height += mButtonSpacing * ( mChildCount - 1);
+        setMeasuredDimension(width,height);
+    }
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
-
-        for (int i = 0; i < mChildCount; i++) {
+       int itemLineSpace =  (getMeasuredHeight() - totalChildHeight)/ (mChildCount+1);
+        int height = itemLineSpace;
+          for (int i =0; i <= mChildCount - 1; i++) {
             View child = getChildAt(i);
-            if (child == mAddButton || child.getVisibility() == GONE){
-                continue;
-            }
-
+            int left = child.getLeft();
+            int top = height;
+            int right = child.getRight();
+            int bottom = top+child.getMeasuredHeight();
+            child.layout(left,top,right,bottom);
+            height += (child.getMeasuredHeight()+ itemLineSpace);
         }
     }
 
@@ -56,6 +89,18 @@ public class FloatingActionsMenu extends FrameLayout {
         super.onFinishInflate();
         bringChildToFront(mAddButton);
         mChildCount = getChildCount();
+        for (int i = 0; i < mChildCount; i++) {
+            FloatingActionButton child = (FloatingActionButton) getChildAt(i);
+            if (child == mAddButton || child.getVisibility()==GONE){
+                continue;
+            }
+            child.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ToastUtils.showToast(child.getText().toString());
+                }
+            });
+        }
     }
     private static final long ANIMATION_DURATION = 300;
     private AnimatorSet mExpandAnimation = new AnimatorSet().setDuration(ANIMATION_DURATION);
@@ -153,6 +198,20 @@ public class FloatingActionsMenu extends FrameLayout {
             mCollapseAnimation.start();
             mExpandAnimation.cancel();
 
+            int height = 0;
+            for (int i = 0; i < mChildCount; i++) {
+                View child = getChildAt(i);
+                if (child == mAddButton || child.getVisibility() == GONE){
+                    continue;
+                }
+                height += (child.getHeight()+mButtonSpacing);
+                ObjectAnimator animator = ObjectAnimator.ofFloat(child,"translationY",-height,0);
+                animator.setDuration(ANIMATION_DURATION);
+                animator.start();
+                //  mAnimatorSet.playSequentially(animator);
+
+            }
+
         }
     }
 
@@ -170,6 +229,19 @@ public class FloatingActionsMenu extends FrameLayout {
            // mTouchDelegateGroup.setEnabled(true);
             mCollapseAnimation.cancel();
             mExpandAnimation.start();
+            int height = 0;
+            for (int i = 0; i < mChildCount; i++) {
+                View child = getChildAt(i);
+                if (child == mAddButton || child.getVisibility() == GONE){
+                    continue;
+                }
+                height += (child.getHeight()+mButtonSpacing);
+                ObjectAnimator animator = ObjectAnimator.ofFloat(child,"translationY",0,-height);
+                animator.setDuration(ANIMATION_DURATION);
+                animator.start();
+              //  mAnimatorSet.playSequentially(animator);
+
+            }
 
         }
     }

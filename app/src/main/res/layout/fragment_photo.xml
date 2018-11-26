@@ -10,6 +10,7 @@
         android:layout_height="match_parent"/>
 
     <com.kx.todaynews.widget.fab.FloatingActionsMenu
+        fab:fab_buttonSpacing="@dimen/dp5"
         android:layout_marginBottom="@dimen/dp40"
         android:layout_marginEnd="@dimen/dp40"
         fab:layout_constraintBottom_toBottomOf="parent"
@@ -17,8 +18,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
-        <com.kx.todaynews.widget.fab.AddFloatingActionButton
-            android:visibility="gone"
+        <com.kx.todaynews.widget.fab.FloatingActionButton
+            android:gravity="center"
+            android:text="瀑布流"
+            fab:fab_plusIconColor="@color/half_black"
+            fab:fab_colorNormal="@color/white"
+            fab:fab_colorPressed="@color/white_pressed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <com.kx.todaynews.widget.fab.FloatingActionButton
+            android:gravity="center"
+            android:text="卡片流"
             fab:fab_plusIconColor="@color/half_black"
             fab:fab_colorNormal="@color/white"
             fab:fab_colorPressed="@color/white_pressed"
