@@ -100,13 +100,17 @@ public class WelfarePhotoPresenter extends BasePresenter<IWelfarePhotoContract.I
     public static List<PhotoListBean.ResultsBean>  calePhotoSize(List<PhotoListBean.ResultsBean> beans) throws ExecutionException, InterruptedException {
         for (PhotoListBean.ResultsBean resultsBean: beans) {
             // 接口返回的数据是没有宽高参数的，这里设置图片的宽度和高度
-            File file = Glide.with(AndroidApplication.getContext()).load(resultsBean.getUrl())
-                    .downloadOnly(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).get();
-            // First decode with inJustDecodeBounds=true to check dimensions
-            final BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inJustDecodeBounds = true;
-            BitmapFactory.decodeFile(file.getAbsolutePath(), options);
-            resultsBean.setPixel(options.outWidth + "*" + options.outHeight);
+            try {
+                File file = Glide.with(AndroidApplication.getContext()).load(resultsBean.getUrl())
+                        .downloadOnly(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).get();
+                // First decode with inJustDecodeBounds=true to check dimensions
+                final BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inJustDecodeBounds = true;
+                BitmapFactory.decodeFile(file.getAbsolutePath(), options);
+                resultsBean.setPixel(options.outWidth + "*" + options.outHeight);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return  beans ;
     }
