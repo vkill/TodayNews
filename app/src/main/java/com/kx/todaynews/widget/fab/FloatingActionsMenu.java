@@ -71,7 +71,7 @@ public class FloatingActionsMenu extends FrameLayout {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
-       int itemLineSpace =  (getMeasuredHeight() - totalChildHeight)/ (mChildCount+1);
+        int itemLineSpace =  (getMeasuredHeight() - totalChildHeight)/ (mChildCount+1);
         int height = itemLineSpace;
           for (int i =0; i <= mChildCount - 1; i++) {
             View child = getChildAt(i);
@@ -81,7 +81,16 @@ public class FloatingActionsMenu extends FrameLayout {
             int bottom = top+child.getMeasuredHeight();
             child.layout(left,top,right,bottom);
             height += (child.getMeasuredHeight()+ itemLineSpace);
+            if (child != mAddButton){
+                int translationY = (itemLineSpace+ child.getHeight())  * mChildCount - 1 - i;
+                child.setTranslationY(translationY);
+            }
         }
+    }
+    OnFloatingActionButtonClickListener mOnFloatingActionButtonClickListener;
+
+    public void setOnFloatingActionButtonClickListener(OnFloatingActionButtonClickListener listener) {
+        mOnFloatingActionButtonClickListener = listener;
     }
 
     @Override
@@ -94,12 +103,16 @@ public class FloatingActionsMenu extends FrameLayout {
             if (child == mAddButton || child.getVisibility()==GONE){
                 continue;
             }
+
+            int finalI = i;
             child.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ToastUtils.showToast(child.getText().toString());
-                }
-            });
+                    @Override
+                    public void onClick(View v) {
+                        if (mOnFloatingActionButtonClickListener!=null){
+                            mOnFloatingActionButtonClickListener.OnFloatingActionButtonClick(child, finalI);
+                        }
+                    }
+                });
         }
     }
     private static final long ANIMATION_DURATION = 300;
@@ -197,19 +210,17 @@ public class FloatingActionsMenu extends FrameLayout {
             mCollapseAnimation.setDuration(immediately ? 0 : ANIMATION_DURATION);
             mCollapseAnimation.start();
             mExpandAnimation.cancel();
-
-            int height = 0;
             for (int i = 0; i < mChildCount; i++) {
                 View child = getChildAt(i);
                 if (child == mAddButton || child.getVisibility() == GONE){
                     continue;
                 }
-                height += (child.getHeight()+mButtonSpacing);
-                ObjectAnimator animator = ObjectAnimator.ofFloat(child,"translationY",-height,0);
-                animator.setDuration(ANIMATION_DURATION);
-                animator.start();
-                //  mAnimatorSet.playSequentially(animator);
-
+                AnimatorSet animatorSet = new AnimatorSet();
+                ObjectAnimator animator = ObjectAnimator.ofFloat(child,"translationY",0,mAddButton.getBottom() - child.getBottom());
+                ObjectAnimator alphaAnimator = ObjectAnimator.ofFloat(child,"alpha",1,0);
+                animatorSet.playTogether(animator,alphaAnimator);
+                animatorSet.setDuration(ANIMATION_DURATION);
+                animatorSet.start();
             }
 
         }
@@ -229,20 +240,18 @@ public class FloatingActionsMenu extends FrameLayout {
            // mTouchDelegateGroup.setEnabled(true);
             mCollapseAnimation.cancel();
             mExpandAnimation.start();
-            int height = 0;
             for (int i = 0; i < mChildCount; i++) {
                 View child = getChildAt(i);
                 if (child == mAddButton || child.getVisibility() == GONE){
                     continue;
                 }
-                height += (child.getHeight()+mButtonSpacing);
-                ObjectAnimator animator = ObjectAnimator.ofFloat(child,"translationY",0,-height);
-                animator.setDuration(ANIMATION_DURATION);
-                animator.start();
-              //  mAnimatorSet.playSequentially(animator);
-
+                AnimatorSet animatorSet = new AnimatorSet();
+                ObjectAnimator animator = ObjectAnimator.ofFloat(child,"translationY",mAddButton.getBottom() - child.getBottom(),0);
+                ObjectAnimator alphaAnimator = ObjectAnimator.ofFloat(child,"alpha",0,1);
+                animatorSet.playTogether(animator,alphaAnimator);
+                animatorSet.setDuration(ANIMATION_DURATION);
+                animatorSet.start();
             }
-
         }
     }
 }

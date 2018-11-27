@@ -1,6 +1,5 @@
 package com.kx.todaynews.module.photo;
 
-import android.content.Context;
 import android.text.TextUtils;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -19,14 +18,17 @@ public class WelfarePhotoAdapter extends BaseQuickAdapter<PhotoListBean.ResultsB
     private int mPhotoWidth;
     private final RequestOptions mRequestOptions;
 
-    public WelfarePhotoAdapter(Context context) {
+    public WelfarePhotoAdapter(int photoWidth) {
         super(R.layout.adapter_welfare_photo);
-        int widthPixels = context.getResources().getDisplayMetrics().widthPixels;
-        int marginPixels = context.getResources().getDimensionPixelOffset(R.dimen.photo_margin_width);
-        mPhotoWidth = widthPixels / 2 - marginPixels;
+        mPhotoWidth = photoWidth;
         mRequestOptions = new RequestOptions()
                 .fitCenter().dontAnimate();
     }
+
+    public void setPhotoWidth(int photoWidth) {
+        mPhotoWidth = photoWidth;
+    }
+
     @Override
     protected void convert(BaseViewHolder holder, PhotoListBean.ResultsBean item) {
         final ImageView ivPhoto = holder.getView(R.id.iv_photo);

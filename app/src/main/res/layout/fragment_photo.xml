@@ -10,6 +10,7 @@
         android:layout_height="match_parent"/>
 
     <com.kx.todaynews.widget.fab.FloatingActionsMenu
+        android:id="@+id/floatingActionsMenu"
         fab:fab_buttonSpacing="@dimen/dp5"
         android:layout_marginBottom="@dimen/dp40"
         android:layout_marginEnd="@dimen/dp40"
