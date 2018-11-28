@@ -31,6 +31,8 @@ public class RouteShowActivity extends BaseActivity implements SearchPoiFragment
      * 用于判断 当前是 哪个EditText获取焦点,
      */
     private boolean isStartEtHasFocus = true;
+    private SearchPoiFragment mSearchPoiFragment;
+
     @Override
     protected BasePresenter createPresenter() {
         return null;
@@ -58,9 +60,9 @@ public class RouteShowActivity extends BaseActivity implements SearchPoiFragment
 
     @Override
     protected void initEventAndData() {
-        SearchPoiFragment searchPoiFragment = new SearchPoiFragment();
+        mSearchPoiFragment = new SearchPoiFragment();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.add(R.id.fl_container, searchPoiFragment);
+        fragmentTransaction.add(R.id.fl_container, mSearchPoiFragment);
         fragmentTransaction.commit();
     }
 
@@ -125,6 +127,8 @@ public class RouteShowActivity extends BaseActivity implements SearchPoiFragment
                 }else {
                     etEnd.setCursorVisible(true);
                 }
+                // 交换起点和终点坐标
+                mSearchPoiFragment.exchangeStartAndEndPoint();
             }
         });
         animatorSet.start();

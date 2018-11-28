@@ -42,25 +42,23 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
-import static com.kx.todaynews.module.map.SelectMapPointActivity.CHOOSEPOINTLATLNG;
-import static com.kx.todaynews.module.map.SelectMapPointActivity.MYPOSITIONLATLNG;
+import static com.kx.todaynews.module.map.SelectMapPointActivity.ENDPOINTLATLNG;
+import static com.kx.todaynews.module.map.SelectMapPointActivity.STARTPOINTLATLNG;
 
 /**
  * Created by admin on 2018/11/14.
  */
 public class SearchPoiFragment extends SupportMapFragment implements RouteSearch.OnRouteSearchListener, AMap.OnMapClickListener, AMap.OnMarkerClickListener, AMap.OnInfoWindowClickListener, AMap.InfoWindowAdapter, AMap.OnMapLoadedListener {
-    public static final int MY_POSITION_REQUESTCODE = 1000 ;
-    public static final int CHOOSE_POINT_REQUESTCODE = 1001 ;
+    public static final int START_POINT_REQUESTCODE = 1000 ;
+    public static final int END_POINT_REQUESTCODE = 1001 ;
     @BindView(R.id.tv_my_position)
     TextView tvMyPosition;
     @BindView(R.id.tv_choose_point)
     TextView tvChoosePoint;
     Unbinder unbinder;
-    LatLng myPosition ;
-    LatLng choosePoint ;
+    LatLng startPoint ;
+    LatLng endPoint ;
     onRouteSelectListener mOnRouteSelectListener;
-    private String[] items = {"公交", "步行", "驾车", "骑行"};
-    private String searchType = items[0];
     private AMap aMap;
     private MapView mapView;
     private RouteSearch mRouteSearch;
@@ -154,34 +152,34 @@ public class SearchPoiFragment extends SupportMapFragment implements RouteSearch
     @OnClick(R.id.tv_my_position)
     public void onTvMyPositionClicked() {
         Intent intent = new Intent(getContext(), SelectMapPointActivity.class);
-        intent.putExtra(SelectMapPointActivity.TAG,MY_POSITION_REQUESTCODE);
-        intent.putExtra(MYPOSITIONLATLNG,myPosition);
-        intent.putExtra(CHOOSEPOINTLATLNG,choosePoint);
-        startActivityForResult(intent,MY_POSITION_REQUESTCODE);
+        intent.putExtra(SelectMapPointActivity.TAG,START_POINT_REQUESTCODE);
+        intent.putExtra(STARTPOINTLATLNG,startPoint);
+        intent.putExtra(ENDPOINTLATLNG,endPoint);
+        startActivityForResult(intent,START_POINT_REQUESTCODE);
     }
 
     @OnClick(R.id.tv_choose_point)
     public void onTvChoosePointClicked() {
         Intent intent = new Intent(getContext(), SelectMapPointActivity.class);
-        intent.putExtra(SelectMapPointActivity.TAG,CHOOSE_POINT_REQUESTCODE);
-        intent.putExtra(MYPOSITIONLATLNG,myPosition);
-        intent.putExtra(CHOOSEPOINTLATLNG,choosePoint);
-        startActivityForResult(intent,CHOOSE_POINT_REQUESTCODE);
+        intent.putExtra(SelectMapPointActivity.TAG,END_POINT_REQUESTCODE);
+        intent.putExtra(STARTPOINTLATLNG,startPoint);
+        intent.putExtra(ENDPOINTLATLNG,endPoint);
+        startActivityForResult(intent,END_POINT_REQUESTCODE);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode==MY_POSITION_REQUESTCODE && resultCode == Activity.RESULT_OK){
-            PoiItem poiItem = data.getParcelableExtra(MYPOSITIONLATLNG);
-            myPosition = new LatLng(poiItem.getLatLonPoint().getLatitude(), poiItem.getLatLonPoint().getLongitude());
+        if (requestCode==START_POINT_REQUESTCODE && resultCode == Activity.RESULT_OK){
+            PoiItem poiItem = data.getParcelableExtra(STARTPOINTLATLNG);
+            startPoint = new LatLng(poiItem.getLatLonPoint().getLatitude(), poiItem.getLatLonPoint().getLongitude());
             if (mOnRouteSelectListener!=null){
                 mOnRouteSelectListener.onStartSelect(poiItem);
             }
         }
-        if (requestCode==CHOOSE_POINT_REQUESTCODE && resultCode == Activity.RESULT_OK){
-            PoiItem poiItem = data.getParcelableExtra(CHOOSEPOINTLATLNG);
-            choosePoint = new LatLng(poiItem.getLatLonPoint().getLatitude(), poiItem.getLatLonPoint().getLongitude());
+        if (requestCode==END_POINT_REQUESTCODE && resultCode == Activity.RESULT_OK){
+            PoiItem poiItem = data.getParcelableExtra(ENDPOINTLATLNG);
+            endPoint = new LatLng(poiItem.getLatLonPoint().getLatitude(), poiItem.getLatLonPoint().getLongitude());
             if (mOnRouteSelectListener!=null){
                 mOnRouteSelectListener.onEndSelect(poiItem);
             }
@@ -191,16 +189,16 @@ public class SearchPoiFragment extends SupportMapFragment implements RouteSearch
      * 开始搜索路径规划方案
      */
     public void searchRouteResult(int routeType) {
-        if (myPosition == null) {
+        if (startPoint == null) {
             ToastUtil.show(getActivity(), "起点未设置");
             return;
         }
-        if (choosePoint == null) {
+        if (endPoint == null) {
             ToastUtil.show(getActivity(), "终点未设置");
         }
         showProgressDialog();
-        mStartPoint = new LatLonPoint(myPosition.latitude,myPosition.longitude);
-        mEndPoint =  new LatLonPoint(choosePoint.latitude,choosePoint.longitude);
+        mStartPoint = new LatLonPoint(startPoint.latitude,startPoint.longitude);
+        mEndPoint =  new LatLonPoint(endPoint.latitude,endPoint.longitude);
         final RouteSearch.FromAndTo fromAndTo = new RouteSearch.FromAndTo(
                 mStartPoint, mEndPoint);
         if (routeType == ROUTE_TYPE_WALK) {// 步行路径规划
@@ -370,6 +368,15 @@ public class SearchPoiFragment extends SupportMapFragment implements RouteSearch
     @OnClick(R.id.rl_on_bus_click)
     public void  onBusClick(View view){
         searchRouteResult(ROUTE_TYPE_WALK);
+    }
+
+    /**
+     * 交换起点和终点坐标
+     */
+    public void exchangeStartAndEndPoint() {
+        
+        
+        
     }
 
     public  interface  onRouteSelectListener{
