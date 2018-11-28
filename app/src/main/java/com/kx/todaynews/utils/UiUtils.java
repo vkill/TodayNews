@@ -1,9 +1,14 @@
 package com.kx.todaynews.utils;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
+import android.net.Uri;
+import android.os.Build;
 
 import com.kx.todaynews.AndroidApplication;
+
+import java.io.File;
 
 /**
  * @author Administrator
@@ -49,4 +54,29 @@ public class UiUtils {
     public static Resources getResources() {
         return getContext().getResources();
     }
+    /**
+     * 安装APK,  修改apk文件的权限为可执行 ，例如chmod ‘777’ file：
+     */
+//    public final static void install(Context ctx , String apkPathName, boolean checkApk) {
+//        //ScreenFilterService.stopService(ctx);
+//        if(STR.isEmptyNull(apkPathName)) return ;
+//        File.chmod("777", apkPathName); //修改权限
+//        String tmp  = apkPathName.toLowerCase();
+//        if (checkApk) {
+//            if(!FILE.isApk(tmp)) return ;
+//        }
+//        File file = new File(apkPathName);
+//        if (file.exists() && file.canRead()){
+//            Intent intent = new Intent(Intent.ACTION_VIEW);
+//            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//                intent.setDataAndType(FileShareProvider.getUriForFile(ctx, BuildConfig.APPLICATION_ID + ".provider", file),
+//                        "application/vnd.android.package-archive");
+//            } else {
+//                intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
+//            }
+//            ctx.startActivity(intent);
+//        }
+//    }
 }

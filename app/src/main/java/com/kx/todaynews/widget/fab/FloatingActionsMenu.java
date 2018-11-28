@@ -11,15 +11,18 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.OvershootInterpolator;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.kx.todaynews.R;
 import com.kx.todaynews.utils.ToastUtils;
 import com.kx.todaynews.utils.UiUtils;
 
 
-public class FloatingActionsMenu extends FrameLayout {
+public class FloatingActionsMenu extends ViewGroup {
 
     private int mChildCount;
     /**
@@ -49,8 +52,7 @@ public class FloatingActionsMenu extends FrameLayout {
     int totalChildHeight = 0;
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-
+        measureChildren(widthMeasureSpec, heightMeasureSpec);
         int width = 0;
         int height = 0;
        // int maxButtonWidth = 0;
@@ -64,26 +66,31 @@ public class FloatingActionsMenu extends FrameLayout {
             height += child.getMeasuredHeight();
             totalChildHeight +=  child.getMeasuredHeight();
         }
-       // height += mButtonSpacing * ( mChildCount - 1);
+        height += mButtonSpacing * ( mChildCount - 1);
         setMeasuredDimension(width,height);
     }
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        super.onLayout(changed, l, t, r, b);
-        int itemLineSpace =  (getMeasuredHeight() - totalChildHeight)/ (mChildCount+1);
+       // super.onLayout(changed, l, t, r, b);
+        int measuredHeight = getMeasuredHeight();
+        int itemLineSpace =  (measuredHeight - totalChildHeight)/ (mChildCount+1);
         int height = itemLineSpace;
           for (int i =0; i <= mChildCount - 1; i++) {
             View child = getChildAt(i);
             int left = child.getLeft();
             int top = height;
-            int right = child.getRight();
+            int right = left + child.getMeasuredWidth();
             int bottom = top+child.getMeasuredHeight();
             child.layout(left,top,right,bottom);
             height += (child.getMeasuredHeight()+ itemLineSpace);
             if (child != mAddButton){
-                int translationY = (itemLineSpace+ child.getHeight())  * mChildCount - 1 - i;
+                int translationY = (itemLineSpace+ child.getHeight())  * (mChildCount - 1 - i);
                 child.setTranslationY(translationY);
+
+                FABLayoutParams layoutParams = (FABLayoutParams) child.getLayoutParams();
+                layoutParams.setAnimationsTarget(child,translationY);
+                child.setAlpha(0);
             }
         }
     }
@@ -186,7 +193,6 @@ public class FloatingActionsMenu extends FrameLayout {
             }
         };
 
-      //  mAddButton.setId(R.id.fab_expand_menu_button);
         mAddButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -195,19 +201,11 @@ public class FloatingActionsMenu extends FrameLayout {
         });
         addView(mAddButton, super.generateDefaultLayoutParams());
     }
-    public void collapse() {
-        collapse(false);
-    }
 
-    public void collapseImmediately() {
-        collapse(true);
-    }
-
-    private void collapse(boolean immediately) {
+    private void collapse() {
         if (mExpanded) {
             mExpanded = false;
-         //   mTouchDelegateGroup.setEnabled(false);
-            mCollapseAnimation.setDuration(immediately ? 0 : ANIMATION_DURATION);
+            mCollapseAnimation.setDuration( ANIMATION_DURATION);
             mCollapseAnimation.start();
             mExpandAnimation.cancel();
             for (int i = 0; i < mChildCount; i++) {
@@ -215,12 +213,8 @@ public class FloatingActionsMenu extends FrameLayout {
                 if (child == mAddButton || child.getVisibility() == GONE){
                     continue;
                 }
-                AnimatorSet animatorSet = new AnimatorSet();
-                ObjectAnimator animator = ObjectAnimator.ofFloat(child,"translationY",0,mAddButton.getBottom() - child.getBottom());
-                ObjectAnimator alphaAnimator = ObjectAnimator.ofFloat(child,"alpha",1,0);
-                animatorSet.playTogether(animator,alphaAnimator);
-                animatorSet.setDuration(ANIMATION_DURATION);
-                animatorSet.start();
+                FABLayoutParams layoutParams = (FABLayoutParams) child.getLayoutParams();
+                layoutParams.collapse();
             }
 
         }
@@ -245,13 +239,58 @@ public class FloatingActionsMenu extends FrameLayout {
                 if (child == mAddButton || child.getVisibility() == GONE){
                     continue;
                 }
-                AnimatorSet animatorSet = new AnimatorSet();
-                ObjectAnimator animator = ObjectAnimator.ofFloat(child,"translationY",mAddButton.getBottom() - child.getBottom(),0);
-                ObjectAnimator alphaAnimator = ObjectAnimator.ofFloat(child,"alpha",0,1);
-                animatorSet.playTogether(animator,alphaAnimator);
-                animatorSet.setDuration(ANIMATION_DURATION);
-                animatorSet.start();
+                FABLayoutParams layoutParams = (FABLayoutParams) child.getLayoutParams();
+                layoutParams.expand();
             }
         }
+    }
+
+    private class FABLayoutParams extends FrameLayout.LayoutParams {
+
+          private  AnimatorSet expandAnimatorSet = new AnimatorSet().setDuration(ANIMATION_DURATION);
+
+          private  AnimatorSet collapseAnimatorSet = new AnimatorSet().setDuration(ANIMATION_DURATION);
+
+          public FABLayoutParams(ViewGroup.LayoutParams source) {
+              super(source);
+
+          }
+          public void setAnimationsTarget(View child,float translationY) {
+
+              ObjectAnimator mExpandTrans = ObjectAnimator.ofFloat(child,"translationY",translationY,0);
+              ObjectAnimator mExpandAlpha = ObjectAnimator.ofFloat(child,"alpha",0,1);
+              expandAnimatorSet.playTogether(mExpandTrans,mExpandAlpha);
+
+
+              ObjectAnimator mCollapseTrans = ObjectAnimator.ofFloat(child,"translationY",0,translationY);
+              ObjectAnimator mCollapseAlpha = ObjectAnimator.ofFloat(child,"alpha",1,0);
+              collapseAnimatorSet.playTogether(mCollapseTrans,mCollapseAlpha);
+          }
+          public void expand(){
+              expandAnimatorSet.start();
+          }
+          public void collapse(){
+              collapseAnimatorSet.start();
+          }
+      }
+
+    @Override
+    protected FrameLayout.LayoutParams generateDefaultLayoutParams() {
+        return new FABLayoutParams(super.generateDefaultLayoutParams());
+    }
+
+    @Override
+    public FrameLayout.LayoutParams generateLayoutParams(AttributeSet attrs) {
+        return new FABLayoutParams(super.generateLayoutParams(attrs));
+    }
+
+    @Override
+    protected FrameLayout.LayoutParams generateLayoutParams(ViewGroup.LayoutParams p) {
+        return new FABLayoutParams(super.generateLayoutParams(p));
+    }
+
+    @Override
+    protected boolean checkLayoutParams(ViewGroup.LayoutParams p) {
+        return super.checkLayoutParams(p);
     }
 }
